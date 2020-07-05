@@ -3,7 +3,6 @@
 // =====================
 const { catchAsync } = require('../utils/ErrorHandling')
 const ApiError = require('../utils/ApiError')
-const { filterObject } = require('../util')
 const constants = require('../constants')
 const Mailer = require('../utils/mailer')
 const User = require('../model/user')
@@ -158,6 +157,7 @@ const resetPassword = catchAsync(async (req, res, next) => {
    })
 })
 
+
 // retrieves the profile of the current user.
 const retrieveProfile = catchAsync(async (req, res, next) => {
    const currentUser = req.currentUser
@@ -188,25 +188,12 @@ const deleteProfile = catchAsync(async (req, res) => {
 // updates the profile of the current user
 const updateProfile = catchAsync(async (req, res, next) => {
    // parsing body
-   let data = {}
    const currentUser = req.currentUser
-
-   // filtering user items
-   if (currentUser.role === constants.ROLE_USER) {
-      data = filterObject(req.body, 'username', 'name', 'surname', 'email', 'profileImage')
-   }
-   // filtering psyvhologist items
-   else if (currentUser.role === constants.ROLE_PSYCHOLOGIST) {
-      data = filterObject(req.body, 'username', 'name', 'surname', 'email', 'profileImage', 
-                  'appointmentPrice', 'biography', 'isActiveForClientRequest')
-   }
-   // filtering admin items
-   else if (currentUser.role === constants.ROLE_ADMIN) {
-      data = filterObject(req.body, 'username', 'name', 'surname', 'email', 'profileImage')
-   }
+   const data = User.filterBody(currentUser.role, req.body)
    
    // update the user.
-   const user = await User.findByIdAndUpdate(currentUser, data, { runValidators: true, new: true })
+   const user = await User.findByIdAndUpdate(currentUser, data, 
+      { runValidators: true, new: true })
 
    res.status(200).json({
       status: '200',

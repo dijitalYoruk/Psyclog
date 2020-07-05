@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon server.js",
-    "debug": "ndb server.js"
+    "debug": "ndb server.js",
+    "seed": "node seeder/seeder.js"
   },
   "author": "CS491",
   "license": "ISC",

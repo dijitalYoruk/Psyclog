@@ -2,7 +2,6 @@
 // imports
 // =====================
 const { catchAsync } = require('../utils/ErrorHandling')
-const { filterObject, isMatching } = require('../util')
 const ApiError = require('../utils/ApiError')
 const Constants = require('../constants')
 const User = require('../model/user')
@@ -17,17 +16,9 @@ const updateUser = catchAsync(async (req, res, next) => {
    // retrieving corresponding user
    const id = req.params.userId
    const user = await User.findById(id)
-   let data = {}
 
-   // filtering user items
-   if (user.role === constants.ROLE_USER) {
-      data = filterObject(req.body, 'username', 'name', 'surname', 'email', 'profileImage')
-   }
-   // filtering psychologist items
-   else if (user.role === constants.ROLE_PSYCHOLOGIST) {
-      data = filterObject(req.body, 'username', 'name', 'surname', 'email', 'profileImage', 
-                  'appointmentPrice', 'biography', 'isActiveForClientRequest')
-   }
+   // filtering body.
+   const data = User.filterBody(user.role, req.body)
    
    // update the user.
    user = await User.findByIdAndUpdate(user, data, { runValidators: true, new: true })
@@ -85,9 +76,26 @@ const deleteUser = catchAsync(async (req, res) => {
    })
 })
 
+
+const finishPatient = catchAsync(async (req, res) => {   
+   const psychologist = req.currentUser
+   const patientId = req.body.patientId
+   await User.findByIdAndUpdate(psychologist, { $pull: { 'patients': patientId }})
+   await User.findByIdAndUpdate(patientId, { $pull: { 'registeredPsychologists': psychologist._id }})
+
+   res.status(204).json({
+      status: '204',
+      data: {
+         'message': `Finished .` 
+      }
+   })
+})
+
+
 module.exports = {
    retrieveUsers,
    retrieveUser,
    deleteUser,
    updateUser,
+   finishPatient
 }

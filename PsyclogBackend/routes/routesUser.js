@@ -14,7 +14,8 @@ const routerUser = express.Router({ mergeParams: true })
 const {retrieveUsers,
    retrieveUser,
    deleteUser,
-   updateUser,} = require('../controller/ControllerUser')
+   updateUser, 
+   finishPatient} = require('../controller/ControllerUser')
 
 
 // =====================
@@ -22,6 +23,9 @@ const {retrieveUsers,
 // =====================
 routerUser.route('/')
    .get(middlewareAuth, middlewareRestrict(Constants.ROLE_ADMIN), retrieveUsers)
+
+routerUser.route('/finish')
+   .post(middlewareAuth, middlewareRestrict(Constants.ROLE_ADMIN), finishPatient)
 
 routerUser.route('/:userId')
    .get(middlewareAuth, middlewareRestrict(Constants.ROLE_ADMIN), retrieveUser)

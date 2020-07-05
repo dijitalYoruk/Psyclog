@@ -3,6 +3,7 @@
 // =====================
 const mongoosePaginate = require('mongoose-paginate-v2');
 const ClientRequest = require('../model/clientRequest')
+const { filterObject } = require('../util')
 const Review = require('../model/review')
 const Constants = require('../constants')
 const { promisify } = require('util')
@@ -44,7 +45,12 @@ const UserSchema = new Schema({
    // Currently, User specific
    cash: {
       type: Number,
-      required:  [true, 'You should have cash.']
+      validate: {
+         validator(value) {
+            return (this.role === Constants.ROLE_USER) ? value : true
+         },
+         message: 'Appointment Price is required.'
+      }
    },
    role: {
       type: String,
@@ -57,7 +63,7 @@ const UserSchema = new Schema({
       type: Number,
       validate: {
          validator(value) {
-            return this.role === Constants.ROLE_PSYCHOLOGIST && value
+            return (this.role === Constants.ROLE_PSYCHOLOGIST) ? value : true
          },
          message: 'Appointment Price is required.'
       }
@@ -76,20 +82,22 @@ const UserSchema = new Schema({
       type: Boolean,
       validate: {
          validator(value) {
-            return this.role === Constants.ROLE_PSYCHOLOGIST && value
+            return (this.role === Constants.ROLE_PSYCHOLOGIST) ? value : true
          },
          message: 'isPsychologistVerified is required.'
-      }
+      },
+      default: false
    },
    // Psychologist specific
    isActiveForClientRequest: {
       type: Boolean,
       validate: {
          validator(value) {
-            return this.role === Constants.ROLE_PSYCHOLOGIST && value
+            return (this.role === Constants.ROLE_PSYCHOLOGIST) ? value : true
          },
          message: 'isActiveForClientRequest is required.'
-      }
+      },
+      default: true
    },
    password: {
       required:  [true, 'You should provide a password.'],
@@ -104,7 +112,7 @@ const UserSchema = new Schema({
       trim: true,
       validate: {
          validator(value) {
-            return this.role === Constants.ROLE_PSYCHOLOGIST && value
+            return (this.role === Constants.ROLE_PSYCHOLOGIST) ? value : true
          },
          message: 'Biography is required.'
       }
@@ -115,7 +123,7 @@ const UserSchema = new Schema({
       trim: true,
       validate: {
          validator(value) {
-            return this.role === Constants.ROLE_PSYCHOLOGIST && value
+            return (this.role === Constants.ROLE_PSYCHOLOGIST) ? value : true
          },
          message: 'Transcript is required.'
       }
@@ -126,7 +134,7 @@ const UserSchema = new Schema({
       trim: true,
       validate: {
          validator(value) {
-            return this.role === Constants.ROLE_PSYCHOLOGIST && value
+            return (this.role === Constants.ROLE_PSYCHOLOGIST) ? value : true
          },
          message: 'CV is required.'
       }
@@ -180,8 +188,29 @@ UserSchema.statics.decodeJWT = async token => {
    return await promisify(jwt.verify)(token, process.env.JWT_SECRET)
 }
 
+// filters update data based on roles
+UserSchema.statics.filterBody = async (role, bodyData) => {
+   // filtering user items
+   if (role === constants.ROLE_USER) {
+      data = filterObject(bodyData, 'username', 'name', 'surname', 'email', 'profileImage')  
+   }
+   // filtering psyvhologist items
+   else if (role === constants.ROLE_PSYCHOLOGIST) {
+      data = filterObject(bodyData, 'username', 'name', 'surname', 'email', 'profileImage', 
+               'appointmentPrice', 'biography', 'isActiveForClientRequest')
+   }
+   // filtering admin items
+   else if (role === constants.ROLE_ADMIN) {
+      data = filterObject(bodyData, 'username', 'name', 'surname', 'email', 'profileImage')  
+   }
+
+   return data
+}
+
+
 // sets the visibility of certain areas for different roles.
 UserSchema.pre('save', async function(next) {
+   
    // changing password
    if (!this.isModified('password')) return next()
    this.password = await bcrypt.hash(this.password, 10)

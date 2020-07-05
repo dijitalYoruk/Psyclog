@@ -63,9 +63,10 @@ const retrieveClientRequests = catchAsync(async (req, res, next) => {
 
 
 const acceptClientRequest = catchAsync(async (req, res, next) => {
-   const psychologist = req.currentUser
    const { requestId } = req.body
+   const psychologist = req.currentUser
    const clientRequest = await ClientRequest.findById(requestId)
+   const patient = clientRequest.patient
 
    if (!clientRequest) { 
       return next(new ApiError('Request could not be found.', 404))
@@ -75,10 +76,10 @@ const acceptClientRequest = catchAsync(async (req, res, next) => {
       return next(new ApiError('Unauthorized', 403))
    }
 
-   const patient = clientRequest.patient
-   await User.updateOne(psychologist, { $addToSet: { patients: patient } })
-   await User.findByIdAndUpdate(patient, { $addToSet: { registeredPsychologists: psychologist } })
-   await ClientRequest.deleteOne(clientRequest)
+   const promise1 = User.findByIdAndUpdate(psychologist, { $addToSet: { patients: patient } })
+   const promise2 = User.findByIdAndUpdate(patient, { $addToSet: { registeredPsychologists: psychologist } })
+   const promise3 = ClientRequest.deleteOne(clientRequest)
+   await Promise.all(promise1, promise2, promise3)
 
    res.status(200).json({
       status: 200,
