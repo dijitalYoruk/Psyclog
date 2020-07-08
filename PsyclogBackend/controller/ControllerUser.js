@@ -3,7 +3,7 @@
 // =====================
 const { catchAsync } = require('../utils/ErrorHandling')
 const ApiError = require('../utils/ApiError')
-const Constants = require('../constants')
+const Constants = require('../utils/constants')
 const User = require('../model/user')
 
 

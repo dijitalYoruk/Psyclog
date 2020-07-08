@@ -2,7 +2,7 @@
 // imports
 // =====================
 const express = require('express')
-const Constants = require('../constants')
+const Constants = require('../utils/constants')
 const middlewareAuth = require('../middleware/middlewareAuth')
 const middlewareRestrict = require('../middleware/middlewareRestrict')
 const routerUser = express.Router({ mergeParams: true })

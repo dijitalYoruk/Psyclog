@@ -1,5 +1,5 @@
 const ClientRequest = require('../model/clientRequest')
-const Constants = require('../constants')
+const Constants = require('../utils/constants')
 const Review = require('../model/review')
 const User = require('../model/user')
 const mongoose = require('mongoose')
@@ -82,7 +82,7 @@ const seedUsersData = async () => {
       }
    }
 
-   const email = 'fatihsevan15@gmail.com'
+   const email = 'fatihsevban15@gmail.com'
    const passwordConfirm = 'naruto1212'
    const role = Constants.ROLE_ADMIN
    const password = 'naruto1212'
@@ -102,9 +102,8 @@ const seedUsersData = async () => {
 
 const seedRequestsData = async () => {
    for (let i = 0; i < 20; i++) {
-      const random = Math.floor(Math.random() * 10)
       const psychologist = await User.findOne({ role: Constants.ROLE_PSYCHOLOGIST })
-      const patient = await User.findOne({ role: Constants.ROLE_USER }).skip
+      const patient = await User.findOne({ role: Constants.ROLE_USER })
       const content = faker.lorem.paragraph()
       const data = { content, patient, psychologist }
       await ClientRequest.create(data)

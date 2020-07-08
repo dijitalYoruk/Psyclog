@@ -1,0 +1,9 @@
+{
+    "validation_password_username": "Please provide password and username.",
+    "error_not_found": "%s could not be found.",
+    "error_wrong_password": "Password is wrong.",
+    "error_not_verified": "Unauthorized. Account has not been verified yet.",
+    "error_jwt_invalid": "Token is invalid or has expired.",
+    "success_change": "%s has been changed successfully.",
+    "success_delete": "User has been successfully deleted." 
+}

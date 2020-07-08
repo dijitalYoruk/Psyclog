@@ -3,9 +3,9 @@
 // =====================
 const { catchAsync } = require('../utils/ErrorHandling')
 const ClientRequest = require('../model/clientRequest')
-const { isMatching } = require('../util')
+const { isMatching } = require('../utils/util')
 const ApiError = require('../utils/ApiError')
-const Constants = require('../constants')
+const Constants = require('../utils/constants')
 const User = require('../model/user')
 
 

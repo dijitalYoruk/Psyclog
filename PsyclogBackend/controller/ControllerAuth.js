@@ -2,99 +2,134 @@
 // imports
 // =====================
 const { catchAsync } = require('../utils/ErrorHandling')
+const { filterObject } = require('../utils/util')
+const constants = require('../utils/constants')
 const ApiError = require('../utils/ApiError')
-const constants = require('../constants')
 const Mailer = require('../utils/mailer')
 const User = require('../model/user')
 const crypto = require('crypto')
+const { __ } = require('i18n')
 
 
 // =====================
 // methods
 // =====================
 
-// sign up the user.
-const signUpUser = catchAsync(async (req, res, next) => { 
+/**
+ * sign up the the patient.
+ */
+const signUpPatient = catchAsync(async (req, res, next) => { 
    // parsing the body 
-   const { username, name, surname, email, password, passwordConfirm } = req.body
-   const data = { username, name, surname, email, cash: 0, clientRequests: [], 
-      role: constants.ROLE_USER, password, passwordConfirm }
+   req.body.cash = 0
+   req.body.role = constants.ROLE_USER
+   const data = filterObject(req.body, 
+      'passwordConfirm', 
+      'username', 
+      'password', 
+      'surname', 
+      'email',      
+      'role',
+      'cash',
+      'name')
 
    // creating the user.
    const user = await User.create(data)
 
    res.status(200).json({
-      'status': '200',
-      'data': { user } 
+      status: 200,
+      data: { user } 
    })
 })
 
 
-// sign up the psychologist.
+/**
+ * sign up the the psychologist.
+ */
 const signUpPsychologist = catchAsync(async (req, res, next) => { 
-   // TODO In this place, the cv and transcript will be obtained as files in
-   // pdf format. These will be stored in an S3 bucket in the future.
+   // TODO In this place, the cv and transcript 
+   // will be obtained as files in pdf format. 
+   // These will be stored in an S3 bucket in future.
 
    // parsing the body 
-   const { username, name, surname, email, password, passwordConfirm, transcript, cv, appointmentPrice, biography } = req.body
-   const data = { username, name, surname, email, password, passwordConfirm, transcript, cv, appointmentPrice,
-      biography, patiens: [], clientRequests: [], isPsychologistVerified: false, isActiveForClientRequest: true }
-   
+   req.body.role = constants.ROLE_PSYCHOLOGIST
+   const data = filterObject(req.body, 
+      'appointmentPrice', 
+      'passwordConfirm', 
+      'transcript', 
+      'biography',
+      'username', 
+      'password', 
+      'surname', 
+      'email',      
+      'role',
+      'name', 
+      'cv')
+
    // creating the user.
    const user = await User.create(data)
 
+   // sending response
    res.status(200).json({
-      'status': '200',
-      'data': { user } 
+      status: 200,
+      data: { user } 
    })
 })
 
 
-// sign in the user.
+/**
+ * sign in the users.
+ */
 const signIn = catchAsync(async(req, res, next) => {
    // parsing body
    const { emailOrUsername, password } = req.body
 
    // checking whether email and password exists.
    if (!emailOrUsername || !password) { 
-      return next(new ApiError('Please provide password and username.', 400)) 
+      return next(new ApiError(__('validation_password_username'), 400)) 
    }
 
    // checking whether user exists in db.
-   const user = await User.findOne({ $or: [{email: emailOrUsername}, {username: emailOrUsername}] }).select('+password')
-   if (!user) { 
-      return next(new ApiError('User could not be found.', 404)) 
+   const user = await User.findOne({ 
+      $or: [{email: emailOrUsername}, 
+            {username: emailOrUsername}] 
+   }).select('+password')
+   
+
+   if (!user) {
+      return next(new ApiError(__('error_not_found', 'User'), 404)) 
    }
 
    // checking whether the passwords match with each other. 
    const isPasswordCorrect = await User.correctPassword(password, user.password)
    if (!isPasswordCorrect) { 
-      return next(new ApiError('Password is wrong.', 404)) 
+      return next(new ApiError(__('error_wrong_password'), 404)) 
    }
    
    // if psychologist, checking whether account has been verified by admin.
    if (user.role === constants.ROLE_PSYCHOLOGIST && user.isPsychologistVerified) {
-      return next(new ApiError('Unauthorized. Account has not been verified yet.', 403)) 
+      return next(new ApiError(__('error_not_verified'), 403)) 
    } 
 
    // generating corrsponding JWT token
    const token = User.generateJWT(user._id)
 
    res.status(200).json({
-      'status': '200',
-      'data': { token, user } 
+      status: 200,
+      data: { token, user } 
    })
 })
 
 
-// generates password reset token and saves the user.
+/**
+ * generates password reset token and saves the user.
+ */ 
 const forgotPassword = catchAsync(async (req, res, next) => {   
    // parsing the body.
    const email = req.body.email
    const user = await User.findOne({ email })
    
    if (!user) { 
-      return next('User not found.', 404)
+      return next(__('error_not_found', 'User'), 404)
    }
 
    // generating token
@@ -129,7 +164,9 @@ const forgotPassword = catchAsync(async (req, res, next) => {
 })
 
 
-// resets the password and removes the reset tokens.
+/**
+ *  Resets the password and removes the reset tokens.
+ */
 const resetPassword = catchAsync(async (req, res, next) => {
    const hashedToken = crypto
       .createHash('sha256')
@@ -141,43 +178,48 @@ const resetPassword = catchAsync(async (req, res, next) => {
       passwordResetExpires: { $gt: Date.now() }
    })
  
-   if (!user) return new ApiError('Token is invalid or has expired', 400)
-   
-   user.password = req.body.password
+   if (!user) {
+      return new ApiError(__('error_jwt_invalid'), 400)
+   }
+
    user.passwordConfirm = req.body.passwordConfirm
-   user.passwordResetToken = undefined
+   user.password = req.body.password
    user.passwordResetExpires = undefined
+   user.passwordResetToken = undefined
    await user.save()
  
    res.status(200).json({
-      status: '200',
+      status: 200,
       data: {
-         message: 'Password has been changed successfully.' 
+         message: __('success_change', 'Password') 
       }
    })
 })
 
 
-// retrieves the profile of the current user.
+/**
+ * retrieves the profile of the current user.
+ */ 
 const retrieveProfile = catchAsync(async (req, res, next) => {
-   const currentUser = req.currentUser
+   const profile = req.currentUser
 
    res.status(200).json({
       status: 200,
-      data: { profile: currentUser }
+      data: { profile }
    })
 })
 
 
-// deletes the current profile of the user.
+/**
+ * Deletes the current profile of the user. 
+ */ 
 const deleteProfile = catchAsync(async (req, res) => {   
-   const id = req.currentUser._id
-   await User.findByIdAndDelete(id)
+   await req.currentUser.delete()
 
    res.status(204).json({
       status: '204',
       data: {
-         'message': `User with id ${id} has been successfully deleted.` 
+         message: __('success_delete', 'User')
       }
    })
 })
@@ -188,23 +230,20 @@ const deleteProfile = catchAsync(async (req, res) => {
 // updates the profile of the current user
 const updateProfile = catchAsync(async (req, res, next) => {
    // parsing body
-   const currentUser = req.currentUser
-   const data = User.filterBody(currentUser.role, req.body)
-   
-   // update the user.
-   const user = await User.findByIdAndUpdate(currentUser, data, 
-      { runValidators: true, new: true })
+   const profile = req.currentUser
+   await User.mapData(profile, req.body)
+   await profile.save()
 
    res.status(200).json({
-      status: '200',
-      data: { user }
+      status: 200,
+      data: { profile }
    })
 })
 
 
 module.exports = {
    signIn,
-   signUpUser,
+   signUpPatient,
    resetPassword,
    updateProfile,
    deleteProfile,

@@ -3,7 +3,7 @@
 // =====================
 const { catchAsync } = require('../utils/ErrorHandling')
 const ApiError = require('../utils/ApiError')
-const { filterObject } = require('../util')
+const { filterObject } = require('../utils/util')
 const Review = require('../model/review')
 
 
@@ -20,7 +20,9 @@ const createReview = catchAsync(async (req, res, next) => {
 
    // creating the review.
    const review = await Review.create(data)
-   if (!review) next(new ApiError('Review could not be created', 400))
+   if (!review) {
+      return next(new ApiError('Review could not be created', 400))
+   }
 
    res.status(200).json({
       status: 200,
@@ -32,7 +34,9 @@ const createReview = catchAsync(async (req, res, next) => {
 const retrievePsychologistReviews = catchAsync(async (req, res, next) => {
    const psychologist = req.params.userId
    const reviews = await Review.paginate({ psychologist }, { page:1, limit:10 })
-   if (!reviews) next(new ApiError('Reviews could not be retrieved', 400))
+   if (!reviews) { 
+      return next(new ApiError('Reviews could not be retrieved', 400))
+   }
 
    res.status(200).json({
       status: 200,

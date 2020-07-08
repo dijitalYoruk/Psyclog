@@ -3,9 +3,9 @@
 // =====================
 const mongoosePaginate = require('mongoose-paginate-v2');
 const ClientRequest = require('../model/clientRequest')
-const { filterObject } = require('../util')
+const { filterObject } = require('../utils/util')
 const Review = require('../model/review')
-const Constants = require('../constants')
+const Constants = require('../utils/constants')
 const { promisify } = require('util')
 const mongoose = require('mongoose')
 const jwt = require('jsonwebtoken')
@@ -27,7 +27,8 @@ const UserSchema = new Schema({
    name: {
       type: String, 
       required: [true, 'You should have a name.'],
-      trim: true
+      trim: true,
+      minlength:2
    }, 
    surname: {
       type: String, 
@@ -45,12 +46,10 @@ const UserSchema = new Schema({
    // Currently, User specific
    cash: {
       type: Number,
-      validate: {
-         validator(value) {
-            return (this.role === Constants.ROLE_USER) ? value : true
-         },
-         message: 'Appointment Price is required.'
-      }
+      required: [
+         function() { return (this.role === Constants.ROLE_USER) },
+         'Cash is required.'
+      ]
    },
    role: {
       type: String,
@@ -61,12 +60,10 @@ const UserSchema = new Schema({
    // Psychologist specific
    appointmentPrice: {
       type: Number,
-      validate: {
-         validator(value) {
-            return (this.role === Constants.ROLE_PSYCHOLOGIST) ? value : true
-         },
-         message: 'Appointment Price is required.'
-      }
+      required: [
+         function() { return (this.role === Constants.ROLE_PSYCHOLOGIST) },
+         'Appointment Price is required.'
+      ]
    },
    // Psychologist specific
    patients: [{
@@ -80,24 +77,20 @@ const UserSchema = new Schema({
    // Psychologist specific
    isPsychologistVerified: {
       type: Boolean,
-      validate: {
-         validator(value) {
-            return (this.role === Constants.ROLE_PSYCHOLOGIST) ? value : true
-         },
-         message: 'isPsychologistVerified is required.'
-      },
-      default: false
+      default: false,
+      required: [
+         function() { return (this.role === Constants.ROLE_PSYCHOLOGIST) },
+         'isPsychologistVerified is required.'
+      ],
    },
    // Psychologist specific
    isActiveForClientRequest: {
       type: Boolean,
-      validate: {
-         validator(value) {
-            return (this.role === Constants.ROLE_PSYCHOLOGIST) ? value : true
-         },
-         message: 'isActiveForClientRequest is required.'
-      },
-      default: true
+      default: true,
+      required: [
+         function() { return this.role === Constants.ROLE_PSYCHOLOGIST },
+         'isActiveForClientRequest is required'
+      ]
    },
    password: {
       required:  [true, 'You should provide a password.'],
@@ -110,34 +103,28 @@ const UserSchema = new Schema({
    biography: {
       type:String,
       trim: true,
-      validate: {
-         validator(value) {
-            return (this.role === Constants.ROLE_PSYCHOLOGIST) ? value : true
-         },
-         message: 'Biography is required.'
-      }
+      required: [
+         function() { return (this.role === Constants.ROLE_PSYCHOLOGIST) }, 
+         'Biography is required'
+      ]
    },
    // Psychologist specific
    transcript: {
       type:String,
       trim: true,
-      validate: {
-         validator(value) {
-            return (this.role === Constants.ROLE_PSYCHOLOGIST) ? value : true
-         },
-         message: 'Transcript is required.'
-      }
+      required: [
+         function() { return this.role == Constants.ROLE_PSYCHOLOGIST },
+         'Transcript is required.'
+      ]
    },
    // Psychologist specific
    cv: {
       type:String,
       trim: true,
-      validate: {
-         validator(value) {
-            return (this.role === Constants.ROLE_PSYCHOLOGIST) ? value : true
-         },
-         message: 'CV is required.'
-      }
+      required: [
+         function() { return this.role == Constants.ROLE_PSYCHOLOGIST },
+         'CV is required.'
+      ]
    },
    // Psychologist and User specific
    clientRequests: [{
@@ -150,9 +137,7 @@ const UserSchema = new Schema({
       required: [true, 'You should type password twice.'],
       select: false,
       validate: {
-         validator(value) {
-            return value === this.password
-         },
+         validator(value) { return value === this.password },
          message: 'Passwords do not match.'
       }
    },
@@ -191,20 +176,41 @@ UserSchema.statics.decodeJWT = async token => {
 // filters update data based on roles
 UserSchema.statics.filterBody = async (role, bodyData) => {
    // filtering user items
-   if (role === constants.ROLE_USER) {
+   if (role === Constants.ROLE_USER) {
       data = filterObject(bodyData, 'username', 'name', 'surname', 'email', 'profileImage')  
    }
    // filtering psyvhologist items
-   else if (role === constants.ROLE_PSYCHOLOGIST) {
+   else if (role === Constants.ROLE_PSYCHOLOGIST) {
       data = filterObject(bodyData, 'username', 'name', 'surname', 'email', 'profileImage', 
                'appointmentPrice', 'biography', 'isActiveForClientRequest')
    }
    // filtering admin items
-   else if (role === constants.ROLE_ADMIN) {
+   else if (role === Constants.ROLE_ADMIN) {
       data = filterObject(bodyData, 'username', 'name', 'surname', 'email', 'profileImage')  
    }
 
    return data
+}
+
+UserSchema.statics.mapData = async (user, data) => {
+   // filtering user items
+   if (user.role === Constants.ROLE_USER) {
+      data = filterObject(data, 'username', 'name', 'surname', 'email', 'profileImage')  
+   }
+   // filtering psyvhologist items
+   else if (user.role === Constants.ROLE_PSYCHOLOGIST) {
+      data = filterObject(data, 'username', 'name', 'surname', 'email', 'profileImage', 
+               'appointmentPrice', 'biography', 'isActiveForClientRequest')
+   }
+   // filtering admin items
+   else if (user.role === Constants.ROLE_ADMIN) {
+      data = filterObject(data, 'username', 'name', 'surname', 'email', 'profileImage')  
+   }
+
+   Object.keys(data).map(key => {
+      console.log(user[key])
+      user[key] = data[key]
+   })
 }
 
 
@@ -217,7 +223,7 @@ UserSchema.pre('save', async function(next) {
    this.passwordConfirm = undefined
 
    // seting irrelevant items for admin as undefined.
-   if (Constants.ROLE_ADMIN) {
+   if (this.role === Constants.ROLE_ADMIN) {
       this.isActiveForClientRequest = undefined
       this.registeredPsychologists = undefined
       this.isPsychologistVerified = undefined
@@ -231,7 +237,7 @@ UserSchema.pre('save', async function(next) {
    }
 
    // seting irrelevant items for user as undefined.
-   else if (Constants.ROLE_USER) {
+   else if (this.role === Constants.ROLE_USER) {
       this.isActiveForClientRequest = undefined
       this.isPsychologistVerified = undefined
       this.appointmentPrice = undefined
@@ -242,7 +248,7 @@ UserSchema.pre('save', async function(next) {
    }
 
    // seting irrelevant items for psychologist as undefined.
-   else if (Constants.ROLE_PSYCHOLOGIST) {
+   else if (this.role === Constants.ROLE_PSYCHOLOGIST) {
       this.registeredPsychologists = undefined
       this.cash = undefined
    }
@@ -257,7 +263,6 @@ UserSchema.pre('remove', async function(next) {
    const promiseReview = Review.deleteMany({ author: userId })
    const promiseRequests = ClientRequest.deleteMany({ patient: userId })
    const result = await Promise.all([promiseReview, promiseRequests])
-   console.log(result)
    next()
 })
 

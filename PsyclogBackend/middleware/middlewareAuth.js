@@ -1,7 +1,7 @@
 const { catchAsync } = require('../utils/ErrorHandling')
 const ApiError = require('../utils/ApiError')
 const User = require('../model/user')
-const Util = require('../util')
+const Util = require('../utils/util')
 
 const middlewareAuth = catchAsync(async (req, res, next) => {
    // getting the jwt token

@@ -10,7 +10,7 @@ const middlewareAuth = require('../middleware/middlewareAuth')
 // methods
 // =====================
 const { signIn,
-   signUpUser,
+   signUpPatient,
    resetPassword,
    updateProfile,
    deleteProfile,
@@ -28,6 +28,6 @@ routerAuth.get('/profile', middlewareAuth, retrieveProfile)
 routerAuth.post('/signUp/psychologist', signUpPsychologist)
 routerAuth.post('/forgotPassword', forgotPassword)
 routerAuth.patch('/reset-password', resetPassword)
-routerAuth.post('/signUp/user', signUpUser)
+routerAuth.post('/signUp/patient', signUpPatient)
 routerAuth.post('/signIn', signIn)
 module.exports = routerAuth
