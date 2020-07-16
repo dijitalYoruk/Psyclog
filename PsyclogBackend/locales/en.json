@@ -1,0 +1,17 @@
+{
+    "validation_password_username": "Please provide password and username.",
+    "error_not_found": "%s could not be found.",
+    "error_wrong_password": "Password is wrong.",
+    "error_not_verified": "Unauthorized. Account has not been verified yet.",
+    "error_jwt_invalid": "Token is invalid or has expired.",
+    "error_already_reviewed": "Already reviewed.",
+    "error_already_requested": "Already requested.",
+    "error_already_patient": "You are already patient of the psychologist.",
+    "error_select_psychologist": "Please select a Psychologist.",
+    "success_change": "%s has been changed successfully.",
+    "success_delete": "%s has been successfully deleted.",
+    "success_finish": "Finished",
+    "success_accepted": "%s has been accepted successfully",
+    "success_deny": "%s has been denied.",
+    "error_unauthorized": "Unauthorized"
+}

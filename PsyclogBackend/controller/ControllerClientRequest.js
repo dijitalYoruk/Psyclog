@@ -3,9 +3,9 @@
 // =====================
 const { catchAsync } = require('../utils/ErrorHandling')
 const ClientRequest = require('../model/clientRequest')
-const { isMatching } = require('../util')
+const { isMatching } = require('../utils/util')
 const ApiError = require('../utils/ApiError')
-const Constants = require('../constants')
+const Constants = require('../utils/constants')
 const User = require('../model/user')
 
 
@@ -16,21 +16,27 @@ const createClientRequest = catchAsync(async (req, res, next) => {
    const patient = req.currentUser._id
    const { psychologist, content } = req.body
 
+   // Being already a patient.
    if (req.currentUser.registeredPsychologists.includes(psychologist)) {
-      return next(new ApiError('Already registered.', 400))
+      return next(new ApiError(__('error_already_patient'), 400))
    }
 
+   // Check whether user has already been requested. 
+   const isAlreadyRequested = await ClientRequest.exists({ patient, psychologist })
+   if (isAlreadyRequested) {
+      return next(new ApiError(__('error_already_requested'), 400))
+   }
+
+   // check whether the requested user is psychologist 
    const psychologistRole = await User.findOne({_id: psychologist}).select('role')
    if (psychologistRole.role !== Constants.ROLE_PSYCHOLOGIST) {
-      return next(new ApiError('Please select a Psychologist.', 400))
+      return next(new ApiError(__('error_select_psychologist'), 400))
    }
 
+   // create client request.
    const data = { patient, psychologist, content }
    const request = await ClientRequest.create(data)
-   if (!request) { 
-      return next(new ApiError('Requests could not be created', 400))
-   }
-
+   
    res.status(200).json({
       status: 200,
       data: { request } 
@@ -43,16 +49,16 @@ const retrieveClientRequests = catchAsync(async (req, res, next) => {
    const currentUser = req.currentUser 
    let requests
 
+   // psychologist gets patient requests
    if (currentUser.role === Constants.ROLE_PSYCHOLOGIST) {
-      requests = await ClientRequest.paginate({ psychologist: currentUser._id }, {page, limit: 10, 
+      requests = await ClientRequest.paginate({ psychologist: currentUser._id }, {
+         page, limit: 10,
          populate: { path: 'patient', select: '-cash' }})
-   } else {
-      requests = await ClientRequest.paginate({ patient: currentUser._id }, {page, limit: 10, 
-         populate: { path: 'psychologist', select: '-cash' }})
    }
-
-   if (!requests) { 
-      return next(new ApiError('Requests could not be retrieved', 400))
+   else { // patient views his own requests.
+      requests = await ClientRequest.paginate({ patient: currentUser._id }, {
+         page, limit: 10,
+         populate: { path: 'psychologist', select: '-cash' }})
    }
 
    res.status(200).json({
@@ -63,27 +69,29 @@ const retrieveClientRequests = catchAsync(async (req, res, next) => {
 
 
 const acceptClientRequest = catchAsync(async (req, res, next) => {
+   // retrieve corresponding data
    const { requestId } = req.body
    const psychologist = req.currentUser
    const clientRequest = await ClientRequest.findById(requestId)
    const patient = clientRequest.patient
 
    if (!clientRequest) { 
-      return next(new ApiError('Request could not be found.', 404))
+      return next(new ApiError(__('error_not_found', 'Request'), 404))
    }
    
    if (!isMatching(psychologist._id, clientRequest.psychologist)) { 
-      return next(new ApiError('Unauthorized', 403))
+      return next(new ApiError(__('error_unauthorized'), 403))
    }
 
+   // update the relations and delete request
    const promise1 = User.findByIdAndUpdate(psychologist, { $addToSet: { patients: patient } })
    const promise2 = User.findByIdAndUpdate(patient, { $addToSet: { registeredPsychologists: psychologist } })
    const promise3 = ClientRequest.deleteOne(clientRequest)
-   await Promise.all(promise1, promise2, promise3)
+   await Promise.all([promise1, promise2, promise3])
 
    res.status(200).json({
       status: 200,
-      data: 'Patient has been accepted' 
+      data: __("success_accepted", "Patient")
    })
 })
 
@@ -94,18 +102,18 @@ const deleteClientRequest = catchAsync(async (req, res, next) => {
    const clientRequest = await ClientRequest.findById(requestId)
 
    if (!clientRequest) { 
-      return next(new ApiError('Request could not be found.', 404))
+      return next(new ApiError(__('error_not_found', 'Request'), 404))
    }
    
    if (!isMatching(currentUser._id, clientRequest.patient)) { 
-      return next(new ApiError('Unauthorized', 403))
+      return next(new ApiError(__('error_unauthorized'), 403))
    }
 
    await ClientRequest.deleteOne(clientRequest)
 
    res.status(200).json({
       status: 200,
-      data: 'Request has been successfully deleted.' 
+      data: __('success_delete', 'Request')
    })
 })
 
@@ -116,18 +124,18 @@ const denyClientRequest = catchAsync(async (req, res, next) => {
    const clientRequest = await ClientRequest.findById(requestId)
 
    if (!clientRequest) { 
-      return next(new ApiError('Request could not be found.', 404))
+      return next(new ApiError(__('error_not_found', 'Request'), 404))
    }
    
    if (!isMatching(psychologist._id, clientRequest.psychologist)) { 
-      return next(new ApiError('Unauthorized', 403))
+      return next(new ApiError(__('error_unauthorized'), 403))
    }
 
    await ClientRequest.deleteOne(clientRequest)
 
    res.status(200).json({
       status: 200,
-      data: 'Patient has been denied.' 
+      data: __('success_deny', 'Patient')
    })
 })
 

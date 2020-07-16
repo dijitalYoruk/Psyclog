@@ -1,19 +1,19 @@
 const express = require('express')
-const Constants = require('../constants')
+const Constants = require('../utils/constants')
 const middlewareAuth = require('../middleware/middlewareAuth')
 const middlewareRestrict = require('../middleware/middlewareRestrict')
 const { createReview, retrievePsychologistReviews, deleteReview, updateReview } = require('../controller/ControllerReview')
-
 const routerReview = express.Router({ mergeParams: true })
 
-routerReview.route('/review')
-   .post(middlewareAuth, middlewareRestrict(Constants.ROLE_USER), createReview)
-   .get(middlewareAuth, middlewareRestrict(Constants.ROLE_USER, Constants.ROLE_ADMIN), retrievePsychologistReviews)
+routerReview.use( middlewareAuth )
 
+routerReview.use(middlewareRestrict(Constants.ROLE_ADMIN, Constants.ROLE_USER, Constants.ROLE_PSYCHOLOGIST))
+routerReview.post('/retrieve', retrievePsychologistReviews)
 
-routerReview.route('/review/:reviewId')
-   .delete(middlewareAuth, middlewareRestrict(Constants.ROLE_USER, Constants.ROLE_ADMIN), deleteReview)
-   .patch(middlewareAuth, middlewareRestrict(Constants.ROLE_USER), updateReview)
+routerReview.use(middlewareRestrict(Constants.ROLE_ADMIN, Constants.ROLE_USER))
+routerReview.route('/:reviewId').delete(deleteReview).patch(updateReview)
 
-                           
+routerReview.use(middlewareRestrict(Constants.ROLE_USER))
+routerReview.post('/', createReview)
+
 module.exports = routerReview

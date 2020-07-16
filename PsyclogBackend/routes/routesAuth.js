@@ -10,7 +10,7 @@ const middlewareAuth = require('../middleware/middlewareAuth')
 // methods
 // =====================
 const { signIn,
-   signUpUser,
+   signUpPatient,
    resetPassword,
    updateProfile,
    deleteProfile,
@@ -22,12 +22,15 @@ const { signIn,
 // =====================
 // routes
 // =====================
-routerAuth.delete('/profile', middlewareAuth, deleteProfile)
-routerAuth.patch('/profile', middlewareAuth, updateProfile)
-routerAuth.get('/profile', middlewareAuth, retrieveProfile)
 routerAuth.post('/signUp/psychologist', signUpPsychologist)
 routerAuth.post('/forgotPassword', forgotPassword)
 routerAuth.patch('/reset-password', resetPassword)
-routerAuth.post('/signUp/user', signUpUser)
+routerAuth.post('/signUp/patient', signUpPatient)
 routerAuth.post('/signIn', signIn)
+
+// authentication required
+routerAuth.use(middlewareAuth)
+routerAuth.delete('/profile', deleteProfile)
+routerAuth.patch('/profile', updateProfile)
+routerAuth.get('/profile', retrieveProfile)
 module.exports = routerAuth
