@@ -1,11 +1,11 @@
 // =====================
 // imports
 // =====================
-const mongoosePaginate = require('mongoose-paginate-v2');
+const mongoosePaginate = require('mongoose-paginate-v2')
 const ClientRequest = require('../model/clientRequest')
 const { filterObject } = require('../utils/util')
-const Review = require('../model/review')
 const Constants = require('../utils/constants')
+const Review = require('../model/review')
 const { promisify } = require('util')
 const mongoose = require('mongoose')
 const jwt = require('jsonwebtoken')
@@ -126,11 +126,6 @@ const UserSchema = new Schema({
          'CV is required.'
       ]
    },
-   // Psychologist and User specific
-   clientRequests: [{
-      type: mongoose.Schema.ObjectId,
-      ref: 'ClientRequest'
-   }],
    passwordConfirm: {
       type: String,
       trim: true,
@@ -173,42 +168,87 @@ UserSchema.statics.decodeJWT = async token => {
    return await promisify(jwt.verify)(token, process.env.JWT_SECRET)
 }
 
-// filters update data based on roles
-UserSchema.statics.filterBody = async (role, bodyData) => {
+
+UserSchema.statics.filterBody = body => {
+
+   const itemsUser = [
+      'passwordConfirm', 
+      'username', 
+      'password', 
+      'surname', 
+      'email',      
+      'role',
+      'cash',
+      'name']
+
+   const itemsPsychologist = [
+      'appointmentPrice', 
+      'passwordConfirm', 
+      'transcript', 
+      'biography',
+      'username', 
+      'password', 
+      'surname', 
+      'email',      
+      'role',
+      'name', 
+      'cv'
+   ]
+
+   let data = {}
+   const role = body.role
+
    // filtering user items
    if (role === Constants.ROLE_USER) {
-      data = filterObject(bodyData, 'username', 'name', 'surname', 'email', 'profileImage')  
+      data = filterObject(body, ...itemsUser)  
    }
-   // filtering psyvhologist items
+   // filtering psychologist items
    else if (role === Constants.ROLE_PSYCHOLOGIST) {
-      data = filterObject(bodyData, 'username', 'name', 'surname', 'email', 'profileImage', 
-               'appointmentPrice', 'biography', 'isActiveForClientRequest')
+      data = filterObject(body, ...itemsPsychologist)
    }
    // filtering admin items
    else if (role === Constants.ROLE_ADMIN) {
-      data = filterObject(bodyData, 'username', 'name', 'surname', 'email', 'profileImage')  
+      data = filterObject(body, ...itemsUser)  
    }
 
    return data
 }
 
-UserSchema.statics.mapData = async (user, data) => {
+
+UserSchema.statics.mapData = (user, data, psychologistVerificationEnabled) => {
+   const items = [
+      'name',
+      'email',
+      'username', 
+      'surname',  
+      'profileImage']
+   
+   const itemsPsychologist = [
+      'cv',
+      'biography',
+      'transcript', 
+      'appointmentPrice',  
+      'isActiveForClientRequest']
+
+   // enabling verification
+   if (psychologistVerificationEnabled) {
+      itemsPsychologist.push('isPsychologistVerified')
+   }
+
    // filtering user items
    if (user.role === Constants.ROLE_USER) {
-      data = filterObject(data, 'username', 'name', 'surname', 'email', 'profileImage')  
+      data = filterObject(data, ...items)  
    }
-   // filtering psyvhologist items
+   // filtering psycvhologist items
    else if (user.role === Constants.ROLE_PSYCHOLOGIST) {
-      data = filterObject(data, 'username', 'name', 'surname', 'email', 'profileImage', 
-               'appointmentPrice', 'biography', 'isActiveForClientRequest')
+      data = filterObject(data, ...items, ...itemsPsychologist)
    }
    // filtering admin items
    else if (user.role === Constants.ROLE_ADMIN) {
-      data = filterObject(data, 'username', 'name', 'surname', 'email', 'profileImage')  
+      data = filterObject(data, ...items)  
    }
 
    Object.keys(data).map(key => {
-      console.log(user[key])
       user[key] = data[key]
    })
 }
@@ -228,7 +268,6 @@ UserSchema.pre('save', async function(next) {
       this.registeredPsychologists = undefined
       this.isPsychologistVerified = undefined
       this.appointmentPrice = undefined
-      this.clientRequests = undefined
       this.transcript = undefined
       this.biography = undefined
       this.patients = undefined
@@ -256,13 +295,17 @@ UserSchema.pre('save', async function(next) {
    next()
 })
 
-
 // sets the visibility of certain areas for different roles.
 UserSchema.pre('remove', async function(next) {
-   const userId = this._id
-   const promiseReview = Review.deleteMany({ author: userId })
-   const promiseRequests = ClientRequest.deleteMany({ patient: userId })
-   const result = await Promise.all([promiseReview, promiseRequests])
+   const promiseReview = Review.deleteMany({ 
+      $or: [{ author: this.id }, { psychologist: this.id }]
+   })
+   
+   const promiseRequests = ClientRequest.deleteMany({ 
+      $or: [{ patient: this.id }, { psychologist: this.id }]
+   })
+   
+   await Promise.all([promiseReview, promiseRequests])
    next()
 })
 

@@ -37,8 +37,8 @@ const routesClientRequests = require('./routes/routesClientRequests')
 
 app.use('/api/v1/user', routesUser)
 app.use('/api/v1/auth', routesAuth)
-app.use('/api/v1/user/:userId', routesReview)
-app.use('/api/v1/clientRequests', routesClientRequests)
+app.use('/api/v1/review', routesReview)
+app.use('/api/v1/patientRequests', routesClientRequests)
 app.all('*', catchAsync((req, res, next) => next(`Cannot find ${req.originalUrl} on this server.`, 404 )))
 app.use(globalErrorHandler)
 

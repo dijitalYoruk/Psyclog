@@ -11,7 +11,8 @@ const routerUser = express.Router({ mergeParams: true })
 // =====================
 // methods
 // =====================
-const {retrieveUsers,
+const {
+   retrieveUsers,
    retrieveUser,
    deleteUser,
    updateUser, 
@@ -21,15 +22,12 @@ const {retrieveUsers,
 // =====================
 // routes
 // =====================
-routerUser.route('/')
-   .get(middlewareAuth, middlewareRestrict(Constants.ROLE_ADMIN), retrieveUsers)
+routerUser.use(middlewareAuth)
 
-routerUser.route('/finish')
-   .post(middlewareAuth, middlewareRestrict(Constants.ROLE_ADMIN), finishPatient)
+routerUser.use(middlewareRestrict(Constants.ROLE_PSYCHOLOGIST, Constants.ROLE_ADMIN))
+routerUser.route('/finish').post(finishPatient)
 
-routerUser.route('/:userId')
-   .get(middlewareAuth, middlewareRestrict(Constants.ROLE_ADMIN), retrieveUser)
-   .delete(middlewareAuth, middlewareRestrict(Constants.ROLE_ADMIN), deleteUser)
-   .patch(middlewareAuth, middlewareRestrict(Constants.ROLE_ADMIN), updateUser)
-
+routerUser.use(middlewareRestrict(Constants.ROLE_ADMIN))
+routerUser.route('/').get(retrieveUsers)
+routerUser.route('/:userId').get(retrieveUser).delete(deleteUser).patch(updateUser)
 module.exports = routerUser

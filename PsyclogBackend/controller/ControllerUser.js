@@ -2,8 +2,8 @@
 // imports
 // =====================
 const { catchAsync } = require('../utils/ErrorHandling')
-const ApiError = require('../utils/ApiError')
 const Constants = require('../utils/constants')
+const ApiError = require('../utils/ApiError')
 const User = require('../model/user')
 
 
@@ -11,26 +11,32 @@ const User = require('../model/user')
 // methods
 // =====================
 
-// updates the user based on their profiles
+/**
+ * Updates the user based on their profiles
+ */ 
 const updateUser = catchAsync(async (req, res, next) => {  
    // retrieving corresponding user
    const id = req.params.userId
    const user = await User.findById(id)
 
-   // filtering body.
-   const data = User.filterBody(user.role, req.body)
-   
+   if (!user) {
+      return next(new ApiError(__('error_not_found', 'User'), 404))
+   }
+
    // update the user.
-   user = await User.findByIdAndUpdate(user, data, { runValidators: true, new: true })
+   User.mapData(user, req.body, true)
+   await user.save()
 
    res.status(200).json({
-      'status': '200',
-      'data': { user } 
+      status: 200,
+      data: { user } 
    })
 })
 
 
-// retrieves users in the db based on role.
+/**
+ * Retrieves users in the db based on role.
+ */
 const retrieveUsers = catchAsync(async (req, res, next) => {   
    // getting params.
    const page = req.query.page
@@ -40,53 +46,59 @@ const retrieveUsers = catchAsync(async (req, res, next) => {
    const users = await User.paginate({ role }, { page, limit:10 })
 
    res.status(200).json({
-      'status': '200', size,
-      'data': { users } 
+      status: 200, 
+      data: { users } 
    })
 })
 
 
-// retrieves specific user from db
+/**
+ * Retrieves specific user from db
+ */ 
 const retrieveUser = catchAsync(async (req, res, next) => {   
    // retrieving user
    const id = req.params.userId
    const user = await User.findById(id)
 
    if (!user) {
-      return next(new ApiError('User not found.', 404)) 
+      return next(new ApiError(__('error_not_found', 'User'), 404))
    }
 
    res.status(200).json({
-      'status': '200', 
-      'data': { user } 
+      status: 200, 
+      data: { user } 
    })   
 })
 
 
-// deletes a specific user.
+/**
+ * Deletes a specific user.
+ */ 
 const deleteUser = catchAsync(async (req, res) => {   
    const id = req.params.userId
-   await User.findByIdAndDelete(id)
+   const user = await User.findById(id)
+   await user.remove()
 
    res.status(204).json({
-      status: '204',
-      data: {
-         'message': `User with id ${id} has been successfully deleted.` 
-      }
+      status: 204,
+      data: { message: __('success_delete', 'User') }
    })
 })
 
 
+/**
+ * Finishes the relationship between patient and psychologist.
+ */ 
 const finishPatient = catchAsync(async (req, res) => {   
-   const psychologist = req.currentUser
+   const psychologistId = req.body.psychologistId
    const patientId = req.body.patientId
-   await User.findByIdAndUpdate(psychologist, { $pull: { 'patients': patientId }})
-   await User.findByIdAndUpdate(patientId, { $pull: { 'registeredPsychologists': psychologist._id }})
+   await User.findByIdAndUpdate(psychologistId, { $pull: { 'patients': patientId }})
+   await User.findByIdAndUpdate(patientId, { $pull: { 'registeredPsychologists': psychologistId }})
 
    res.status(204).json({
-      status: '204',
+      status: 204,
       data: {
-         'message': `Finished .` 
+         message: __('success_finish')
       }
    })
 })

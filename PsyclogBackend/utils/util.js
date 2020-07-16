@@ -7,6 +7,10 @@ const retrieveJWTtoken = req => {
 }
 
 const isMatching = (obj1, obj2) => {
+   console.log('----------------------')
+   console.log(obj1)
+   console.log(obj2)
+   console.log('----------------------')
    return obj1.toString() === obj2.toString()
 } 
 

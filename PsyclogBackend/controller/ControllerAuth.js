@@ -2,13 +2,11 @@
 // imports
 // =====================
 const { catchAsync } = require('../utils/ErrorHandling')
-const { filterObject } = require('../utils/util')
 const constants = require('../utils/constants')
 const ApiError = require('../utils/ApiError')
 const Mailer = require('../utils/mailer')
 const User = require('../model/user')
 const crypto = require('crypto')
-const { __ } = require('i18n')
 
 
 // =====================
@@ -18,19 +16,13 @@ const { __ } = require('i18n')
 /**
  * sign up the the patient.
  */
-const signUpPatient = catchAsync(async (req, res, next) => { 
+const signUpPatient = catchAsync(async (req, res, next) => {
+
+   
    // parsing the body 
    req.body.cash = 0
    req.body.role = constants.ROLE_USER
-   const data = filterObject(req.body, 
-      'passwordConfirm', 
-      'username', 
-      'password', 
-      'surname', 
-      'email',      
-      'role',
-      'cash',
-      'name')
+   const data = User.filterBody(req.body)
 
    // creating the user.
    const user = await User.create(data)
@@ -52,18 +44,7 @@ const signUpPsychologist = catchAsync(async (req, res, next) => {
 
    // parsing the body 
    req.body.role = constants.ROLE_PSYCHOLOGIST
-   const data = filterObject(req.body, 
-      'appointmentPrice', 
-      'passwordConfirm', 
-      'transcript', 
-      'biography',
-      'username', 
-      'password', 
-      'surname', 
-      'email',      
-      'role',
-      'name', 
-      'cv')
+   const data = User.filterBody(req.body)
 
    // creating the user.
    const user = await User.create(data)
@@ -129,7 +110,7 @@ const forgotPassword = catchAsync(async (req, res, next) => {
    const user = await User.findOne({ email })
    
    if (!user) { 
-      return next(__('error_not_found', 'User'), 404)
+      return next(new ApiError(__('error_not_found', 'User'), 404))
    }
 
    // generating token
@@ -159,7 +140,7 @@ const forgotPassword = catchAsync(async (req, res, next) => {
       user.passwordResetToken = undefined
       user.passwordResetExpires = undefined
       await user.save()
-      next(new ApiError(error, 400))
+      return next(new ApiError(error, 400))
    }
 })
 
@@ -214,12 +195,12 @@ const retrieveProfile = catchAsync(async (req, res, next) => {
  * Deletes the current profile of the user. 
  */ 
 const deleteProfile = catchAsync(async (req, res) => {   
-   await req.currentUser.delete()
+   await req.currentUser.remove()
 
    res.status(204).json({
-      status: '204',
+      status: 204,
       data: {
-         message: __('success_delete', 'User')
+         message: __('success_delete', 'Profile')
       }
    })
 })
@@ -231,7 +212,7 @@ const deleteProfile = catchAsync(async (req, res) => {
 const updateProfile = catchAsync(async (req, res, next) => {
    // parsing body
    const profile = req.currentUser
-   await User.mapData(profile, req.body)
+   User.mapData(profile, req.body, false)
    await profile.save()
 
    res.status(200).json({
