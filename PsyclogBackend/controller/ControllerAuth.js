@@ -213,6 +213,12 @@ const updateProfile = catchAsync(async (req, res, next) => {
    // parsing body
    const profile = req.currentUser
    User.mapData(profile, req.body, false)
+
+   // update profile image 
+   if (req.file) {      
+      await profile.updateProfileImage(req.file)
+   }
+
    await profile.save()
 
    res.status(200).json({

@@ -11,6 +11,7 @@ const mongoose = require('mongoose')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 const crypto = require('crypto')
+const s3 = require('../utils/S3')
 const Schema = mongoose.Schema
 
 
@@ -324,6 +325,14 @@ UserSchema.methods.createPasswordResetToken = function() {
    // setup expiration date of reset token.
    this.passwordResetExpires = Date.now() + 10 * 60 * 1000
    return resetToken
+}
+
+// update profile photo
+UserSchema.methods.updateProfileImage = async function(data) {
+   const { file, filename } = data
+   await s3.deleteFile(this.profileImage)
+   const url = await s3.uploadFile('profileImages', file, filename)
+   this.profileImage = url
 }
  
 // Pagination and export.
