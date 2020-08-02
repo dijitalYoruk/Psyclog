@@ -19,6 +19,7 @@ const Schema = mongoose.Schema
 // Schema
 // =====================
 const UserSchema = new Schema({
+   socket: { type: String },
    username: {
       type: String,
       unique: [true, 'Username needs to be unique'],
@@ -43,6 +44,11 @@ const UserSchema = new Schema({
       type: String,
       unique: [true, 'Email needs to be unique'], 
       required:  [true, 'You should have an email.'],
+   },
+   isActive: {
+      type: Boolean,
+      default: false,
+      required: true
    },
    // Currently, User specific
    cash: {
@@ -160,8 +166,8 @@ UserSchema.statics.correctPassword = async (candidate, encrypted) => {
 }
 
 // generates JWT
-UserSchema.statics.generateJWT = id => {
-   return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN })
+UserSchema.statics.generateJWT = cred => {
+   return jwt.sign(cred, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN })
 }
 
 // decodes JWT
@@ -257,11 +263,6 @@ UserSchema.statics.mapData = (user, data, psychologistVerificationEnabled) => {
 
 // sets the visibility of certain areas for different roles.
 UserSchema.pre('save', async function(next) {
-   
-   // changing password
-   if (!this.isModified('password')) return next()
-   this.password = await bcrypt.hash(this.password, 10)
-   this.passwordConfirm = undefined
 
    // seting irrelevant items for admin as undefined.
    if (this.role === Constants.ROLE_ADMIN) {
@@ -292,6 +293,11 @@ UserSchema.pre('save', async function(next) {
       this.registeredPsychologists = undefined
       this.cash = undefined
    }
+
+   // changing password
+   if (!this.isModified('password')) return next()
+   this.password = await bcrypt.hash(this.password, 10)
+   this.passwordConfirm = undefined
 
    next()
 })

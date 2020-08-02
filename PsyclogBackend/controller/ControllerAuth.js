@@ -18,7 +18,6 @@ const crypto = require('crypto')
  */
 const signUpPatient = catchAsync(async (req, res, next) => {
 
-   
    // parsing the body 
    req.body.cash = 0
    req.body.role = constants.ROLE_USER
@@ -92,7 +91,7 @@ const signIn = catchAsync(async(req, res, next) => {
    } 
 
    // generating corrsponding JWT token
-   const token = User.generateJWT(user._id)
+   const token = User.generateJWT({ id: user._id, role: user.role})
 
    res.status(200).json({
       status: 200,
