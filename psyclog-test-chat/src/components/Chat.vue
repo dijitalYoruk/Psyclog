@@ -1,7 +1,7 @@
 <template>
     <v-row>
-    <v-col class="col-md-4 offset-md-4">
-      <v-card outlined class="pa-4 mt-5 elevation-3">
+    <v-col class="col-md-6 offset-md-3">
+      <v-card outlined class="pa-4 mt-5 mx-10 elevation-3">
         <div v-for="msg in messages" :key="msg.id">
             <strong>Author: </strong>{{ msg.author.username }}
             <div><strong>Message:</strong> {{ msg.message }}</div>

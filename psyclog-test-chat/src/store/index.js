@@ -26,8 +26,6 @@ export default new Vuex.Store({
     },
     setSelectedChat(state, payload) {
       state.selectedChat = payload
-      console.log('set selected chat')
-      console.log('-->' + payload)
     },
     connectSocket(state) {
       state.socket = io.connect("http://localhost:8080")
