@@ -19,7 +19,7 @@
         <div v-if="contactStatus">Online</div>
         <v-text-field outlined v-model="message"></v-text-field>
         <v-btn color="red" @click="sendMessage()">Send</v-btn>
-        <v-btn color="blue" @click="retrievePreviousMessages()">Retrieve Prev Message</v-btn>
+        <v-btn color="blue" class="mx-2" @click="retrievePreviousMessages()">Retrieve Prev Message</v-btn>
       </v-card>
     </v-col>
   </v-row>
@@ -36,6 +36,8 @@ export default {
         } 
 
         this.socket.off()
+        const role = this.currentUser.role
+
         this.socket.on('message', message => {
             this.skip++
             this.messages.push(message)
@@ -47,8 +49,6 @@ export default {
             this.skip += messages.length
             this.messages.unshift(...messages.reverse())
         })
-
-        const role = this.currentUser.role
 
         if (role == 'user') {
             this.contactStatus = this.selectedChat.psychologist.isActive
@@ -105,7 +105,10 @@ export default {
             const message = this.message
             const chat = this.selectedChat._id
 
-            this.socket.emit('sendMessage', { accessToken, message, chat })
+            this.socket.emit('sendMessage', 
+                { accessToken, message, chat }, 
+                error => { console.log(error) })
+
             this.message = ''
         },
         retrievePreviousMessages() {
@@ -114,16 +117,18 @@ export default {
             const skip = this.skip
             this.page++
 
-            this.socket.emit('retrievePreviousMessages', {
-                accessToken, chat, skip
-            })
+            this.socket.emit('retrievePreviousMessages', 
+                { accessToken, chat, skip },
+                error => { console.log(error) })
         },
         signalLastMessageSeen(message) {
             if (message.author._id === this.currentUser._id) return
             const accessToken = this.accessToken
             const chat = this.selectedChat._id
             this.selectedChat.lastMessage = message
-            this.socket.emit('messageSeen', { chat, accessToken })    
+            this.socket.emit('messageSeen', 
+                            { chat, accessToken },
+                            error => { console.log(error) })    
         }, 
         formatDate(date) {
             return moment(date).fromNow()

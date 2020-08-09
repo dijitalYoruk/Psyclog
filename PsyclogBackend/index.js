@@ -22,25 +22,30 @@ io.on('connection', socket => {
    // =======================
    // MESSAGE SEEN
    // =======================
-   socket.on('messageSeen', async data => {
+   socket.on('messageSeen', async (data, cbError) => {
       try {
          // parsing data
          let { accessToken, chat } = data
          const decodedTokenData = await User.decodeJWT(accessToken)
          const seenUserId = decodedTokenData.id
+
+         // retrieving corresponding unseen messages.
          let messageIds = await Message.find({ chat, contact: seenUserId, isSeen:false }).select('_id')
          messageIds = messageIds.map(msg => msg._id)
          if (messageIds.length == 0) return  
 
+         // update messages
          await Message.updateMany({ _id: { $in: messageIds }}, { isSeen: true })
-         chat = await Chat.findOne({ _id: chat, $or: [{ psychologist: seenUserId }, { patient: seenUserId }] }).populate('lastMessage')
+         chat = await Chat.findOne({ _id: chat, $or: [{ psychologist: seenUserId }, 
+            { patient: seenUserId }] }).populate('lastMessage')
 
+         // send notifications.
          if (isMatching(chat.lastMessage.author, seenUserId)) { return }
          io.to(chat._id).emit(`message-seen-chat-${seenUserId}`, messageIds)
          io.to(chat._id).emit(`message-seen-list`, chat.lastMessage)
       } 
-      catch(e) {
-         console.log(e)
+      catch(exception) {
+         cbError(exception)
       }
    })
 
@@ -48,7 +53,7 @@ io.on('connection', socket => {
    // =======================
    // ACTIVATE USER
    // =======================
-   socket.on('activateUser', async data => {
+   socket.on('activateUser', async (data, cbError) => {
       try {
          // parsing data
          const decodedTokenData = await User.decodeJWT(data.accessToken)
@@ -56,14 +61,25 @@ io.on('connection', socket => {
          let user = decodedTokenData.id
          
          // activate user
-         user = await User.findByIdAndUpdate(user, { isActive: true, socket: socket.id }, { new: true })
-         let chats = []
+         user = await User.findByIdAndUpdate(
+            user, { isActive: true, socket: socket.id }, 
+            { new: true })
 
          // find chats to be published.
+         let chats = []
+         select = 'name profileImage isActive username'
+
+         // populate patient 
          if (role == Constants.ROLE_USER) {
-            chats = await Chat.find({ patient: user }).populate({ path:'psychologist', options : { select: 'name profileImage isActive username' }}).populate('lastMessage')
-         } else if (role === Constants.ROLE_PSYCHOLOGIST) {
-            chats = await Chat.find({ psychologist: user }).populate({ path:'patient', options : { select: 'name profileImage isActive username' }}).populate('lastMessage')
+            chats = await Chat.find({ patient: user })
+                              .populate({ path:'psychologist', options : { select }})
+                              .populate('lastMessage')
+         } 
+         // populate psychologist
+         else if (role === Constants.ROLE_PSYCHOLOGIST) {
+            chats = await Chat.find({ psychologist: user })
+                              .populate({ path:'patient', options : { select }})
+                              .populate('lastMessage')
          }
 
          // join chats to socket and emit them.
@@ -74,7 +90,7 @@ io.on('connection', socket => {
          io.emit(user._id, true)
       } 
       catch(exception) {
-         console.log(exception)
+         cbError(exception)
       }
    })
 
@@ -82,7 +98,7 @@ io.on('connection', socket => {
    // =======================
    // PREVIOUS MESSAGES
    // =======================
-   socket.on('retrievePreviousMessages', async data => {
+   socket.on('retrievePreviousMessages', async (data, cbError) => {
       try {
          // parsing data
          let { accessToken, chat, skip } = data
@@ -91,21 +107,20 @@ io.on('connection', socket => {
 
          // retrieving the chat
          chat = await Chat.findOne({ _id: chat, $or: [{ psychologist: joinedUser }, { patient: joinedUser }] })
-
-         if (!chat) {
-            console.log('Chat not Found')
-            return
-         }
+         if (!chat) { return cbError({ message: 'Chat not Found', status: 404 }) }
 
          // retrieve previous messages
-         const messages = await Message.find({ chat }).skip(skip).limit(10).sort('-createdAt')
-         .populate({ path: 'author' })
+         const messages = await Message.find({ chat })
+                                       .skip(skip)
+                                       .limit(10)
+                                       .sort('-createdAt')
+                                       .populate({ path: 'author' })
    
          // send messages.
          socket.emit('previousMessages', messages)
       } 
-      catch (e) {
-         console.log(e)
+      catch (exception) {
+         cbError(exception)
       }
    })
 
@@ -113,7 +128,7 @@ io.on('connection', socket => {
    // =======================
    // SEND MESSAGE
    // =======================
-   socket.on('sendMessage', async data => {
+   socket.on('sendMessage', async (data,cbError) => {
       try {
          // parsing data
          let { accessToken, message, chat } = data
@@ -123,20 +138,17 @@ io.on('connection', socket => {
          // getting the chat
          chat = await Chat.findOne({ _id: chat, $or: [{ psychologist: author }, { patient: author }] })
          const contact = isMatching(author, chat.psychologist) ? chat.patient : chat.psychologist
-
-         if (!chat) {
-            console.log('Chat not Found')
-            return
-         }
+         if (!chat) { return cbError({ message: 'Chat not Found', status: 404 }) }
 
          // create message and send data
-         message = await Message.create({ message, author, contact, chat: chat._id })
-         chat.lastMessage = await message.populate({ path: 'author', options: { select: 'name profileImage' }}).execPopulate()
+         const select = 'name profileImage'
+         message = await Message.create({ message, author, contact, chat })
+         chat.lastMessage = await message.populate({ path: 'author', options: { select }}).execPopulate()
          await chat.save()
          io.to(chat._id).emit('message', message)
       } 
-      catch (e) {
-         console.log(e)
+      catch (exception) {
+         cbError(exception)
       }
    })
 
@@ -155,12 +167,12 @@ io.on('connection', socket => {
             { runValidators: true, new: true })
          
          // signal user became inactive
-         io.emit(user._id, false)
          if (!user) return 
+         io.emit(user._id, false)
          console.log('disconnected')
       } 
-      catch(e) {
-         console.log(e)
+      catch(exception) {
+         console.log(exception)
       }
    })
 

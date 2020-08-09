@@ -63,7 +63,7 @@ export default {
       this.$store.commit("connectSocket");
     }
 
-      this.activateUser();
+    this.activateUser();
     this.socket.off();
 
     this.socket.on("chats", (chats) => {
@@ -71,11 +71,11 @@ export default {
       this.listenUsers();
     });
 
-    this.socket.on(`message-seen-list`, lastMessage => {
-      const chatId = lastMessage.chat
-      const chat = this.chats.find(chat => chat._id === chatId)
-      chat.lastMessage = lastMessage
-    })
+    this.socket.on(`message-seen-list`, (lastMessage) => {
+      const chatId = lastMessage.chat;
+      const chat = this.chats.find((chat) => chat._id === chatId);
+      chat.lastMessage = lastMessage;
+    });
 
     this.socket.on("message", (message) => {
       const chat = this.chats.find((chat) => chat._id === message.chat);
@@ -93,7 +93,9 @@ export default {
   methods: {
     activateUser() {
       const accessToken = this.accessToken;
-      this.socket.emit("activateUser", { accessToken });
+      this.socket.emit("activateUser", { accessToken }, (error) => {
+        console.log(error.message);
+      });
     },
     goToChat(chat) {
       this.$store.commit("setSelectedChat", chat);
@@ -113,16 +115,20 @@ export default {
         if (role === "user") {
           this.socket.on(chat.psychologist._id, (status) => {
             chat.psychologist.isActive = status;
-          })
+          });
         } else if (role === "role_psychologist") {
           this.socket.on(chat.patient._id, (status) => {
-            chat.patient.isActive = status
-          })
+            chat.patient.isActive = status;
+          });
         }
       }
     },
     isSeen(chat) {
-      return chat.lastMessage != undefined && chat.lastMessage.author !== this.currentUser._id && !chat.lastMessage.isSeen
+      return (
+        chat.lastMessage != undefined &&
+        chat.lastMessage.author !== this.currentUser._id &&
+        !chat.lastMessage.isSeen
+      );
     },
   },
 };
