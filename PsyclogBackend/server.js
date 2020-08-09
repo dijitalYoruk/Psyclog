@@ -1,8 +1,13 @@
-const app = require('./index')
+const { server } = require('./index')
+const chatSocket = require('./chat/socketChat')
 const mongoose = require('mongoose')
 const dotenv = require('dotenv')
 dotenv.config({ path: './config.env' })
 
+// =======================================
+// CHAT SOCKET INITIALIZER
+// =======================================
+chatSocket.initChatSocket()
 
 // ========================================
 // EXCEPTION CATCHER
@@ -33,7 +38,7 @@ mongoose.connect(process.env.DATA_BASE_CONNECTION, {
 // ============================
 
 const serverPort = process.env.PORT
-app.listen(serverPort, () => {
+server.listen(serverPort, () => {
    console.log(`Server running on Port ${serverPort}`)
 })
 
