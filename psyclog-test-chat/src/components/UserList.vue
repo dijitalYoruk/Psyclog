@@ -5,9 +5,9 @@
         <v-list rounded>
           <v-list-item-group color="primary">
             <v-list-item v-for="(chat, i) in chats" @click="goToChat(chat)" :key="i">
-              <v-row v-if="currentUser.role == 'user'">
+              <v-row>
                 <v-col class="col-7">
-                  <div class="font-weight-bold">{{ chat.psychologist.username }}</div>
+                  <div class="font-weight-bold">{{ contacts[i].username }}</div>
                   <div v-if="chat.lastMessage">
                     <div v-if="chat.lastMessage.author == currentUser._id">
                       <v-icon v-if="chat.lastMessage.isSeen">mdi-check-bold</v-icon>
@@ -21,25 +21,6 @@
                 </v-col>
                 <v-col class="col-2">
                   <v-btn fab x-small :color="chat.psychologist.isActive ? 'red': 'grey'"></v-btn>
-                </v-col>
-              </v-row>
-
-              <v-row v-if="currentUser.role == 'role_psychologist'">
-                <v-col class="col-7">
-                  <div class="font-weight-bold">{{ chat.patient.username }}</div>
-                  <div v-if="chat.lastMessage">
-                    <div v-if="chat.lastMessage.author == currentUser._id">
-                      <v-icon v-if="chat.lastMessage.isSeen">mdi-check-bold</v-icon>
-                      <v-icon v-else>mdi-check</v-icon>
-                    </div>
-                    {{ chat.lastMessage.message }}
-                  </div>
-                </v-col>
-                <v-col class="col-2">
-                  <v-chip v-if="isSeen(chat)" small color="primary"></v-chip>
-                </v-col>
-                <v-col class="col-2">
-                  <v-btn fab x-small :color="chat.patient.isActive ? 'red': 'grey'"></v-btn>
                 </v-col>
               </v-row>
             </v-list-item>
@@ -82,6 +63,11 @@ export default {
       chat.lastMessage = message;
     });
   },
+  data() {
+    return {
+      contacts: [],
+    };
+  },
   computed: {
     ...mapGetters({
       currentUser: "getCurrentUser",
@@ -110,17 +96,14 @@ export default {
     listenUsers() {
       this.socket.off("chats");
       const role = this.currentUser.role;
+      this.contacts = this.chats.map((chat) =>
+        role == "user" ? chat.psychologist : chat.patient
+      );
 
-      for (let chat of this.chats) {
-        if (role === "user") {
-          this.socket.on(chat.psychologist._id, (status) => {
-            chat.psychologist.isActive = status;
-          });
-        } else if (role === "role_psychologist") {
-          this.socket.on(chat.patient._id, (status) => {
-            chat.patient.isActive = status;
-          });
-        }
+      for (let contact of this.contacts) {
+        this.socket.on(contact._id, (status) => {
+          contact.isActive = status;
+        });
       }
     },
     isSeen(chat) {

@@ -2,21 +2,16 @@
     <v-row>
     <v-col class="col-md-4 offset-md-4">
       <v-card outlined class="pa-4 mt-5 elevation-3">
-
         <div v-for="msg in messages" :key="msg.id">
-            <strong>Author: </strong>{{ msg.author.name }}
-            <div>
-                <strong>Message:</strong> {{ msg.message }}
-            </div>
-            <div>
-                <strong>Date:</strong> {{ msg.createdAt }}
-            </div>
+            <strong>Author: </strong>{{ msg.author.username }}
+            <div><strong>Message:</strong> {{ msg.message }}</div>
+            <div><strong>Date:</strong> {{ msg.createdAtFormat }}</div>
             <div v-if="msg.author._id == currentUser._id">
                 <strong>Contact Seen:</strong> {{ msg.isSeen }}
             </div>
             <v-divider></v-divider>
         </div>
-        <div v-if="contactStatus">Online</div>
+        <div v-if="contact.isActive">Online</div>
         <v-text-field outlined v-model="message"></v-text-field>
         <v-btn color="red" @click="sendMessage()">Send</v-btn>
         <v-btn color="blue" class="mx-2" @click="retrievePreviousMessages()">Retrieve Prev Message</v-btn>
@@ -36,10 +31,10 @@ export default {
         } 
 
         this.socket.off()
-        const role = this.currentUser.role
 
         this.socket.on('message', message => {
             this.skip++
+            message.createdAtFormat = this.formatDate(message.createdAt)
             this.messages.push(message)
             this.selectedChat.lastMessage = message 
             this.signalLastMessageSeen(message)
@@ -47,55 +42,45 @@ export default {
 
         this.socket.on('previousMessages', messages => {
             this.skip += messages.length
+            messages = this.updateAllDates(messages)
             this.messages.unshift(...messages.reverse())
         })
 
-        if (role == 'user') {
-            this.contactStatus = this.selectedChat.psychologist.isActive
-            this.socket.on(this.selectedChat.psychologist._id, status => {
-                this.selectedChat.psychologist.isActive = status
-                this.contactStatus = status
-            })
+        // determining the contact. 
+        const role = this.currentUser.role
+        this.contact = role == 'user' ? this.selectedChat.psychologist :
+                                        this.selectedChat.patient
 
-            this.socket.on(`message-seen-chat-${this.selectedChat.psychologist._id}`, seenMessageIds => {
-                for (let message of this.messages) {
-                    if (message.isSeen) continue
-                    message.isSeen = seenMessageIds.includes(message._id)
-                }
-            })
-        } 
-        else if (role == 'role_psychologist') {
-            this.contactStatus = this.selectedChat.patient.isActive
-            this.socket.on(this.selectedChat.patient._id, status => {
-                this.selectedChat.patient.isActive = status 
-                this.contactStatus = status
-            })
+        this.socket.on(this.contact._id, status => {
+            this.contact.isActive = status
+        })
 
-            this.socket.on(`message-seen-chat-${this.selectedChat.patient._id}`, seenMessageIds => {
-                for (let message of this.messages) {
-                    if (message.isSeen) continue
-                    message.isSeen = seenMessageIds.includes(message._id)
-                }
-            })
-        }
+        this.socket.on(`message-seen-chat-${this.contact._id}`, seenMessageIds => {
+            for (let message of this.messages) {
+                if (message.isSeen) continue
+                message.isSeen = seenMessageIds.includes(message._id)
+            }
+        })
 
         this.retrievePreviousMessages()
         const lastMessage = this.selectedChat.lastMessage
-        this.signalLastMessageSeen(lastMessage)        
+        this.signalLastMessageSeen(lastMessage)    
+        this.setTimeIntervals()
     },
     data() {
         return {
             message: '',
             skip: 0,
-            contactStatus: false,
-            messages: []
+            messages: [],
+            contact: '',
+            formattedDates: new Map()
         }
     },
     computed: {
         ...mapGetters({
+            socket: 'getSocket',
             currentUser: 'getCurrentUser',
             accessToken: 'getAccessToken',
-            socket: 'getSocket',
             selectedChat: 'getSelectedChat'
         })
     },
@@ -133,10 +118,19 @@ export default {
         formatDate(date) {
             return moment(date).fromNow()
         },
-        updateAllDates() {
-            for (let message of this.messages) {
-                message.createdAt = this.formatDate(message.createdAt)
-            }
+        updateAllDates(messages) {
+            for (let message of messages) 
+                message.createdAtFormat = this.formatDate(message.createdAt)
+            return messages
+        },
+        updateDates() {
+            for (let message of this.messages) 
+                message.createdAtFormat = this.formatDate(message.createdAt)
+        },
+        setTimeIntervals() {
+            setInterval(() => {
+                this.updateDates()
+            }, 20 * 1000)
         }
     }
 }

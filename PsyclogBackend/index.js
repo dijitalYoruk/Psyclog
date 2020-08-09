@@ -128,7 +128,7 @@ io.on('connection', socket => {
    // =======================
    // SEND MESSAGE
    // =======================
-   socket.on('sendMessage', async (data,cbError) => {
+   socket.on('sendMessage', async (data, cbError) => {
       try {
          // parsing data
          let { accessToken, message, chat } = data
@@ -141,8 +141,8 @@ io.on('connection', socket => {
          if (!chat) { return cbError({ message: 'Chat not Found', status: 404 }) }
 
          // create message and send data
-         const select = 'name profileImage'
-         message = await Message.create({ message, author, contact, chat })
+         const select = 'name username profileImage'
+         message = await Message.create({ message, author, contact, chat: chat._id })
          chat.lastMessage = await message.populate({ path: 'author', options: { select }}).execPopulate()
          await chat.save()
          io.to(chat._id).emit('message', message)
