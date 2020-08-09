@@ -28,22 +28,20 @@ io.on('connection', socket => {
          let { accessToken, chat } = data
          const decodedTokenData = await User.decodeJWT(accessToken)
          const seenUserId = decodedTokenData.id
-         chat = await Chat.findById(chat).populate('lastMessage')
+         let messageIds = await Message.find({ chat, contact: seenUserId, isSeen:false }).select('_id')
+         messageIds = messageIds.map(msg => msg._id)
+         if (messageIds.length == 0) return  
 
-         if (!chat) {
-            console.log('Chat not Found')
-            return
-         }
+         await Message.updateMany({ _id: { $in: messageIds }}, { isSeen: true })
+         chat = await Chat.findOne({ _id: chat, $or: [{ psychologist: seenUserId }, { patient: seenUserId }] }).populate('lastMessage')
 
          if (isMatching(chat.lastMessage.author, seenUserId)) { return }
-         console.log('geldi')
-         chat.isLastMessageSeen = true
-         await chat.save()
+         io.to(chat._id).emit(`message-seen-chat-${seenUserId}`, messageIds)
+         io.to(chat._id).emit(`message-seen-list`, chat.lastMessage)
       } 
       catch(e) {
          console.log(e)
       }
-
    })
 
 
@@ -63,9 +61,9 @@ io.on('connection', socket => {
 
          // find chats to be published.
          if (role == Constants.ROLE_USER) {
-            chats = await Chat.find({ patient: user }).populate('psychologist').populate('lastMessage')
+            chats = await Chat.find({ patient: user }).populate({ path:'psychologist', options : { select: 'name profileImage isActive username' }}).populate('lastMessage')
          } else if (role === Constants.ROLE_PSYCHOLOGIST) {
-            chats = await Chat.find({ psychologist: user }).populate('patient').populate('lastMessage')
+            chats = await Chat.find({ psychologist: user }).populate({ path:'patient', options : { select: 'name profileImage isActive username' }}).populate('lastMessage')
          }
 
          // join chats to socket and emit them.
@@ -87,7 +85,7 @@ io.on('connection', socket => {
    socket.on('retrievePreviousMessages', async data => {
       try {
          // parsing data
-         let { accessToken, chat, page } = data
+         let { accessToken, chat, skip } = data
          const decodedTokenData = await User.decodeJWT(accessToken)
          const joinedUser = decodedTokenData.id
 
@@ -100,10 +98,9 @@ io.on('connection', socket => {
          }
 
          // retrieve previous messages
-         const messages = await Message.paginate({ chat }, {
-            sort: { createdAt: -1 }, limit: 10, page
-         })
-
+         const messages = await Message.find({ chat }).skip(skip).limit(10).sort('-createdAt')
+         .populate({ path: 'author' })
+   
          // send messages.
          socket.emit('previousMessages', messages)
       } 
@@ -124,7 +121,8 @@ io.on('connection', socket => {
          const author = decodedTokenData.id
 
          // getting the chat
-         chat = await Chat.findById(chat)
+         chat = await Chat.findOne({ _id: chat, $or: [{ psychologist: author }, { patient: author }] })
+         const contact = isMatching(author, chat.psychologist) ? chat.patient : chat.psychologist
 
          if (!chat) {
             console.log('Chat not Found')
@@ -132,9 +130,8 @@ io.on('connection', socket => {
          }
 
          // create message and send data
-         message = await Message.create({ message, author, chat: chat._id })
-         chat.lastMessage = message
-         chat.isLastMessageSeen = false
+         message = await Message.create({ message, author, contact, chat: chat._id })
+         chat.lastMessage = await message.populate({ path: 'author', options: { select: 'name profileImage' }}).execPopulate()
          await chat.save()
          io.to(chat._id).emit('message', message)
       } 
@@ -160,7 +157,6 @@ io.on('connection', socket => {
          // signal user became inactive
          io.emit(user._id, false)
          if (!user) return 
-         console.log('>>>'+user._id+'<<<')
          console.log('disconnected')
       } 
       catch(e) {

@@ -7,9 +7,6 @@ const ChatSchema = new Schema({
         type: mongoose.Schema.ObjectId,
         ref: 'Message'
     },
-    isLastMessageSeen: {
-        type: Boolean
-    },
     psychologist: {
         type: mongoose.Schema.ObjectId,
         ref: 'User',

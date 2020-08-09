@@ -17,7 +17,17 @@ const MessageSchema = new Schema({
       type: mongoose.Schema.ObjectId,
       ref: 'User', 
       required:  [true, 'You should have an author.'],
-   }
+   },
+   contact: {
+      type: mongoose.Schema.ObjectId,
+      ref: 'User',
+      required: true
+   },
+   isSeen: {
+      type: Boolean,
+      default: false,
+      required: true
+   } 
 }, {timestamps: true, versionKey: false})
 
 

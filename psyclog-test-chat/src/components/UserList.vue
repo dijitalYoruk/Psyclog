@@ -8,14 +8,16 @@
               <v-row v-if="currentUser.role == 'user'">
                 <v-col class="col-7">
                   <div class="font-weight-bold">{{ chat.psychologist.username }}</div>
-                  <div>{{ chat.lastMessage.message }}</div>
+                  <div v-if="chat.lastMessage">
+                    <div v-if="chat.lastMessage.author == currentUser._id">
+                      <v-icon v-if="chat.lastMessage.isSeen">mdi-check-bold</v-icon>
+                      <v-icon v-else>mdi-check</v-icon>
+                    </div>
+                    {{ chat.lastMessage.message }}
+                  </div>
                 </v-col>
                 <v-col class="col-2">
-                  <v-chip
-                    v-if='isSeen(chat)'
-                    small
-                    color="primary"
-                  ></v-chip>
+                  <v-chip v-if="isSeen(chat)" small color="primary"></v-chip>
                 </v-col>
                 <v-col class="col-2">
                   <v-btn fab x-small :color="chat.psychologist.isActive ? 'red': 'grey'"></v-btn>
@@ -25,14 +27,16 @@
               <v-row v-if="currentUser.role == 'role_psychologist'">
                 <v-col class="col-7">
                   <div class="font-weight-bold">{{ chat.patient.username }}</div>
-                  <div>{{ chat.lastMessage.message }}</div>
+                  <div v-if="chat.lastMessage">
+                    <div v-if="chat.lastMessage.author == currentUser._id">
+                      <v-icon v-if="chat.lastMessage.isSeen">mdi-check-bold</v-icon>
+                      <v-icon v-else>mdi-check</v-icon>
+                    </div>
+                    {{ chat.lastMessage.message }}
+                  </div>
                 </v-col>
                 <v-col class="col-2">
-                  <v-chip
-                    v-if='isSeen(chat)'
-                    small
-                    color="primary"
-                  ></v-chip>
+                  <v-chip v-if="isSeen(chat)" small color="primary"></v-chip>
                 </v-col>
                 <v-col class="col-2">
                   <v-btn fab x-small :color="chat.patient.isActive ? 'red': 'grey'"></v-btn>
@@ -56,22 +60,27 @@ import { mapGetters } from "vuex";
 export default {
   created() {
     if (this.socket == undefined) {
-      this.$store.commit("connectSocket")
+      this.$store.commit("connectSocket");
     }
 
-    this.socket.off()
-    this.activateUser()
+      this.activateUser();
+    this.socket.off();
 
     this.socket.on("chats", (chats) => {
-      this.$store.commit("setChats", chats)
+      this.$store.commit("setChats", chats);
       this.listenUsers();
+    });
+
+    this.socket.on(`message-seen-list`, lastMessage => {
+      const chatId = lastMessage.chat
+      const chat = this.chats.find(chat => chat._id === chatId)
+      chat.lastMessage = lastMessage
     })
 
-    this.socket.on('message', message => {
-      const chat = this.chats.find(chat => chat._id === message.chat)
-      chat.isLastMessageSeen = false
-      chat.lastMessage = message
-    })
+    this.socket.on("message", (message) => {
+      const chat = this.chats.find((chat) => chat._id === message.chat);
+      chat.lastMessage = message;
+    });
   },
   computed: {
     ...mapGetters({
@@ -83,62 +92,40 @@ export default {
   },
   methods: {
     activateUser() {
-      const accessToken = this.accessToken
-      this.socket.emit("activateUser", { accessToken })
-    },
-    retrieveContacts() {
-      const accessToken = this.accessToken
-      this.socket.emit("retrieveContacts", { accessToken })
+      const accessToken = this.accessToken;
+      this.socket.emit("activateUser", { accessToken });
     },
     goToChat(chat) {
-      this.disableListeners()
-      this.$store.commit("setSelectedChat", chat)
-      this.$router.push({ name: "chat" })
+      this.$store.commit("setSelectedChat", chat);
+      this.$router.push({ name: "chat" });
     },
     logOut() {
-      this.disableListeners()
-      this.$store.commit("logOut")
-      this.socket.disconnect()
-      this.$router.push({ name: "SignIn" })
+      this.socket.off();
+      this.$store.commit("logOut");
+      this.socket.disconnect();
+      this.$router.push({ name: "SignIn" });
     },
     listenUsers() {
-      this.socket.off("chats")
-      const role = this.currentUser.role
+      this.socket.off("chats");
+      const role = this.currentUser.role;
 
       for (let chat of this.chats) {
         if (role === "user") {
-          console.log('>>>' + chat.psychologist._id + '<<<')
           this.socket.on(chat.psychologist._id, (status) => {
-            chat.psychologist.isActive = status
-            console.log('status')
+            chat.psychologist.isActive = status;
           })
-        } 
-        else if (role === "role_psychologist") {
-          console.log('>>>' + chat.patient._id + '<<<')
+        } else if (role === "role_psychologist") {
           this.socket.on(chat.patient._id, (status) => {
             chat.patient.isActive = status
-            console.log('status')
           })
         }
       }
     },
-    disableListeners() {
-      this.socket.off('message')
-      if (this.currentUser.role == "user") {
-        for (let chat of this.chats) { this.socket.off(chat.psychologist._id) }
-      } else if (this.currentUser.role == "role_psychologist") {
-        for (let chat of this.chats) { this.socket.off(chat.patient._id) }
-      }
-    },
     isSeen(chat) {
-      console.log(chat.lastMessage.author)
-      console.log(this.currentUser._id)
-      console.log(chat.isLastMessageSeen)
-      console.log(typeof(chat.isLastMessageSeen))
-      return chat.lastMessage.author !== this.currentUser._id && !chat.isLastMessageSeen
+      return chat.lastMessage != undefined && chat.lastMessage.author !== this.currentUser._id && !chat.lastMessage.isSeen
     },
-  }
-}
+  },
+};
 </script>
 
 <style>
