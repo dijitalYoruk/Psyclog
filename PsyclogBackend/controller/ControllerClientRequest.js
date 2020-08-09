@@ -7,6 +7,7 @@ const { isMatching } = require('../utils/util')
 const ApiError = require('../utils/ApiError')
 const Constants = require('../utils/constants')
 const User = require('../model/user')
+const Chat = require('../model/chat')
 
 
 // =====================
@@ -83,11 +84,17 @@ const acceptClientRequest = catchAsync(async (req, res, next) => {
       return next(new ApiError(__('error_unauthorized'), 403))
    }
 
+   // setting up the chat instance
+   const chatData = {
+      patient, psychologist, messages: []
+   }
+
    // update the relations and delete request
    const promise1 = User.findByIdAndUpdate(psychologist, { $addToSet: { patients: patient } })
    const promise2 = User.findByIdAndUpdate(patient, { $addToSet: { registeredPsychologists: psychologist } })
    const promise3 = ClientRequest.deleteOne(clientRequest)
-   await Promise.all([promise1, promise2, promise3])
+   const promise4 = Chat.create(chatData)
+   await Promise.all([promise1, promise2, promise3, promise4])
 
    res.status(200).json({
       status: 200,

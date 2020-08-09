@@ -18,6 +18,7 @@ const { signIn,
    retrieveProfile,
    signUpPsychologist} = require('../controller/ControllerAuth')
 
+const { uploadProfileImage } = require('../utils/FileUpload')
 
 // =====================
 // routes
@@ -31,6 +32,6 @@ routerAuth.post('/signIn', signIn)
 // authentication required
 routerAuth.use(middlewareAuth)
 routerAuth.delete('/profile', deleteProfile)
-routerAuth.patch('/profile', updateProfile)
+routerAuth.patch('/profile', uploadProfileImage, updateProfile)
 routerAuth.get('/profile', retrieveProfile)
 module.exports = routerAuth

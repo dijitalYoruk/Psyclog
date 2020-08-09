@@ -11,7 +11,9 @@
   "author": "CS491",
   "license": "ISC",
   "dependencies": {
+    "aws-sdk": "^2.715.0",
     "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "express-mongo-sanitize": "^2.0.0",
@@ -23,7 +25,10 @@
     "mongoose": "^5.9.19",
     "mongoose-paginate-v2": "^1.3.9",
     "morgan": "^1.10.0",
+    "multer": "^1.4.2",
     "nodemailer": "^6.4.10",
+    "sharp": "^0.25.4",
+    "socket.io": "^2.3.0",
     "xss-clean": "^0.1.1"
   },
   "devDependencies": {
