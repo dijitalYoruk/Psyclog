@@ -5,6 +5,7 @@ const { globalErrorHandler, catchAsync } = require('./utils/ErrorHandling')
 const initLocalization = require('./locales/LocalizationConfig')
 const express = require('express')
 const app = express()
+const path= require('path')
 
 // =====================
 // middlewares
@@ -26,6 +27,15 @@ initLocalization()
 if (process.env.NODE_ENV == 'development') {
    app.use(morgan('dev'))
 }
+
+app.set('view engine','pug');
+app.set('views',path.join(__dirname,'views'))
+
+/*app.get('/api/v1/auth/reset-password/:token',(req,res)=>{
+   res.status(200).render('resetnew',{
+      token: req.params.token
+   });
+})*/
 
 // =====================
 // routes

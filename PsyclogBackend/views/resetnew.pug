@@ -1,0 +1,14 @@
+extends layout
+
+block content
+  form
+    legend Reset Password
+    .form-group
+      label(for='password') New Password
+      input.form-control(type='password', name='password', value='', id='password', placeholder='New password', autofocus=true,required,minlength='10',onkeyup='check();')
+    .form-group
+      label(for='passwordConfirm') Confirm Password
+      input.form-control(type='password', name='passwordConfirm', id='passwordConfirm', value='', placeholder='Confirm password',required,minlength='10',onkeyup='check();')
+      legend#message
+    .form-group
+      button.btn.btn-primary(type='submit',id='button') Update Password

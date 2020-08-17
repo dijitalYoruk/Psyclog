@@ -4,9 +4,10 @@
 const { catchAsync } = require('../utils/ErrorHandling')
 const constants = require('../utils/constants')
 const ApiError = require('../utils/ApiError')
-const Mailer = require('../utils/mailer')
+const Email = require('../utils/mailer')
 const User = require('../model/user')
 const crypto = require('crypto')
+const { Console } = require('console')
 
 
 // =====================
@@ -26,6 +27,10 @@ const signUpPatient = catchAsync(async (req, res, next) => {
 
    // creating the user.
    const user = await User.create(data)
+   const url=`${req.protocol}://${req.get('host')}/api/v1/auth/profile`;
+
+   console.log(url);
+   new Email(user,url).sendWelcome();
 
    res.status(200).json({
       status: 200,
@@ -121,12 +126,15 @@ const forgotPassword = catchAsync(async (req, res, next) => {
 
       // TODO reset url will be settled and email template will be used.
       // constructing email.
-      const resetURL = `({{ RESET URL WILL BE SETTED }})/${resetToken}`
-      const message = `${resetURL}.\n\n If you didn't forget your password, please ignore this email!`
-      const subject = 'Your password reset token (valid for 10 min)'
+
+      const resetURL = `${req.protocol}://${req.get('host')}/api/v1/auth/reset-password/${resetToken}`;
+      //const resetURL = `${req.protocol}://localhost:3000/api/v1/users/reset-password/${resetToken}`;
+      //const message = `Forgot your password? Submiy a PATCH request with your new password and passwordConfirm to:
+      //${resetURL}.\n\n If you didn't forget your password, please ignore this email!`;
+      //const subject = 'Your password reset token (valid for 10 min)';
 
       // sending email.
-      await Mailer.sendEmail({ email, subject, message })
+      await new Email(user,resetURL).sendPasswordReset();
 
       res.status(200).json({
          'status': '200',
@@ -151,7 +159,7 @@ const forgotPassword = catchAsync(async (req, res, next) => {
 const resetPassword = catchAsync(async (req, res, next) => {
    const hashedToken = crypto
       .createHash('sha256')
-      .update(req.body.token)
+      .update(req.params.token)
       .digest('hex')
  
    const user = await User.findOne({
@@ -221,11 +229,21 @@ const updateProfile = catchAsync(async (req, res, next) => {
    })
 })
 
+/**
+ * retrieves the profile of the current user.
+ */ 
+const getResetPassword = catchAsync(async (req, res, next) => {
+   res.status(200).render('resetnew',{
+      token: req.params.token
+   });
+})
+
 
 module.exports = {
    signIn,
    signUpPatient,
    resetPassword,
+   getResetPassword,
    updateProfile,
    deleteProfile,
    forgotPassword,
