@@ -9,6 +9,8 @@ block content
     .form-group
       label(for='passwordConfirm') Confirm Password
       input.form-control(type='password', name='passwordConfirm', id='passwordConfirm', value='', placeholder='Confirm password',required,minlength='10',onkeyup='check();')
+      - var token = token;
+      input.form-control(type='hidden', name='token', id='token', value=token, placeholder=token)
       legend#message
     .form-group
       button.btn.btn-primary(type='submit',id='button') Update Password

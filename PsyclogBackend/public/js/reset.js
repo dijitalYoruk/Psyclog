@@ -1,13 +1,14 @@
 /*eslint-disable*/
 
-const reset= async (password,passwordConfirm)=>{
+const reset= async (password,passwordConfirm,token,url)=>{
     try{
         const res= await axios({
             method:'PATCH',
-            url: window.location.href,
+            url: url,
             data:{
                 password,
-                passwordConfirm
+                passwordConfirm,
+                token
             }
         });
         console.log(res);
@@ -23,10 +24,12 @@ document.querySelector('form').addEventListener('submit',e=>{
     e.preventDefault();
     const password=document.getElementById('password').value;
     const passwordConfirm=document.getElementById('passwordConfirm').value;
+    const token=document.getElementById('token').value;
+    const url = `/api/v1/auth/reset-password`;
     if (password != passwordConfirm) {
         alert("Passwords do not match. Try again.");
     }else{
-        reset(password,passwordConfirm);
+        reset(password,passwordConfirm,token,url);
     }   
 });
 

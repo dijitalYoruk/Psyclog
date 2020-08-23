@@ -25,7 +25,7 @@ const { signIn,
 // =====================
 routerAuth.post('/signUp/psychologist', signUpPsychologist)
 routerAuth.post('/forgotPassword', forgotPassword)
-routerAuth.patch('/reset-password/:token', resetPassword)
+routerAuth.patch('/reset-password', resetPassword)
 routerAuth.get('/reset-password/:token', getResetPassword)
 routerAuth.post('/signUp/patient', signUpPatient)
 routerAuth.post('/signIn', signIn)

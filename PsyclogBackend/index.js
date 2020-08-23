@@ -29,13 +29,7 @@ if (process.env.NODE_ENV == 'development') {
 }
 
 app.set('view engine','pug');
-app.set('views',path.join(__dirname,'views'))
-
-/*app.get('/api/v1/auth/reset-password/:token',(req,res)=>{
-   res.status(200).render('resetnew',{
-      token: req.params.token
-   });
-})*/
+app.set('views','./views')
 
 // =====================
 // routes
