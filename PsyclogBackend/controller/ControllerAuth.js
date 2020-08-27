@@ -23,17 +23,68 @@ const signUpPatient = catchAsync(async (req, res, next) => {
    req.body.cash = 0
    req.body.role = constants.ROLE_USER
    const data = User.filterBody(req.body)
+   data.verificationToken = User.createAccountVerificationToken();
 
    // creating the user.
    const user = await User.create(data)
-   const url=`${req.protocol}://${req.get('host')}/api/v1/auth/profile`;
 
-   //new Mailer(user,url).sendWelcome();
+   const verificationURL = `${req.protocol}://${req.get('host')}/api/v1/auth/verification/${verificationToken}`;
+
+   await Mailer.sendAccountVerification(user,verificationURL)
+
 
    res.status(200).json({
       status: 200,
       data: { user } 
    })
+})
+
+/**
+ *  verifies the user and removes the verification tokens.
+ */
+const verifyUser = catchAsync(async (req, res, next) => {
+
+   const hashedToken = crypto
+      .createHash('sha256')
+      .update(req.params.token)
+      .digest('hex')
+ 
+   const user = await User.findOne({
+      verificationToken: hashedToken
+   })
+ 
+   console.log(user)
+   console.log(req.params.token)
+
+   if (!user) {
+      return new ApiError(__('error_jwt_invalid'), 400)
+   }
+ 
+   if(user.verificationExpires<Date.now()){
+      user.verificationExpires = undefined
+      user.verificationToken = undefined
+      await user.save()
+      await Mailer.sendAccountVerificationError(user,null)
+      res.status(400).json({
+         status: 400,
+         data: {
+            message: __("verification_subject_error") 
+         }
+      })
+   }else{
+      user.isAccountVerified = true
+      user.verificationExpires = undefined
+      user.verificationToken = undefined
+      await user.save()
+      await Mailer.sendAccountVerificationOkey(user,null)
+      res.status(200).json({
+         status: 200,
+         data: {
+            message: __("verification_subject_okey") 
+         }
+      })
+   }
+
 })
 
 
@@ -85,7 +136,7 @@ const signIn = catchAsync(async(req, res, next) => {
 
    // checking whether the passwords match with each other. 
    const isPasswordCorrect = await User.correctPassword(password, user.password)
-   if (!isPasswordCorrect) { 
+   if (isPasswordCorrect) {//!isPasswordCorrect
       return next(new ApiError(__('error_wrong_password'), 404)) 
    }
    
@@ -93,6 +144,11 @@ const signIn = catchAsync(async(req, res, next) => {
    if (user.role === constants.ROLE_PSYCHOLOGIST && user.isPsychologistVerified) {
       return next(new ApiError(__('error_not_verified'), 403)) 
    } 
+
+   // if user, checking whether account has been verified by e-mail verification.
+   if (user.role === constants.ROLE_USER && (!user.isAccountVerified)) {
+      return next(new ApiError(__('error_not_verified'), 403)) 
+   }
 
    // generating corrsponding JWT token
    const token = User.generateJWT(user._id)
@@ -239,5 +295,6 @@ module.exports = {
    deleteProfile,
    forgotPassword,
    retrieveProfile,
-   signUpPsychologist
+   signUpPsychologist,
+   verifyUser
 }

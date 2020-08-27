@@ -136,8 +136,16 @@ const UserSchema = new Schema({
          message: 'Passwords do not match.'
       }
    },
+   isAccountVerified: {
+      type: Boolean,
+      default: false
+   },
+
    passwordResetToken: String,
    passwordResetExpires: Date,
+   verificationToken: String,
+   verificationExpires: Date,
+
 
 }, {timestamps: true, versionKey: false})
 
@@ -179,7 +187,8 @@ UserSchema.statics.filterBody = body => {
       'email',      
       'role',
       'cash',
-      'name']
+      'name',
+      'isAccountVerified']
 
    const itemsPsychologist = [
       'appointmentPrice', 
@@ -258,9 +267,9 @@ UserSchema.statics.mapData = (user, data, psychologistVerificationEnabled) => {
 UserSchema.pre('save', async function(next) {
    
    // changing password
-   if (!this.isModified('password')) return next()
-   this.password = await bcrypt.hash(this.password, 10)
-   this.passwordConfirm = undefined
+   //if (!this.isModified('password')) return next()
+   //this.password = await bcrypt.hash(this.password, 10)
+   //this.passwordConfirm = undefined
 
    // seting irrelevant items for admin as undefined.
    if (this.role === Constants.ROLE_ADMIN) {
@@ -324,6 +333,22 @@ UserSchema.methods.createPasswordResetToken = function() {
    // setup expiration date of reset token.
    this.passwordResetExpires = Date.now() + 10 * 60 * 1000
    return resetToken
+}
+
+// generates hashed verificationtoken.
+UserSchema.methods.createAccountVerificationToken = function() {
+   // generate verification token 
+   const verifyToken = crypto.randomBytes(32).toString('hex')
+ 
+   // hash the token
+   this.verificationToken = crypto
+     .createHash('sha256')
+     .update(verifyToken)
+     .digest('hex')
+ 
+   // setup expiration date of reset token.
+   this.verificationExpires = Date.now() + 10 * 60 * 1000
+   return verifyToken
 }
  
 // Pagination and export.

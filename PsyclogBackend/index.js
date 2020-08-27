@@ -5,7 +5,6 @@ const { globalErrorHandler, catchAsync } = require('./utils/ErrorHandling')
 const initLocalization = require('./locales/LocalizationConfig')
 const express = require('express')
 const app = express()
-const path= require('path')
 
 // =====================
 // middlewares
