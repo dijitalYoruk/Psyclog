@@ -35,6 +35,9 @@ if (process.env.NODE_ENV == 'development') {
    app.use(morgan('dev'))
 }
 
+app.set('view engine','pug');
+app.set('views','./views')
+
 // =====================
 // routes
 // =====================

@@ -1,0 +1,18 @@
+extend layout
+
+block content
+    main.main
+        .reset-form
+            h2.heading-secondary.ma-bt-lg Reset Your Password
+            form.form
+                .form__group
+                    label.form__label(for='password') New Password
+                    input#password.form__input(type='password',placeholder='******',required,minlength='8')
+                .form_group.ma-bt-md
+                    label.form__label(for='passwordConfirm') New Password Confirm
+                    input#passwordConfirm.form__input(type='password',placeholder='******',required,minlength='8',)
+                .form__group
+                    label.form__label(for='token') 
+                    token= token
+                .form__group
+                    button.btn.btn--green Reset 

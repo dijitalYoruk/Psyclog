@@ -25,6 +25,9 @@ const signUpPatient = catchAsync(async (req, res, next) => {
 
    // creating the user.
    const user = await User.create(data)
+   const url=`${req.protocol}://${req.get('host')}/api/v1/auth/profile`;
+
+   //new Mailer(user,url).sendWelcome();
 
    res.status(200).json({
       status: 200,
@@ -118,14 +121,10 @@ const forgotPassword = catchAsync(async (req, res, next) => {
 
    try {
 
-      // TODO reset url will be settled and email template will be used.
-      // constructing email.
-      const resetURL = `({{ RESET URL WILL BE SETTED }})/${resetToken}`
-      const message = `${resetURL}.\n\n If you didn't forget your password, please ignore this email!`
-      const subject = 'Your password reset token (valid for 10 min)'
+      const resetURL = `${req.protocol}://${req.get('host')}/api/v1/auth/reset-password/${resetToken}`;
 
       // sending email.
-      await Mailer.sendEmail({ email, subject, message })
+      await Mailer.sendPasswordReset(user,resetURL)
 
       res.status(200).json({
          'status': '200',
@@ -226,11 +225,21 @@ const updateProfile = catchAsync(async (req, res, next) => {
    })
 })
 
+/**
+ * retrieves the reset password page for specific user.
+ */ 
+const getResetPassword = catchAsync(async (req, res, next) => {
+   res.status(200).render('resetnew',{
+      token: req.params.token
+   });
+})
+
 
 module.exports = {
    signIn,
    signUpPatient,
    resetPassword,
+   getResetPassword,
    updateProfile,
    deleteProfile,
    forgotPassword,

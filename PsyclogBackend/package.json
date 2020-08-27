@@ -16,10 +16,12 @@
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "express-flash": "0.0.2",
     "express-mongo-sanitize": "^2.0.0",
     "faker": "^4.1.0",
     "helmet": "^3.23.3",
     "hpp": "^0.2.3",
+    "html-to-text": "^5.1.1",
     "i18n": "^0.10.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.9.19",
@@ -29,6 +31,7 @@
     "nodemailer": "^6.4.10",
     "sharp": "^0.25.4",
     "socket.io": "^2.3.0",
+    "pug": "^3.0.0",
     "xss-clean": "^0.1.1"
   },
   "devDependencies": {

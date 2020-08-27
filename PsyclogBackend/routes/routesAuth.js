@@ -12,6 +12,7 @@ const middlewareAuth = require('../middleware/middlewareAuth')
 const { signIn,
    signUpPatient,
    resetPassword,
+   getResetPassword,
    updateProfile,
    deleteProfile,
    forgotPassword,
@@ -26,6 +27,7 @@ const { uploadProfileImage } = require('../utils/FileUpload')
 routerAuth.post('/signUp/psychologist', signUpPsychologist)
 routerAuth.post('/forgotPassword', forgotPassword)
 routerAuth.patch('/reset-password', resetPassword)
+routerAuth.get('/reset-password/:token', getResetPassword)
 routerAuth.post('/signUp/patient', signUpPatient)
 routerAuth.post('/signIn', signIn)
 
@@ -34,4 +36,5 @@ routerAuth.use(middlewareAuth)
 routerAuth.delete('/profile', deleteProfile)
 routerAuth.patch('/profile', uploadProfileImage, updateProfile)
 routerAuth.get('/profile', retrieveProfile)
+
 module.exports = routerAuth

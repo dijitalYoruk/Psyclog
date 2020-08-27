@@ -13,5 +13,6 @@
     "success_finish": "Finished",
     "success_accepted": "%s has been accepted successfully",
     "success_deny": "%s has been denied.",
-    "error_unauthorized": "Unauthorized"
+    "error_unauthorized": "Unauthorized",
+    "reset_subject":"Your Password reset token (valid for only 10 minutes)!"
 }
