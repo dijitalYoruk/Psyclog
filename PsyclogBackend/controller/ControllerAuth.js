@@ -18,7 +18,6 @@ const crypto = require('crypto')
  */
 const signUpPatient = catchAsync(async (req, res, next) => {
 
-   
    // parsing the body 
    req.body.cash = 0
    req.body.role = constants.ROLE_USER
@@ -151,7 +150,7 @@ const signIn = catchAsync(async(req, res, next) => {
    }
 
    // generating corrsponding JWT token
-   const token = User.generateJWT(user._id)
+   const token = User.generateJWT({ id: user._id, role: user.role})
 
    res.status(200).json({
       status: 200,
@@ -268,6 +267,12 @@ const updateProfile = catchAsync(async (req, res, next) => {
    // parsing body
    const profile = req.currentUser
    User.mapData(profile, req.body, false)
+
+   // update profile image 
+   if (req.file) {      
+      await profile.updateProfileImage(req.file)
+   }
+
    await profile.save()
 
    res.status(200).json({
