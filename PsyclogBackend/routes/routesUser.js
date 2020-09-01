@@ -16,18 +16,22 @@ const {
    retrieveUser,
    deleteUser,
    updateUser, 
-   finishPatient} = require('../controller/ControllerUser')
+   finishPatient,
+   retrievePsychologists,
+   retrieveRegisteredPsychologists} = require('../controller/ControllerUser')
 
 
 // =====================
 // routes
 // =====================
 routerUser.use(middlewareAuth)
+routerUser.get('/registered-psychologists', middlewareRestrict(Constants.ROLE_USER), retrieveRegisteredPsychologists)
+routerUser.post('/finish', middlewareRestrict(Constants.ROLE_PSYCHOLOGIST, Constants.ROLE_ADMIN), finishPatient)
+routerUser.get('/psychologists', middlewareRestrict(Constants.ROLE_ADMIN), retrievePsychologists)
+routerUser.get('/', middlewareRestrict(Constants.ROLE_ADMIN), retrieveUsers)
 
-routerUser.use(middlewareRestrict(Constants.ROLE_PSYCHOLOGIST, Constants.ROLE_ADMIN))
-routerUser.route('/finish').post(finishPatient)
-
-routerUser.use(middlewareRestrict(Constants.ROLE_ADMIN))
-routerUser.route('/').get(retrieveUsers)
-routerUser.route('/:userId').get(retrieveUser).delete(deleteUser).patch(updateUser)
+routerUser.route('/:userId')
+          .get(middlewareRestrict(Constants.ROLE_ADMIN), retrieveUser)
+          .patch(middlewareRestrict(Constants.ROLE_ADMIN), updateUser)
+          .delete(middlewareRestrict(Constants.ROLE_ADMIN), deleteUser)
 module.exports = routerUser

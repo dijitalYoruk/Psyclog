@@ -53,6 +53,40 @@ const retrieveUsers = catchAsync(async (req, res, next) => {
 
 
 /**
+ * Retrieves psychologists for the users.
+ */
+const retrievePsychologists = catchAsync(async (req, res, next) => {
+   // getting params.
+   const page = req.query.page
+   const role = Constants.ROLE_PSYCHOLOGIST
+
+   // paginating users.
+   const psychologists = await User.paginate({ role }, { page, limit:10 })
+   res.status(200).json({
+      status: 200, 
+      data: { psychologists } 
+   })
+})
+
+
+/**
+ * Retrieves psychologists for the users.
+ */
+const retrieveRegisteredPsychologists = catchAsync(async (req, res, next) => {
+   // getting params.
+   const registeredPsychologists = User.findById(req.currentUser._id)
+                           .populate('registeredPsychologists')
+                           .select('registeredPsychologists')
+
+   res.status(200).json({
+      status: 200, 
+      data: { registeredPsychologists } 
+   })
+})
+
+
+
+/**
  * Retrieves specific user from db
  */ 
 const retrieveUser = catchAsync(async (req, res, next) => {   
@@ -109,5 +143,7 @@ module.exports = {
    retrieveUser,
    deleteUser,
    updateUser,
-   finishPatient
+   finishPatient,
+   retrievePsychologists,
+   retrieveRegisteredPsychologists
 }
