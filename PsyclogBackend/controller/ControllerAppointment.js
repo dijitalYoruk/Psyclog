@@ -1,44 +1,253 @@
 // =====================
 // imports
 // =====================
+const { isMatching, getToday, constructStartDate } = require('../utils/util')
 const { catchAsync } = require('../utils/ErrorHandling')
-const ApiError = require('../utils/ApiError')
 const Appointment = require('../model/appointment')
-const User = require('../model/user')
-const { isMatching } = require('../utils/util')
 const constants = require('../utils/constants')
+const ApiError = require('../utils/ApiError')
+const User = require('../model/user')
+const { __ } = require('i18n')
 
 
 // =====================
 // methods
 // =====================
 
-const createAppointment = catchAsync(async (req, res, next) => {
-    // constructing review data.
+
+const blockIntervals = catchAsync(async (req, res, next) => {
+    // retrieve data
+    const psychologist = req.currentUser
+    let { blockedIntervals, day } = req.body
+
+    // excess slots error
+    if (blockedIntervals.length > 13) {
+        next(new ApiError('There can not be more than 13 time slots.'))
+    }
+    
+    // update the blocked times.
+    psychologist.updateBlockedTimes(day, blockedIntervals)
+    await psychologist.save()
+
+    res.status(200).json({
+        status: 200,
+        data: { 
+            message: "Intervals are blocked successfully."
+        } 
+    })
+})
+
+
+const retrieveDateStatus = catchAsync(async (req, res, next) => {
+    // get required data.
     const patient = req.currentUser
-    const psychologistId = req.body.psychologistId
+    const { psychologistId, day, month, year } = req.body
+    const psychologist = await User.findById(psychologistId)
+
+    // check whether patient is registered to psychologist.
     if (!patient.registeredPsychologists.includes(psychologistId)) {
         return next(new ApiError(__('error_unauthorized'), 403))
     }
 
-    // TODO Payments need to be handled in the future
-    const { date, appointmentTimes } = body
+    // get already reserved appointments.
+    const appointmentDate = new Date(`${year}-${month}-${day}`)
+    const appointments = await Appointment.find({ appointmentDate, psychologist })
+                                          .select('intervals')
 
-    if (!Appointment.areAppointmentsValid(appointmentTimes)) {
-        return next(new ApiError('invalid appointment times are entered.', 400))
+    // extract reserved intervals.
+    const reserved = []
+    for (let appointment of appointments) {
+        reserved.push(...appointment.intervals)
     }
 
+    const blocked = psychologist.retrieveBlockedTimes(
+        appointmentDate.getDay())
+
+    res.status(200).json({
+        status: 200,
+        data: { 
+            blocked, 
+            reserved 
+        } 
+    })
+})
+
+// TODO Payments need to be handled in the future
+const createAppointment = catchAsync(async (req, res, next) => {
+    // get required data.
+    const patient = req.currentUser
+    let { day, month, year, intervals, psychologistId } = req.body
+    const psychologist = await User.findById(psychologistId)
+
+    // check whether patient is registered to psychologist.
+    if (!patient.registeredPsychologists.includes(psychologistId)) {
+        return next(new ApiError(__('error_unauthorized'), 403))
+    }
+
+    // validate appointment date
+    const appointmentDate = new Date(`${year}-${month}-${day}`)
+    const dateError = Appointment.validateDate(appointmentDate, true)
+    if (dateError) { return next(dateError) }
     
+    // check whether the appointment times are sequential.
+    if (!Appointment.areTimesValid(intervals)) {
+        return next(new ApiError('Invalid times', 400))
+    }
+
+    // check whether the appointment times are conflicting with the blocked times.
+    const blockedIntervals = psychologist.retrieveBlockedTimes(appointmentDate.getDay())
+    if (Appointment.conflictsWithBlocked(intervals, blockedIntervals)) {
+        return next(new ApiError('Blocked Violation', 400))
+    }
+
+    // check whether the appointment times are violating reserved intervals.
+    const count = await Appointment.countDocuments({ 
+        psychologist, appointmentDate, intervals: { $in: intervals } })
+    if (count > 0) { return next(new ApiError(__('reservation_violation'), 400)) }
+
+    // save appointment.
+    let appointment = { psychologist, intervals, appointmentDate, patient }
+    await Appointment.create(appointment) 
+ 
+    res.status(200).json({
+        status: 200,
+        data: { 
+            message: __('success_create', 'Appointment')
+        } 
+    })
+})
+
+
+const updateAppointmentTime = catchAsync(async (req, res, next) => {
+    // get required data.
+    const psychologist = req.currentUser
+    let { appointmentId, day, month, year, updatedTimes } = req.body
+
+    const appointment = await Appointment.findById(appointmentId)
+    if (!isMatching(appointment.psychologist, psychologist._id)) {
+        return next(new ApiError(__('error_unauthorized'), 403))
+    }
+
+    // validate appointment date
+    const appointmentDate = new Date(`${year}-${month}-${day}`)
+    const dateError = Appointment.validateDate(appointmentDate, false)
+    if (dateError) { return next(dateError) }
+
+    // check whether the appointment times are sequential.
+    if (!Appointment.areTimesValid(updatedTimes)) {
+        return next(new ApiError('invalid dates', 400))
+    }
+
+    // check whether the times are updated 
+    // within the same previous date.
+    let queryIn = [...updatedTimes]
+    const previousDate = appointment.appointmentDate
+    if (Date.parse(previousDate) === Date.parse(appointmentDate)) {
+        queryIn = queryIn.filter(val => !appointment.intervals.includes(val));
+    }
+
+    // check whether the appointment times are violating reserved intervals.
+    const count = await Appointment.countDocuments({ 
+        psychologist, appointmentDate, intervals: { $in: queryIn } })
+    if (count > 0) { return next(new ApiError(__('reservation_violation'), 400)) }
+
+    // save appointment.
+    appointment.appointmentDate = appointmentDate
+    appointment.intervals = updatedTimes
+    await appointment.save()
+    
+    res.status(200).json({
+        status: 200,
+        data: { 
+            message: __('success_change', 'Appointment')
+        } 
+    })
+})
+
+
+const cancelAppointment = catchAsync(async (req, res, next) => {
+    // retrieve data
+    const currentUser = req.currentUser
+    const { appointmentId } = req.body
+    
+    // calculate remaining days
+    const todayParsed = getToday(true)
+    const appointment = await Appointment.findById(appointmentId)
+    const appointmentDateParsed = Date.parse(appointment.appointmentDate)
+    const remainingTime = appointmentDateParsed - todayParsed
+
+    // psychologist removing
+    if (currentUser.role === constants.ROLE_PSYCHOLOGIST && 
+        isMatching(appointment.psychologist, currentUser._id)) {
+        await appointment.remove()
+    } 
+
+    // patient removing before 3 days
+    else if (currentUser.role === constants.ROLE_USER && 
+        isMatching(appointment.patient, currentUser._id) && 
+        remainingTime > constants.DAYS_3) {
+        await appointment.remove()
+    }
+
+    // patient removing within the last 3 says.
+    else if (currentUser.role === constants.ROLE_USER && 
+        isMatching(appointment.patient, currentUser._id)) {
+        // TODO Money retrievel from the customes needs 
+        // to be done you need due to late cancellation
+        console.log('Transaction has been done')
+        await appointment.remove()
+    }
+
+    else {
+        return next(new ApiError(__('error_unauthorized'), 403))
+    }
+ 
+    res.status(205).json({
+       status: 205,
+       data: { message: __('success_delete', 'Appointment') } 
+    })
+})
+
+
+const terminateAppointment = catchAsync(async (req, res, next) => {
+    // retrieve data
+    const patient = req.currentUser
+    const { appointmentId } = req.body
+    const appointment = await Appointment.findById(appointmentId)
+
+    // check whether patient belongs to appointment.
+    if (!isMatching(appointment.patient, patient._id)) {
+        return next(new ApiError(__('error_unauthorized'), 403))
+    }
+
+    // construct the date object for starting time
+    const startingTimeSlot = appointment.intervals[0]
+    const appointmentDate = appointment.appointmentDate
+    const startTime = constructStartDate(appointmentDate, startingTimeSlot)
+
+    // check whether the appointment started.
+    if (startTime > Date.now()) {
+        return next(new ApiError(__('ternination_not_possible'), 403))
+    }
+
+    // TODO Money retrievel from the customes needs 
+    // to be done because of the finishing.
+    console.log('Transaction has been done')
+    await appointment.remove()
  
     res.status(200).json({
        status: 200,
-       data: { review } 
+       data: { message: __('success_terminate') } 
     })
- })
+})
+
+
 
 module.exports = {
-   createReview,
-   deleteReview,
-   updateReview,
-   retrievePsychologistReviews
+    updateAppointmentTime,
+    createAppointment,
+    retrieveDateStatus,
+    blockIntervals,
+    cancelAppointment,
+    terminateAppointment
 }
