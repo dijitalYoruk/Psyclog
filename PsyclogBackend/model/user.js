@@ -195,7 +195,9 @@ UserSchema.statics.filterBody = body => {
       'role',
       'cash',
       'name',
-      'isAccountVerified']
+      'isAccountVerified',
+      'verificationToken',
+      'verificationExpires']
 
    const itemsPsychologist = [
       'appointmentPrice', 
@@ -273,11 +275,6 @@ UserSchema.statics.mapData = (user, data, psychologistVerificationEnabled) => {
 // sets the visibility of certain areas for different roles.
 UserSchema.pre('save', async function(next) {
    
-   // changing password
-   if (!this.isModified('password')) return next()
-   this.password = await bcrypt.hash(this.password, 10)
-   this.passwordConfirm = undefined
-
    // seting irrelevant items for admin as undefined.
    if (this.role === Constants.ROLE_ADMIN) {
       this.isActiveForClientRequest = undefined

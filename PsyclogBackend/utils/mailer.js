@@ -61,17 +61,7 @@ const sendAccountVerification = async (user, verificationURL) => {
    await send(user, verificationURL,'verification',__('verification_subject'));
 }
 
-const sendAccountVerificationOkey = async (user, verificationURL) => { 
-   await send(user, "",'verification_okey',__('verification_subject_okey'));
-}
-
-const sendAccountVerificationError = async (user, verificationURL) => { 
-   await send(user, "",'verification_error',__('verification_subject_error'));
-}
-
 module.exports = {
    sendPasswordReset,
-   sendAccountVerification,
-   sendAccountVerificationOkey,
-   sendAccountVerificationError  
+   sendAccountVerification
 }

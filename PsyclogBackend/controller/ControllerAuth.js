@@ -18,11 +18,25 @@ const crypto = require('crypto')
  */
 const signUpPatient = catchAsync(async (req, res, next) => {
 
+   //creating verification token for every user 
+      const verifyToken = crypto.randomBytes(32).toString('hex')
+ 
+   // hash the token
+      const verificationToken = crypto
+         .createHash('sha256')
+         .update(verifyToken)
+         .digest('hex')
+ 
+   // setup expiration date of reset token.
+      const verificationExpires = Date.now() + 10 * 60 * 1000
+
    // parsing the body 
    req.body.cash = 0
    req.body.role = constants.ROLE_USER
+   req.body.verificationExpires = verificationExpires;
+   req.body.verificationToken = verificationToken;
    const data = User.filterBody(req.body)
-   data.verificationToken = User.createAccountVerificationToken();
+   
 
    // creating the user.
    const user = await User.create(data)
@@ -43,17 +57,9 @@ const signUpPatient = catchAsync(async (req, res, next) => {
  */
 const verifyUser = catchAsync(async (req, res, next) => {
 
-   const hashedToken = crypto
-      .createHash('sha256')
-      .update(req.params.token)
-      .digest('hex')
- 
    const user = await User.findOne({
-      verificationToken: hashedToken
+      verificationToken: req.params.token
    })
- 
-   console.log(user)
-   console.log(req.params.token)
 
    if (!user) {
       return new ApiError(__('error_jwt_invalid'), 400)
@@ -63,25 +69,19 @@ const verifyUser = catchAsync(async (req, res, next) => {
       user.verificationExpires = undefined
       user.verificationToken = undefined
       await user.save()
-      await Mailer.sendAccountVerificationError(user,null)
-      res.status(400).json({
-         status: 400,
-         data: {
-            message: __("verification_subject_error") 
-         }
-      })
+      
+      res.status(200).render('verification_error',{
+      });
+
    }else{
       user.isAccountVerified = true
       user.verificationExpires = undefined
       user.verificationToken = undefined
       await user.save()
-      await Mailer.sendAccountVerificationOkey(user,null)
-      res.status(200).json({
-         status: 200,
-         data: {
-            message: __("verification_subject_okey") 
-         }
-      })
+      
+      res.status(200).render('verification_okey',{
+      });
+
    }
 
 })
@@ -135,7 +135,7 @@ const signIn = catchAsync(async(req, res, next) => {
 
    // checking whether the passwords match with each other. 
    const isPasswordCorrect = await User.correctPassword(password, user.password)
-   if (isPasswordCorrect) {//!isPasswordCorrect
+   if (!isPasswordCorrect) {
       return next(new ApiError(__('error_wrong_password'), 404)) 
    }
    
