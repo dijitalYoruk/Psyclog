@@ -50,6 +50,10 @@ const UserSchema = new Schema({
       default: false,
       required: true
    },
+   calendar: {
+      type: mongoose.Schema.ObjectId,
+      ref: 'Calendar'
+   },
    // Currently, User specific
    cash: {
       type: Number,
@@ -62,7 +66,11 @@ const UserSchema = new Schema({
       type: String,
       required:  [true, 'You should have a role.'],
       default: Constants.ROLE_USER,
-      enum: [Constants.ROLE_USER, Constants.ROLE_ADMIN,  Constants.ROLE_PSYCHOLOGIST]
+      enum: [
+         Constants.ROLE_USER, 
+         Constants.ROLE_ADMIN,  
+         Constants.ROLE_PSYCHOLOGIST
+      ]
    },
    // Psychologist specific
    appointmentPrice: {
@@ -340,7 +348,7 @@ UserSchema.methods.updateProfileImage = async function(data) {
    const url = await s3.uploadFile('profileImages', file, filename)
    this.profileImage = url
 }
- 
+
 // Pagination and export.
 UserSchema.plugin(mongoosePaginate)
 const User = mongoose.model('User', UserSchema)

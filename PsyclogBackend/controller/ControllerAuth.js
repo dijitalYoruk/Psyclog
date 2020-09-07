@@ -3,6 +3,7 @@
 // =====================
 const { catchAsync } = require('../utils/ErrorHandling')
 const constants = require('../utils/constants')
+const Calendar = require('../model/calendar')
 const ApiError = require('../utils/ApiError')
 const Mailer = require('../utils/mailer')
 const User = require('../model/user')
@@ -23,8 +24,16 @@ const signUpPatient = catchAsync(async (req, res, next) => {
    req.body.role = constants.ROLE_USER
    const data = User.filterBody(req.body)
 
+   // create calendar for the user
+   const calendar = new Calendar({ role: data.role})
+   data.calendar = calendar._id
+   
    // creating the user.
    const user = await User.create(data)
+   calendar.user = user
+   await calendar.save()
+
+
    const url=`${req.protocol}://${req.get('host')}/api/v1/auth/profile`;
 
    //new Mailer(user,url).sendWelcome();
@@ -48,8 +57,14 @@ const signUpPsychologist = catchAsync(async (req, res, next) => {
    req.body.role = constants.ROLE_PSYCHOLOGIST
    const data = User.filterBody(req.body)
 
-   // creating the user.
+   // create calendar for the psychologist
+   const calendar = new Calendar({ role: data.role})
+   data.calendar = calendar._id
+ 
+   // creating the psychologist.
    const user = await User.create(data)
+   calendar.user = user
+   await calendar.save()
 
    // sending response
    res.status(200).json({

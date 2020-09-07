@@ -9,10 +9,15 @@
     "error_already_patient": "You are already patient of the psychologist.",
     "error_select_psychologist": "Please select a Psychologist.",
     "success_change": "%s has been changed successfully.",
+    "success_create": "%s has been changed successfully.",
     "success_delete": "%s has been successfully deleted.",
     "success_finish": "Finished",
     "success_accepted": "%s has been accepted successfully",
     "success_deny": "%s has been denied.",
     "error_unauthorized": "Unauthorized",
-    "reset_subject":"Your Password reset token (valid for only 10 minutes)!"
+    "reset_subject":"Your Password reset token (valid for only 10 minutes)!",
+    "reservation_violation": "Vioalating reserved appointment time.",
+    "blocked_time_violation": "invalid appointment times are entered.",
+    "ternination_not_possible": "The appointment has not been done yet.Hence termination not possible.",
+    "success_terminate": "Appointment has been erminated successfully."
 }
