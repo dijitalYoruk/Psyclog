@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const Constants = require('../utils/constants')
+const Calendar = require('../model/calendar')
 const { getToday } = require('../utils/util')
 const ApiError = require('../utils/ApiError')
 const Schema = mongoose.Schema
@@ -7,21 +8,21 @@ const Schema = mongoose.Schema
 const AppointmentSchema = new Schema({
     intervals: [{
         type: Number,
-        required: true
+        required: [true, 'Appointment should have dedicated time slots.'],
     }],
     appointmentDate: {
         type: Date,
-        required: true
+        required: [true, 'Appointment should have a date.'],
     },
     psychologist: {
         type: mongoose.Schema.ObjectId,
         ref: 'User',
-        required: [true, 'Chat should have a psychologist.'],
+        required: [true, 'Appointment should have a psychologist.'],
     },
     patient: {
         type: mongoose.Schema.ObjectId,
         ref: 'User',
-        required: [true, 'Chat should have a patient.'],
+        required: [true, 'Appointment should have a patient.'],
     }
 }, {
     timestamps: true,
@@ -74,6 +75,22 @@ AppointmentSchema.statics.validateDate = function(appointmentDate, isCreate) {
     }
 }
 
+
+AppointmentSchema.pre('remove', async function(next) {
+    const calendarIdPatient = this.patient
+    const calendarIdPsychologist = this.psychologist
+
+    const promise1 = Calendar.findOneAndUpdate(
+        { user: calendarIdPatient }, 
+        { $pull: { appointments: this._id }})
+    
+    const promise2 = Calendar.findOneAndUpdate(
+        { user: calendarIdPsychologist }, 
+        { $pull: { appointments: this._id }})
+
+    await Promise.all([promise1, promise2])
+    next()
+})
 
 const Appointment = mongoose.model('Appointment', AppointmentSchema)
 module.exports = Appointment

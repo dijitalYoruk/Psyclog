@@ -50,6 +50,10 @@ const UserSchema = new Schema({
       default: false,
       required: true
    },
+   calendar: {
+      type: mongoose.Schema.ObjectId,
+      ref: 'Calendar'
+   },
    // Currently, User specific
    cash: {
       type: Number,
@@ -62,7 +66,11 @@ const UserSchema = new Schema({
       type: String,
       required:  [true, 'You should have a role.'],
       default: Constants.ROLE_USER,
-      enum: [Constants.ROLE_USER, Constants.ROLE_ADMIN,  Constants.ROLE_PSYCHOLOGIST]
+      enum: [
+         Constants.ROLE_USER, 
+         Constants.ROLE_ADMIN,  
+         Constants.ROLE_PSYCHOLOGIST
+      ]
    },
    // Psychologist specific
    appointmentPrice: {
@@ -72,31 +80,6 @@ const UserSchema = new Schema({
          'Appointment Price is required.'
       ]
    },
-   blockedIntervalsMonday: [{
-      type: Number,
-      min: 0, 
-      max: 12,
-   }],
-   blockedIntervalsTuesday: [{
-      type: Number,
-      min: 0, 
-      max: 12,
-   }],
-   blockedIntervalsWednesday: [{
-      type: Number,
-      min: 0, 
-      max: 12,
-   }],
-   blockedIntervalsThursday: [{
-      type: Number,
-      min: 0, 
-      max: 12,
-   }],
-   blockedIntervalsFriday: [{
-      type: Number,
-      min: 0, 
-      max: 12,
-   }],
    // Psychologist specific
    patients: [{
       type: mongoose.Schema.ObjectId,
@@ -366,40 +349,6 @@ UserSchema.methods.updateProfileImage = async function(data) {
    this.profileImage = url
 }
 
-// get blocked intervals
-UserSchema.methods.retrieveBlockedTimes = function(day) {
-   if (day == 1) {
-      return this.blockedIntervalsMonday 
-   } else if (day == 2) {
-      return this.blockedIntervalsTuesday 
-   } else if (day == 3) {
-      return this.blockedIntervalsWednesday 
-   } else if (day == 4) {
-      return this.blockedIntervalsThursday 
-   } else if (day == 5) {
-      return this.blockedIntervalsFriday 
-   } 
-}
-
-// get blocked intervals
-UserSchema.methods.updateBlockedTimes = function(day, intervals) {
-   intervals = [...new Set(intervals)];
-
-   if (day == 1) {
-      return this.blockedIntervalsMonday = intervals
-   } else if (day == 2) {
-      return this.blockedIntervalsTuesday = intervals
-   } else if (day == 3) {
-      return this.blockedIntervalsWednesday = intervals
-   } else if (day == 4) {
-      return this.blockedIntervalsThursday = intervals
-   } else if (day == 5) {
-      return this.blockedIntervalsFriday = intervals
-   }
-}
-
-
- 
 // Pagination and export.
 UserSchema.plugin(mongoosePaginate)
 const User = mongoose.model('User', UserSchema)

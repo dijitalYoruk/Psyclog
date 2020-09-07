@@ -6,6 +6,7 @@ const { catchAsync } = require('../utils/ErrorHandling')
 const Appointment = require('../model/appointment')
 const constants = require('../utils/constants')
 const ApiError = require('../utils/ApiError')
+const Calendar = require('../model/calendar')
 const User = require('../model/user')
 const { __ } = require('i18n')
 
@@ -24,10 +25,11 @@ const blockIntervals = catchAsync(async (req, res, next) => {
     if (blockedIntervals.length > 13) {
         next(new ApiError('There can not be more than 13 time slots.'))
     }
-    
+        
     // update the blocked times.
-    psychologist.updateBlockedTimes(day, blockedIntervals)
-    await psychologist.save()
+    const calendar = await Calendar.findById(psychologist.calendar)
+    calendar.updateBlockedTimes(day, blockedIntervals)
+    await calendar.save()
 
     res.status(200).json({
         status: 200,
@@ -43,6 +45,7 @@ const retrieveDateStatus = catchAsync(async (req, res, next) => {
     const patient = req.currentUser
     const { psychologistId, day, month, year } = req.body
     const psychologist = await User.findById(psychologistId)
+                                   .populate('calendar')
 
     // check whether patient is registered to psychologist.
     if (!patient.registeredPsychologists.includes(psychologistId)) {
@@ -60,15 +63,13 @@ const retrieveDateStatus = catchAsync(async (req, res, next) => {
         reserved.push(...appointment.intervals)
     }
 
-    const blocked = psychologist.retrieveBlockedTimes(
+    // extract blocked intervals.
+    const blocked = psychologist.calendar.retrieveBlockedTimes(
         appointmentDate.getDay())
 
     res.status(200).json({
         status: 200,
-        data: { 
-            blocked, 
-            reserved 
-        } 
+        data: { blocked, reserved } 
     })
 })
 
@@ -78,6 +79,7 @@ const createAppointment = catchAsync(async (req, res, next) => {
     const patient = req.currentUser
     let { day, month, year, intervals, psychologistId } = req.body
     const psychologist = await User.findById(psychologistId)
+                                   .populate('calendar')
 
     // check whether patient is registered to psychologist.
     if (!patient.registeredPsychologists.includes(psychologistId)) {
@@ -95,7 +97,8 @@ const createAppointment = catchAsync(async (req, res, next) => {
     }
 
     // check whether the appointment times are conflicting with the blocked times.
-    const blockedIntervals = psychologist.retrieveBlockedTimes(appointmentDate.getDay())
+    const calendar = psychologist.calendar
+    const blockedIntervals = calendar.retrieveBlockedTimes(appointmentDate.getDay())
     if (Appointment.conflictsWithBlocked(intervals, blockedIntervals)) {
         return next(new ApiError('Blocked Violation', 400))
     }
@@ -107,8 +110,12 @@ const createAppointment = catchAsync(async (req, res, next) => {
 
     // save appointment.
     let appointment = { psychologist, intervals, appointmentDate, patient }
-    await Appointment.create(appointment) 
+    appointment = await Appointment.create(appointment) 
  
+    // update calendar.
+    calendar.appointments.push(appointment)
+    await calendar.save()
+
     res.status(200).json({
         status: 200,
         data: { 
@@ -240,8 +247,6 @@ const terminateAppointment = catchAsync(async (req, res, next) => {
        data: { message: __('success_terminate') } 
     })
 })
-
-
 
 module.exports = {
     updateAppointmentTime,
