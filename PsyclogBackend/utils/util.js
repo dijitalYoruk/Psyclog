@@ -37,7 +37,15 @@ const constructStartDate = (date, timeSlotIndex) => {
    return Date.parse(startTime)
 }
 
+const constructEndDate = (date, timeSlotIndex) => {
+   const dateISO = date.toISOString().split('T')[0]
+   const timeSlot = Constants.VALID_TIME_INTERVALS[timeSlotIndex]
+   const endTime = new Date(`${dateISO}T${timeSlot.endTime}`)
+   return Date.parse(endTime)
+}
+
 module.exports = { constructStartDate, 
+                   constructEndDate,
                    retrieveJWTtoken, 
                    filterObject, 
                    isMatching, 
