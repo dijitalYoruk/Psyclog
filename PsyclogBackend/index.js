@@ -41,6 +41,7 @@ app.set('views','./views')
 // =====================
 // routes
 // =====================
+const routesBan = require('./routes/routesBan')
 const routesUser = require('./routes/routesUser')
 const routesAuth = require('./routes/routesAuth')
 const routesReview = require('./routes/routesReview')
@@ -48,6 +49,7 @@ const routesWallet = require('./routes/routesWallet')
 const routesAppointment = require('./routes/routesAppointment')
 const routesClientRequests = require('./routes/routesClientRequests')
 
+app.use('/api/v1/ban', routesBan)
 app.use('/api/v1/user', routesUser)
 app.use('/api/v1/auth', routesAuth)
 app.use('/api/v1/review', routesReview)
