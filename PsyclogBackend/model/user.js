@@ -55,11 +55,13 @@ const UserSchema = new Schema({
       ref: 'Calendar'
    },
    // Currently, User specific
-   cash: {
-      type: Number,
+   wallet: {
+      type: mongoose.Schema.ObjectId,
+      ref: 'Wallet',
       required: [
-         function() { return (this.role === Constants.ROLE_USER) },
-         'Cash is required.'
+         function() { return (this.role === Constants.ROLE_USER) || 
+                             (this.role === Constants.ROLE_PSYCHOLOGIST) },
+         'Wallet is required.'
       ]
    },
    role: {
@@ -193,7 +195,6 @@ UserSchema.statics.filterBody = body => {
       'surname', 
       'email',      
       'role',
-      'cash',
       'name']
 
    const itemsPsychologist = [
@@ -281,7 +282,7 @@ UserSchema.pre('save', async function(next) {
       this.transcript = undefined
       this.biography = undefined
       this.patients = undefined
-      this.cash = undefined
+      this.wallet = undefined
       this.cv = undefined
    }
 
@@ -299,7 +300,6 @@ UserSchema.pre('save', async function(next) {
    // seting irrelevant items for psychologist as undefined.
    else if (this.role === Constants.ROLE_PSYCHOLOGIST) {
       this.registeredPsychologists = undefined
-      this.cash = undefined
    }
 
    // changing password

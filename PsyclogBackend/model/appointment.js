@@ -6,6 +6,10 @@ const ApiError = require('../utils/ApiError')
 const Schema = mongoose.Schema
 
 const AppointmentSchema = new Schema({
+    price: {
+        type: Number,
+        required: [true, 'Appointment should have a price.'],
+    },
     intervals: [{
         type: Number,
         required: [true, 'Appointment should have dedicated time slots.'],

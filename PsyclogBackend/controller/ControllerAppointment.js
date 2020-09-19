@@ -7,6 +7,7 @@ const Appointment = require('../model/appointment')
 const constants = require('../utils/constants')
 const ApiError = require('../utils/ApiError')
 const Calendar = require('../model/calendar')
+const Wallet = require('../model/wallet')
 const User = require('../model/user')
 const { __ } = require('i18n')
 
@@ -81,6 +82,7 @@ const createAppointment = catchAsync(async (req, res, next) => {
     const psychologist = await User.findById(psychologistId)
                                    .populate('calendar')
 
+
     // check whether patient is registered to psychologist.
     if (!patient.registeredPsychologists.includes(psychologistId)) {
         return next(new ApiError(__('error_unauthorized'), 403))
@@ -108,10 +110,20 @@ const createAppointment = catchAsync(async (req, res, next) => {
         psychologist, appointmentDate, intervals: { $in: intervals } })
     if (count > 0) { return next(new ApiError(__('reservation_violation'), 400)) }
 
-    // save appointment.
-    let appointment = { psychologist, intervals, appointmentDate, patient }
+    // retrieve patient wallet
+    const price = intervals.length * psychologist.appointmentPrice
+    const patientWallet = await Wallet.findById(patient.wallet)
+    if (patientWallet.cash < price) {
+        return next(new ApiError('Cash Not Enough', 400))
+    }
+
+    // save appointment and wallet.
+    let appointment = { psychologist, intervals, appointmentDate, patient, price }
+    patientWallet.cash -= price
+
     appointment = await Appointment.create(appointment) 
- 
+    await patientWallet.save()
+
     // update calendar.
     calendar.appointments.push(appointment)
     await calendar.save()
@@ -182,10 +194,14 @@ const cancelAppointment = catchAsync(async (req, res, next) => {
     const appointment = await Appointment.findById(appointmentId)
     const appointmentDateParsed = Date.parse(appointment.appointmentDate)
     const remainingTime = appointmentDateParsed - todayParsed
+    const price = appointment.price
 
     // psychologist removing
     if (currentUser.role === constants.ROLE_PSYCHOLOGIST && 
         isMatching(appointment.psychologist, currentUser._id)) {
+        await Wallet.findOneAndUpdate(
+            { owner: appointment.patient }, 
+            { $inc: { cash: price } })
         await appointment.remove()
     } 
 
@@ -193,22 +209,25 @@ const cancelAppointment = catchAsync(async (req, res, next) => {
     else if (currentUser.role === constants.ROLE_USER && 
         isMatching(appointment.patient, currentUser._id) && 
         remainingTime > constants.DAYS_3) {
+        await Wallet.findOneAndUpdate(
+            { owner: appointment.patient }, 
+            { $inc: { cash: price } })
         await appointment.remove()
     }
 
-    // patient removing within the last 3 says.
+    // patient removing within the last 3 days.
     else if (currentUser.role === constants.ROLE_USER && 
-        isMatching(appointment.patient, currentUser._id)) {
-        // TODO Money retrievel from the customes needs 
-        // to be done you need due to late cancellation
-        console.log('Transaction has been done')
+        isMatching(appointment.patient, currentUser._id)) {        
+        await Wallet.findOneAndUpdate(
+            { owner: appointment.psychologist }, 
+            { $inc: { cash: price } })
         await appointment.remove()
     }
 
     else {
         return next(new ApiError(__('error_unauthorized'), 403))
     }
- 
+
     res.status(205).json({
        status: 205,
        data: { message: __('success_delete', 'Appointment') } 
@@ -237,9 +256,9 @@ const terminateAppointment = catchAsync(async (req, res, next) => {
         return next(new ApiError(__('ternination_not_possible'), 403))
     }
 
-    // TODO Money retrievel from the customes needs 
-    // to be done because of the finishing.
-    console.log('Transaction has been done')
+    await Wallet.findOneAndUpdate(
+        { owner: appointment.psychologist }, 
+        { $inc: { cash: appointment.price } })
     await appointment.remove()
  
     res.status(200).json({

@@ -6,6 +6,7 @@ const constants = require('../utils/constants')
 const Calendar = require('../model/calendar')
 const ApiError = require('../utils/ApiError')
 const Mailer = require('../utils/mailer')
+const Wallet = require('../model/wallet')
 const User = require('../model/user')
 const crypto = require('crypto')
 
@@ -28,14 +29,18 @@ const signUpPatient = catchAsync(async (req, res, next) => {
    const calendar = new Calendar({ role: data.role})
    data.calendar = calendar._id
    
+   // create wallet for the user
+   const wallet = new Wallet({})
+   data.wallet = wallet._id
+
    // creating the user.
    const user = await User.create(data)
    calendar.user = user
+   wallet.owner = user
    await calendar.save()
-
+   await wallet.save()
 
    const url=`${req.protocol}://${req.get('host')}/api/v1/auth/profile`;
-
    //new Mailer(user,url).sendWelcome();
 
    res.status(200).json({
@@ -60,11 +65,17 @@ const signUpPsychologist = catchAsync(async (req, res, next) => {
    // create calendar for the psychologist
    const calendar = new Calendar({ role: data.role})
    data.calendar = calendar._id
+
+   // create wallet for the user
+   const wallet = new Wallet({})
+   data.wallet = wallet._id
  
    // creating the psychologist.
    const user = await User.create(data)
    calendar.user = user
+   wallet.owner = user
    await calendar.save()
+   await wallet.save()
 
    // sending response
    res.status(200).json({
