@@ -1,7 +1,8 @@
 // =====================
 // imports
 // =====================
-const { isMatching, getToday, constructStartDate } = require('../utils/util')
+const { isMatching, getToday, 
+    constructStartDate, constructEndDate } = require('../utils/util')
 const { catchAsync } = require('../utils/ErrorHandling')
 const Appointment = require('../model/appointment')
 const constants = require('../utils/constants')
@@ -9,7 +10,7 @@ const ApiError = require('../utils/ApiError')
 const Calendar = require('../model/calendar')
 const Wallet = require('../model/wallet')
 const User = require('../model/user')
-const { __ } = require('i18n')
+const cron = require('node-cron');
 
 
 // =====================
@@ -267,11 +268,65 @@ const terminateAppointment = catchAsync(async (req, res, next) => {
     })
 })
 
+
+const retrievePersonalAppointments = catchAsync(async (req, res, next) => {
+    // retrieve data
+    const currentUser = req.currentUser
+    let appointments = []
+
+    // psychologist gets his own appointments.
+    if (currentUser.role === constants.ROLE_PSYCHOLOGIST) {
+        appointments = await Appointment.find({ psychologist: currentUser._id })
+            .populate({ path: 'patient', select: 'username name surname profileImage email' })
+            .lean()
+    }
+    else { // patient views his own appointments.
+        appointments = await Appointment.find({ patient: currentUser._id })
+            .populate({ path: 'psychologist', select: 'username name surname profileImage email' })
+            .lean()
+    }
+
+    // construct start and end times.
+    for (const appointment of appointments) {
+        // construct the date object for starting time
+        const endTimeSlot = appointment.intervals.pop()
+        const startingTimeSlot = appointment.intervals[0]
+        const appointmentDate = appointment.appointmentDate
+        appointment.end = constructEndDate(appointmentDate, endTimeSlot)
+        appointment.start = constructStartDate(appointmentDate, startingTimeSlot)
+    }
+
+    res.status(200).json({
+       status: 200,
+       data: { appointments } 
+    })
+})
+
+cron.schedule('0 0 * * *', async () => {
+    const fourDayBefore = Date.now() - 1000 * 60 * 60 * 4
+    const appointments = await Appointment.find({ 
+        appointmentDate : { $lte: fourDayBefore } })
+    const promises = []
+
+    for (const appointment of appointments) {
+        const promise1 = Wallet.findOneAndUpdate(
+            { owner: appointment.psychologist }, 
+            { $inc: { cash: appointment.price } })
+        const promise2 = appointment.remove()
+        promises.push(promise1)
+        promises.push(promise2)
+    }
+
+    await Promise.all(promises)
+});
+
+
 module.exports = {
     updateAppointmentTime,
     createAppointment,
     retrieveDateStatus,
     blockIntervals,
     cancelAppointment,
-    terminateAppointment
+    terminateAppointment,
+    retrievePersonalAppointments
 }
