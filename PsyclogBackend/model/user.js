@@ -3,9 +3,11 @@
 // =====================
 const mongoosePaginate = require('mongoose-paginate-v2')
 const ClientRequest = require('../model/clientRequest')
+const Appointment = require('../model/appointment')
 const { filterObject } = require('../utils/util')
 const Constants = require('../utils/constants')
 const Review = require('../model/review')
+const Wallet = require('../model/wallet')
 const { promisify } = require('util')
 const mongoose = require('mongoose')
 const jwt = require('jsonwebtoken')
@@ -155,6 +157,7 @@ const UserSchema = new Schema({
    },
    passwordResetToken: String,
    passwordResetExpires: Date,
+   banTerminationDate: Date
 
 }, {timestamps: true, versionKey: false})
 
@@ -321,6 +324,24 @@ UserSchema.pre('remove', async function(next) {
    })
    
    await Promise.all([promiseReview, promiseRequests])
+   
+   const appointments = await Appointment.find({ 
+      $or: [{ patient: this.id }, { psychologist: this.id }] 
+   })
+
+   for (const appointment of appointments) {
+      if (this.role == Constants.ROLE_USER) {
+         await Wallet.findOneAndUpdate(
+            { owner: appointment.psychologist }, 
+            { $inc: { cash: appointment.price } })
+      } else {
+         await Wallet.findOneAndUpdate(
+            { owner: appointment.patient }, 
+            { $inc: { cash: appointment.price } })
+      }
+      await appointment.remove()
+   }   
+   
    next()
 })
 

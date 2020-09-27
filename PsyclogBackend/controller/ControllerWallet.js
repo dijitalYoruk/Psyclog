@@ -1,4 +1,5 @@
 const Wallet = require('../model/wallet')
+const ApiError = require('../utils/ApiError')
 const { catchAsync } = require('../utils/ErrorHandling')
 
 const uploadMoney = catchAsync(async (req, res, next) => {
