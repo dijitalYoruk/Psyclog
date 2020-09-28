@@ -2,6 +2,9 @@ module.exports = {
    ROLE_USER: "user",
    ROLE_ADMIN: "role_admin",
    ROLE_PSYCHOLOGIST: "role_psychologist",
+   SUPPORT_INFO: "Info",
+   SUPPORT_PROBLEM: "Problem",
+   SUPPORT_COMPLAINT: "Complaint",
    VALID_TIME_INTERVALS: {
       0:  { startTime: '10:00:00', endTime: '10:45:00' },  
       1:  { startTime: '11:00:00', endTime: '11:45:00' },  

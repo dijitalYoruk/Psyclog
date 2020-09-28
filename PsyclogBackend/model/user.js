@@ -145,6 +145,15 @@ const UserSchema = new Schema({
          'CV is required.'
       ]
    },
+   penaltyCount : {
+      min: 0,
+      type: Number,
+      required: [
+         function() { return this.role == Constants.ROLE_PSYCHOLOGIST },
+         'Penalty Count is required.'
+      ],
+      default: 0,
+   },
    passwordConfirm: {
       type: String,
       trim: true,

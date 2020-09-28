@@ -90,8 +90,29 @@ const removeBanFromPatient = catchAsync(async (req, res, next) => {
     })
 })
 
+
+const updatePenaltyOfPsychologist = catchAsync(async (req, res, next) => {
+    const { penalty, psychologistId } = req.body
+    const psychologist = await User.findById(psychologistId)
+
+    if (!psychologist) {
+        return next(new ApiError(__('error_not_found', 'Psychologist'), 404))
+    }
+
+    psychologist.penaltyCount = penalty
+    await psychologist.save()
+
+    res.status(200).json({
+        status: 200,
+        data: { message: 'Penalty updated.' } 
+    })
+})
+
+
+
 module.exports = {
     banPatientAsAdmin,
+    removeBanFromPatient,
     banPatientAsPsychologist,
-    removeBanFromPatient
+    updatePenaltyOfPsychologist
 }
