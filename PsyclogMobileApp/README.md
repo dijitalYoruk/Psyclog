@@ -1,0 +1,2 @@
+# psyclog_app
+A new flutter application for video calls between therapists and clients. This project is for Senior Project of Bilkent University Computer Science Department. It will be developed with Flutter, MongoDB, Node.js and mostly be dependant on WebRTC APIs.
