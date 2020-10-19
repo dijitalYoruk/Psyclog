@@ -2,6 +2,7 @@ const sharp = require('sharp')
 const multer = require('multer')
 const ApiError = require('./ApiError')
 const { catchAsync } = require('./ErrorHandling')
+const { v4:uuidv4 }  = require('uuid')
 
 // setup storage type
 const multerStorage = multer.memoryStorage()
@@ -45,6 +46,32 @@ const resizeProfileImage = catchAsync(async (req, res, next) => {
 const uploadProfileImage = [uploader.single('profileImage'), resizeProfileImage]
 
 
+// =====================================================
+// Upload Post Images
+// =====================================================
+const resizePostsImages = catchAsync(async (req, res, next) => {
+    if (!req.files) return next();
+    const uuid = uuidv4()
+
+    for (let index in req.files) {
+        const filename = `post-${uuid}-${index}.jpeg`;
+        const file = await sharp(req.files[index].buffer)
+            .resize(400, 250)
+            .toFormat('jpeg')
+            .jpeg({ quality: 90 })
+            .toBuffer()
+        req.files[index] = { file, filename }
+    }
+
+    next()
+})
+
+const uploadPostImages = [uploader.array('postImages'), resizePostsImages]
+const uploadNewPostImages = [uploader.array('newPostImages'), resizePostsImages]
+
+
 module.exports = {
-    uploadProfileImage
+    uploadProfileImage,
+    uploadPostImages,
+    uploadNewPostImages
 }

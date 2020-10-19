@@ -4,12 +4,14 @@
 const express = require('express')
 const routerAuth = express.Router()
 const middlewareAuth = require('../middleware/middlewareAuth')
+const { uploadProfileImage } = require('../utils/FileUpload')
 
 
 // =====================
 // methods
 // =====================
-const { signIn,
+const { 
+   signIn,
    signUpPatient,
    resetPassword,
    getResetPassword,
@@ -17,9 +19,8 @@ const { signIn,
    deleteProfile,
    forgotPassword,
    retrieveProfile,
-   signUpPsychologist} = require('../controller/ControllerAuth')
+   signUpPsychologist } = require('../controller/ControllerAuth')
 
-const { uploadProfileImage } = require('../utils/FileUpload')
 
 // =====================
 // routes
