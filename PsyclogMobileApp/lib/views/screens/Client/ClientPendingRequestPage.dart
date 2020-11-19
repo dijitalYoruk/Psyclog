@@ -1,6 +1,8 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:psyclog_app/src/models/Therapist.dart';
 import 'package:psyclog_app/src/models/TherapistRequest.dart';
 import 'package:psyclog_app/views/util/ViewConstants.dart';
 import 'package:psyclog_app/view_models/client/ClientPendingListViewModel.dart';
@@ -40,12 +42,12 @@ class _ClientPendingRequestPageState extends State<ClientPendingRequestPage> {
           stretch: true,
           title: new Text(
             "Pending Requests",
-            style: TextStyle(color: ViewConstants.myLightBlue.withOpacity(0.6)),
+            style: TextStyle(color: ViewConstants.myGrey),
           ),
           centerTitle: true,
           backgroundColor: Colors.transparent,
           iconTheme: IconThemeData(
-            color: ViewConstants.myLightBlue.withOpacity(0.6),
+            color: ViewConstants.myGrey,
           ),
         ),
         SliverToBoxAdapter(
@@ -99,13 +101,14 @@ class _ClientPendingRequestPageState extends State<ClientPendingRequestPage> {
                                 begin: Alignment.centerLeft,
                                 end: Alignment.centerRight,
                                 colors: [
-                              ViewConstants.myLightBlue,
-                              ViewConstants.myLightBlue.withOpacity(0.5)
+                              ViewConstants.myPink,
+                              ViewConstants.myPink.withOpacity(0.50)
                             ])),
                         child: Align(
                           alignment: Alignment.centerRight,
                           child: Icon(
                             Icons.clear,
+                            color: ViewConstants.myBlack,
                             size: 75,
                           ),
                         ),
@@ -136,7 +139,90 @@ class _ClientPendingRequestPageState extends State<ClientPendingRequestPage> {
                                   ),
                                 ),
                                 Expanded(
-                                  child: Column(),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(10.0),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "Dr. " +
+                                              (_request.getTherapist
+                                                      as Therapist)
+                                                  .getFullName(),
+                                          style: GoogleFonts.lato(fontSize: 15, color: ViewConstants.myBlack, fontWeight: FontWeight.bold),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(vertical: 5.0),
+                                          child: Text(
+                                            "Family and Marriage Therapist",
+                                            style: GoogleFonts.lato(fontSize: 12, color: ViewConstants.myPink, fontWeight: FontWeight.w600),
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(vertical: 3.0),
+                                          child: Text(
+                                            "Appointment Price: " +
+                                                (_request.getTherapist
+                                                        as Therapist)
+                                                    .appointmentPrice
+                                                    .toString() +
+                                                " \$ per Hour",
+                                            style: GoogleFonts.lato(fontSize: 12, color: ViewConstants.myBlack, fontWeight: FontWeight.w500),
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: Row(
+                                            crossAxisAlignment: CrossAxisAlignment.end,
+                                            children: [
+                                              FlatButton(
+                                                materialTapTargetSize:
+                                                    MaterialTapTargetSize
+                                                        .shrinkWrap,
+                                                onPressed: () {},
+                                                padding: EdgeInsets.zero,
+                                                child: Text(
+                                                  "CV",
+                                                  style: GoogleFonts.lato(),
+                                                ),
+                                                color: ViewConstants.myGrey,
+                                                splashColor:
+                                                    ViewConstants.myLightBlue,
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.only(bottomLeft: Radius.circular(5)),
+                                                ),
+                                              ),
+                                              Expanded(
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.symmetric(
+                                                          horizontal: 5.0),
+                                                  child: FlatButton(
+                                                    materialTapTargetSize:
+                                                        MaterialTapTargetSize
+                                                            .shrinkWrap,
+                                                    padding: EdgeInsets.zero,
+                                                    onPressed: () {},
+                                                    child: Text(
+                                                      "Biography",
+                                                      style: GoogleFonts.lato(),
+                                                    ),
+                                                    color: ViewConstants.myPink,
+                                                    splashColor:
+                                                        ViewConstants.myBlack,
+                                                    shape: RoundedRectangleBorder(
+                                                      borderRadius: BorderRadius.only(bottomRight: Radius.circular(5)),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
                                 )
                               ],
                             ),

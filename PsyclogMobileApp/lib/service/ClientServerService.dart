@@ -1,7 +1,6 @@
 library services;
 
 import 'dart:convert';
-
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
@@ -20,6 +19,8 @@ class ClientServerService extends WebServerService {
   get currentClient => super.currentUser;
 
   static Future<ClientServerService> getClientServerService() async {
+
+    // TODO USER Restrictions
 
     if (_serverAddress == null) {
       _serverAddress = ServiceConstants.serverAddress;
@@ -71,6 +72,9 @@ class ClientServerService extends WebServerService {
   }
 
   createPatientRequest(String therapistID, String infoMessage) async {
+
+    // TODO USER Restrictions
+
     final message =
     jsonEncode({"psychologist": therapistID, "content": infoMessage});
 
@@ -100,6 +104,9 @@ class ClientServerService extends WebServerService {
   }
 
   Future<Response> getPendingTherapistsList() async {
+
+    // TODO USER Restrictions
+
     final String currentUserToken = await getToken();
 
     if (currentUserToken != null) {
@@ -122,6 +129,9 @@ class ClientServerService extends WebServerService {
   }
 
   Future<List<String>> getPendingTherapistsIDList() async {
+
+    // TODO USER Restrictions
+
     final String currentUserToken = await getToken();
 
     if (currentUserToken != null) {
@@ -155,6 +165,9 @@ class ClientServerService extends WebServerService {
   }
 
   Future<String> removePendingRequestByID(requestID) async {
+
+    // TODO USER Restrictions
+
     final String currentUserToken = await getToken();
 
     if (currentUserToken != null) {

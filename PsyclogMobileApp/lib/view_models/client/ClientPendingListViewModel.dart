@@ -49,12 +49,14 @@ class ClientPendingListViewModel extends ChangeNotifier {
     String response = await _serverService.removePendingRequestByID(_pendingTherapistList[index].getRequestID);
 
     if(response == ServiceErrorHandling.successfulStatusCode) {
+      _pendingTherapistList.removeAt(index);
       return true;
     }
     else {
       print("Removing Pending request failed. Response: " + response);
       return false;
     }
+
   }
 
   int getCurrentListLength() {

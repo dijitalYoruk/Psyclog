@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:psyclog_app/src/models/Therapist.dart';
 import 'package:psyclog_app/view_models/client/ClientSearchListViewModel.dart';
@@ -212,15 +213,7 @@ class _ClientTherapistsListPageState extends State<ClientTherapistsListPage> {
                                                                       .userSurname
                                                                       .toString()
                                                                       .inCaps,
-                                                              style: TextStyle(
-                                                                  fontSize: 15,
-                                                                  color: ViewConstants
-                                                                      .darkGreyBlue,
-                                                                  fontFamily:
-                                                                      "OpenSans",
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w700),
+                                                              style: GoogleFonts.lato(fontSize: 16, color: ViewConstants.myBlack, fontWeight: FontWeight.bold),
                                                             ),
                                                           ),
                                                           Padding(
@@ -229,16 +222,7 @@ class _ClientTherapistsListPageState extends State<ClientTherapistsListPage> {
                                                                     .only(top: 3),
                                                             child: Text(
                                                               "Family and Marriage Therapist",
-                                                              style: TextStyle(
-                                                                  fontSize: 10,
-                                                                  color:
-                                                                      ViewConstants
-                                                                          .myBlue,
-                                                                  fontFamily:
-                                                                      "OpenSans",
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w600),
+                                                              style: GoogleFonts.lato(fontSize: 13, color: ViewConstants.myBlue, fontWeight: FontWeight.w600),
                                                             ),
                                                           ),
                                                           Padding(
@@ -250,17 +234,7 @@ class _ClientTherapistsListPageState extends State<ClientTherapistsListPage> {
                                                                       .nextInt(20)
                                                                       .toString() +
                                                                   " years experience",
-                                                              style: TextStyle(
-                                                                  fontSize: 10,
-                                                                  color: ViewConstants
-                                                                      .myPink
-                                                                      .withOpacity(
-                                                                          0.75),
-                                                                  fontFamily:
-                                                                      "OpenSans",
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w600),
+                                                              style: GoogleFonts.lato(fontSize: 12, color: ViewConstants.myPink, fontWeight: FontWeight.w600),
                                                             ),
                                                           ),
                                                           Padding(
@@ -272,15 +246,7 @@ class _ClientTherapistsListPageState extends State<ClientTherapistsListPage> {
                                                                       .appointmentPrice
                                                                       .toString() +
                                                                   "\$ per Hour",
-                                                              style: TextStyle(
-                                                                  fontSize: 10,
-                                                                  color: ViewConstants
-                                                                      .darkGreyBlue,
-                                                                  fontFamily:
-                                                                      "OpenSans",
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w600),
+                                                              style: GoogleFonts.lato(fontSize: 12, color: ViewConstants.myBlack, fontWeight: FontWeight.bold),
                                                             ),
                                                           ),
                                                         ],

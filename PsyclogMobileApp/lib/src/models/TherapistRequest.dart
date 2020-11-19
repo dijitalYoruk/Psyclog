@@ -8,4 +8,5 @@ class TherapistRequest extends Request {
 
   TherapistRequest(String requestID, this._therapist) : super(requestID);
 
+  get getTherapist => _therapist;
 }
