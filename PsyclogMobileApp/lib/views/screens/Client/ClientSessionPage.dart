@@ -1,33 +1,25 @@
 import 'dart:ui';
+
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:psyclog_app/view_models/client/ClientAppointmentListViewModel.dart';
+import 'package:psyclog_app/view_models/client/ClientApprovedListViewModel.dart';
 import 'package:psyclog_app/views/util/ViewConstants.dart';
 
-class ClientAppointmentPage extends StatefulWidget {
+class ClientSessionPage extends StatefulWidget {
   @override
-  _ClientAppointmentPageState createState() => _ClientAppointmentPageState();
+  _ClientSessionPageState createState() => _ClientSessionPageState();
 }
 
-class _ClientAppointmentPageState extends State<ClientAppointmentPage> {
-  ClientAppointmentListViewModel _appointmentListViewModel;
-
-  List<Color> _cardBackgroundColors;
+class _ClientSessionPageState extends State<ClientSessionPage> {
+  ClientApprovedListViewModel _approvedTherapistListViewModel;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
 
-    _appointmentListViewModel = ClientAppointmentListViewModel();
-
-    _cardBackgroundColors = [
-      ViewConstants.myYellow,
-      ViewConstants.myPink,
-      ViewConstants.myBlue,
-      ViewConstants.myLightBlue,
-      ViewConstants.myLightGrey
-    ];
+    _approvedTherapistListViewModel = ClientApprovedListViewModel();
   }
 
   @override
@@ -38,10 +30,10 @@ class _ClientAppointmentPageState extends State<ClientAppointmentPage> {
           decoration: BoxDecoration(
             gradient: LinearGradient(
                 begin: Alignment.topLeft,
-                end: Alignment(5, 5),
-                colors: [ViewConstants.myWhite, ViewConstants.myBlue]),
+                end: Alignment(10, 10),
+                colors: [ViewConstants.myWhite, ViewConstants.myLightBlue]),
           ),
-          child:         CustomScrollView(
+          child: CustomScrollView(
             physics: const BouncingScrollPhysics(),
             slivers: [
               SliverAppBar(
@@ -65,7 +57,7 @@ class _ClientAppointmentPageState extends State<ClientAppointmentPage> {
                               padding: EdgeInsets.only(
                                 left: 20,
                               ),
-                              child: Text("Appointments",
+                              child: Text("Consultants",
                                   textAlign: TextAlign.left,
                                   style: TextStyle(
                                       fontSize: 30,
@@ -85,29 +77,32 @@ class _ClientAppointmentPageState extends State<ClientAppointmentPage> {
                                   },
                                 ),
                                 maxRadius:
-                                MediaQuery.of(context).size.height * 0.025,
+                                    MediaQuery.of(context).size.height * 0.025,
                                 backgroundImage: NetworkImage(
-                                    "https://instagram.fayt2-1.fna.fbcdn.net/v/t51.2885-19/s150x150/117315051_369085030753678_5319131320934149030_n.jpg?_nc_ht=instagram.fayt2-1.fna.fbcdn.net&_nc_ohc=tRNmhh4X0KcAX_7h_fq&oh=0cb73887d5990eb9ca7a32d9689561d9&oe=5F932D22"),
+                                    "https://avatarfiles.alphacoders.com/715/thumb-1920-71560.jpg"),
                               ),
-                            )
+                            ),
                           ],
                         ),
                         Flexible(
                           child: Container(
                             width: MediaQuery.of(context).size.width,
                             height: MediaQuery.of(context).size.height / 12,
-                            margin: EdgeInsets.only(top: 20, right: 20, left: 20),
+                            margin:
+                                EdgeInsets.only(top: 20, right: 20, left: 20),
                             child: FlatButton(
-                              color: ViewConstants.myBlue.withOpacity(0.75),
-                              splashColor: ViewConstants.myYellow,
+                              color:
+                                  ViewConstants.myLightBlue.withOpacity(0.75),
+                              splashColor: ViewConstants.myPink,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    "Appointment History",
+                                    "Pending Requests",
                                     style: TextStyle(
                                         color: ViewConstants.myWhite,
                                         fontWeight: FontWeight.w700,
@@ -117,10 +112,13 @@ class _ClientAppointmentPageState extends State<ClientAppointmentPage> {
                                   Icon(Icons.arrow_forward)
                                 ],
                               ),
-                              onPressed: () {},
+                              onPressed: () {
+                                Navigator.pushNamed(context,
+                                    ViewConstants.clientPendingRequestRoute);
+                              },
                             ),
                           ),
-                        )
+                        ),
                       ],
                     ),
                     stretchModes: [
@@ -129,41 +127,59 @@ class _ClientAppointmentPageState extends State<ClientAppointmentPage> {
                   ),
                 ),
               ),
-              ChangeNotifierProvider<ClientAppointmentListViewModel>(
-                create: (context) => _appointmentListViewModel,
-                child: Consumer<ClientAppointmentListViewModel>(
-                  builder: (context, model, child) => SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                          (context, index) {
-                        Color _backgroundColor = _cardBackgroundColors
-                            .elementAt(index % _cardBackgroundColors.length);
-
-                        return Card(
-                          shadowColor: Colors.transparent,
-                          margin:
-                          EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                          color: _backgroundColor.withOpacity(0.50),
-                          child: Container(
-                            height: MediaQuery.of(context).size.height * 0.18,
-                            child: Row(
-                              children: [
-                                Container(
-                                  color: _backgroundColor,
-                                  width: MediaQuery.of(context).size.width / 30,
-                                )
-                              ],
-                            ),
-                          ),
-                        );
-                      },
-                      childCount: 10,
+              SliverToBoxAdapter(
+                child: Card(
+                  elevation: 4,
+                  shadowColor: ViewConstants.myLightBlue,
+                  color: ViewConstants.myWhite,
+                  clipBehavior: Clip.antiAlias,
+                  margin: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                  child: Container(
+                    padding: EdgeInsets.all(18),
+                    height: MediaQuery.of(context).size.height / 8,
+                    decoration: BoxDecoration(
+                        color: ViewConstants.myLightBlue.withOpacity(0.4)),
+                    child: Center(
+                      child: AutoSizeText(
+                        "From the list below, you can find the registered therapists for fast and efficient consultation.",
+                        maxLines: 2,
+                        minFontSize: 8,
+                        maxFontSize: 20,
+                        stepGranularity: 1,
+                        style: TextStyle(
+                            color: ViewConstants.myGrey,
+                            fontFamily: "OpenSans"),
+                      ),
                     ),
                   ),
                 ),
-              )
+              ),
+              ChangeNotifierProvider<ClientApprovedListViewModel>(
+                create: (context) => _approvedTherapistListViewModel,
+                child: Consumer<ClientApprovedListViewModel>(
+                  builder: (context, model, child) => SliverGrid(
+                    gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                      maxCrossAxisExtent: MediaQuery.of(context).size.width / 2,
+                    ),
+                    delegate: SliverChildBuilderDelegate(
+                      (BuildContext context, int index) {
+                        return Card(
+                          elevation: 2,
+                          shadowColor: ViewConstants.myLightBlue,
+                          color: ViewConstants.myWhite,
+                          margin: EdgeInsets.only(
+                              left: index.isEven ? 20 : 10,
+                              right: index.isEven ? 10 : 20,
+                              bottom: 20),
+                        );
+                      },
+                      childCount: model.getTherapistListLength(),
+                    ),
+                  ),
+                ),
+              ),
             ],
-          )
-          ,
+          ),
         ));
   }
 }

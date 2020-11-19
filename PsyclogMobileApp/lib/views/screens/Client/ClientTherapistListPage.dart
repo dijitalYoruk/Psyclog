@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 import 'package:psyclog_app/src/models/Therapist.dart';
-import 'package:psyclog_app/view_models/client/SearchTherapistListViewModel.dart';
+import 'package:psyclog_app/view_models/client/ClientSearchListViewModel.dart';
 import 'package:psyclog_app/views/controllers/RouteArguments.dart';
 import 'package:psyclog_app/views/util/ViewConstants.dart';
 import 'package:psyclog_app/views/widgets/InactiveTherapistCard.dart';
@@ -23,7 +23,7 @@ class ClientTherapistsListPage extends StatefulWidget {
 }
 
 class _ClientTherapistsListPageState extends State<ClientTherapistsListPage> {
-  SearchTherapistListViewModel _therapistListViewModel;
+  ClientSearchListViewModel _therapistListViewModel;
 
   Color pageColor;
   String pageTitle;
@@ -34,7 +34,7 @@ class _ClientTherapistsListPageState extends State<ClientTherapistsListPage> {
     // TODO: implement initState
     super.initState();
 
-    _therapistListViewModel = SearchTherapistListViewModel();
+    _therapistListViewModel = ClientSearchListViewModel();
 
     switch (widget.pageName) {
       case ViewConstants.allTherapists:
@@ -117,9 +117,9 @@ class _ClientTherapistsListPageState extends State<ClientTherapistsListPage> {
                       ),
                     ),
                   ),
-                  ChangeNotifierProvider<SearchTherapistListViewModel>(
+                  ChangeNotifierProvider<ClientSearchListViewModel>(
                     create: (context) => _therapistListViewModel,
-                    child: Consumer<SearchTherapistListViewModel>(
+                    child: Consumer<ClientSearchListViewModel>(
                       builder: (context, model, child) => SliverList(
                         delegate: SliverChildBuilderDelegate(
                           (context, index) {

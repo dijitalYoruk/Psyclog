@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:psyclog_app/service/WebServerService.dart';
 import 'package:psyclog_app/src/models/Client.dart';
 import 'package:psyclog_app/src/models/Therapist.dart';
-import 'package:psyclog_app/views/screens/ClientAppointmentPage.dart';
-import 'package:psyclog_app/views/screens/ClientSessionPage.dart';
-import 'package:psyclog_app/views/screens/ClientSearchPage.dart';
-import 'package:psyclog_app/views/screens/TherapistAppointmentPage.dart';
-import 'package:psyclog_app/views/screens/TherapistSessionPage.dart';
+import 'package:psyclog_app/views/screens/Client/ClientAppointmentPage.dart';
+import 'package:psyclog_app/views/screens/Client/ClientSessionPage.dart';
+import 'package:psyclog_app/views/screens/Client/ClientSearchPage.dart';
+import 'package:psyclog_app/views/screens/Therapist/TherapistAppointmentPage.dart';
+import 'package:psyclog_app/views/screens/Therapist/TherapistSessionPage.dart';
 import 'package:psyclog_app/views/util/ViewConstants.dart';
 
 class HomePage extends StatefulWidget {

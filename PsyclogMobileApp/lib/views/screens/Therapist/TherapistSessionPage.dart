@@ -2,8 +2,8 @@ import 'dart:ui';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:psyclog_app/view_models/therapist/ApprovedClientListViewModel.dart';
-import 'package:psyclog_app/view_models/therapist/PendingClientListViewModel.dart';
+import 'package:psyclog_app/view_models/therapist/TherapistApprovedListViewModel.dart';
+import 'package:psyclog_app/view_models/therapist/TherapistPendingListViewModel.dart';
 import 'package:psyclog_app/views/util/ViewConstants.dart';
 
 class TherapistSessionPage extends StatefulWidget {
@@ -12,8 +12,8 @@ class TherapistSessionPage extends StatefulWidget {
 }
 
 class _TherapistSessionPageState extends State<TherapistSessionPage> {
-  ApprovedClientListViewModel _approvedClientListViewModel;
-  PendingClientListViewModel _pendingClientListViewModel;
+  TherapistApprovedListViewModel _approvedClientListViewModel;
+  TherapistPendingListViewModel _pendingClientListViewModel;
 
   PageController _pageController;
   ScrollController _scrollController;
@@ -25,8 +25,8 @@ class _TherapistSessionPageState extends State<TherapistSessionPage> {
 
     _pageController = PageController();
     _scrollController = ScrollController();
-    _approvedClientListViewModel = ApprovedClientListViewModel();
-    _pendingClientListViewModel = PendingClientListViewModel();
+    _approvedClientListViewModel = TherapistApprovedListViewModel();
+    _pendingClientListViewModel = TherapistPendingListViewModel();
   }
 
   @override
@@ -94,7 +94,7 @@ class _TherapistSessionPageState extends State<TherapistSessionPage> {
                                         MediaQuery.of(context).size.height *
                                             0.025,
                                     backgroundImage: NetworkImage(
-                                        "https://instagram.fayt2-1.fna.fbcdn.net/v/t51.2885-19/s150x150/117315051_369085030753678_5319131320934149030_n.jpg?_nc_ht=instagram.fayt2-1.fna.fbcdn.net&_nc_ohc=tRNmhh4X0KcAX_7h_fq&oh=0cb73887d5990eb9ca7a32d9689561d9&oe=5F932D22"),
+                                        "https://avatarfiles.alphacoders.com/715/thumb-1920-71560.jpg"),
                                   ),
                                 ),
                               ],
@@ -128,7 +128,7 @@ class _TherapistSessionPageState extends State<TherapistSessionPage> {
                                     ],
                                   ),
                                   onPressed: () async {
-                                    _pendingClientListViewModel = PendingClientListViewModel();
+                                    _pendingClientListViewModel = TherapistPendingListViewModel();
                                     await _pageController.animateToPage(1, duration: Duration(milliseconds: 800), curve: Curves.decelerate);
                                   },
                                 ),
@@ -170,9 +170,9 @@ class _TherapistSessionPageState extends State<TherapistSessionPage> {
                       ),
                     ),
                   ),
-                  ChangeNotifierProvider<ApprovedClientListViewModel>(
+                  ChangeNotifierProvider<TherapistApprovedListViewModel>(
                     create: (context) => _approvedClientListViewModel,
-                    child: Consumer<ApprovedClientListViewModel>(
+                    child: Consumer<TherapistApprovedListViewModel>(
                       builder: (context, model, child) => SliverGrid(
                         gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
                           maxCrossAxisExtent:
@@ -222,7 +222,7 @@ class _TherapistSessionPageState extends State<TherapistSessionPage> {
               ],
             ),
             onPressed: () {
-              _approvedClientListViewModel = ApprovedClientListViewModel();
+              _approvedClientListViewModel = TherapistApprovedListViewModel();
               _pageController.animateToPage(0, duration: Duration(milliseconds: 800), curve: Curves.decelerate);
             },
           ),

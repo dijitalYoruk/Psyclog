@@ -1,21 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:psyclog_app/views/controllers/RouteArguments.dart';
-import 'package:psyclog_app/views/screens/ClientProfilePage.dart';
-import 'package:psyclog_app/views/screens/HomePage.dart';
-import 'package:psyclog_app/views/screens/LoginPage.dart';
-import 'package:psyclog_app/views/screens/RegisterPage.dart';
+import 'package:psyclog_app/views/screens/Client/ClientProfilePage.dart';
+import 'package:psyclog_app/views/screens/Shared/HomePage.dart';
+import 'package:psyclog_app/views/screens/Shared/LoginPage.dart';
+import 'package:psyclog_app/views/screens/Shared/RegisterPage.dart';
 import 'package:psyclog_app/views/screens/SessionTherapistPage.dart';
 import 'package:psyclog_app/views/screens/SplashPage.dart';
-import 'package:psyclog_app/views/screens/TherapistProfilePage.dart';
-import 'package:psyclog_app/views/screens/TherapistRegisterPage.dart';
-import 'package:psyclog_app/views/screens/ClientRegisterPage.dart';
-import 'package:psyclog_app/views/screens/ClientRequestPage.dart';
+import 'package:psyclog_app/views/screens/Therapist/TherapistProfilePage.dart';
+import 'package:psyclog_app/views/screens/Therapist/TherapistRegisterPage.dart';
+import 'package:psyclog_app/views/screens/Client/ClientRegisterPage.dart';
+import 'package:psyclog_app/views/screens/Client/ClientRequestPage.dart';
 import 'package:psyclog_app/views/screens/VideoCallPage.dart';
 import 'package:psyclog_app/views/screens/WalletPage.dart';
 import 'package:psyclog_app/views/screens/WelcomePage.dart';
 import 'package:psyclog_app/views/util/ViewConstants.dart';
-import 'package:psyclog_app/views/screens/ClientTherapistListPage.dart';
+import 'package:psyclog_app/views/screens/Client/ClientTherapistListPage.dart';
 import 'package:psyclog_app/views/widgets/InnerDrawerWithScreen.dart';
+import 'package:psyclog_app/views/screens/Client/ClientPendingRequestPage.dart';
 
 class RouteController {
   static Route<dynamic> generateRoutes(RouteSettings settings) {
@@ -286,6 +287,33 @@ class RouteController {
 
             return FadeTransition(
               opacity: curvedAnimation,
+              child: child,
+            );
+          },
+        );
+        break;
+      case ViewConstants.clientPendingRequestRoute:
+        return PageRouteBuilder(
+          settings: settings,
+          transitionDuration: Duration(milliseconds: 800),
+          pageBuilder: (BuildContext context, Animation<double> animation,
+              Animation<double> secondaryAnimation) {
+            return ClientPendingRequestPage();
+          },
+          transitionsBuilder: (BuildContext context,
+              Animation<double> animation,
+              Animation<double> secondaryAnimation,
+              Widget child) {
+            var curve = Curves.decelerate;
+
+            var begin = Offset(1.0, 0.0);
+            var end = Offset.zero;
+            var tween =
+            Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+            var offsetAnimation = animation.drive(tween);
+
+            return SlideTransition(
+              position: offsetAnimation,
               child: child,
             );
           },

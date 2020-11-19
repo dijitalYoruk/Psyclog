@@ -18,4 +18,5 @@ class Client extends User {
             ["registeredPsychologists"] as List<dynamic>,
         _cash = parsedJson["data"]["profile"]["cash"] as int,
         super.fromJsonForToken(parsedJson);
+
 }

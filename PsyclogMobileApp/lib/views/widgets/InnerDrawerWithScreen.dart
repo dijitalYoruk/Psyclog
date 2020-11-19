@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_inner_drawer/inner_drawer.dart';
-import 'package:psyclog_app/service/WebServerService.dart';
+import 'package:psyclog_app/service/ClientServerService.dart';
 import 'package:psyclog_app/views/util/ViewConstants.dart';
 
 class InnerDrawerWithScreen extends StatefulWidget {
@@ -15,7 +15,7 @@ class InnerDrawerWithScreen extends StatefulWidget {
 
 class _InnerDrawerWithScreenState extends State<InnerDrawerWithScreen> {
 
-  WebServerService _webServerService;
+  ClientServerService _clientServerService;
 
   @override
   void initState() {
@@ -26,7 +26,7 @@ class _InnerDrawerWithScreenState extends State<InnerDrawerWithScreen> {
   }
 
   initializeService() async {
-    _webServerService = await WebServerService.getWebServerService();
+    _clientServerService = await ClientServerService.getClientServerService();
   }
 
   @override
@@ -54,8 +54,6 @@ class _InnerDrawerWithScreenState extends State<InnerDrawerWithScreen> {
           ),
         ), // default  Theme.of(context).backgroundColor
         //when a pointer that is in contact with the screen and moves to the right or left
-        innerDrawerCallback: (a) =>
-            print(a), // return  true (open) or false (close)
         leftChild: Material(
             color: Colors.transparent,
             child: SafeArea(
@@ -115,7 +113,7 @@ class _InnerDrawerWithScreenState extends State<InnerDrawerWithScreen> {
                             title: Text("Log Out"),
                             leading: Icon(Icons.arrow_back_ios),
                             onTap: () {
-                              WebServerService.getWebServerService()
+                              ClientServerService.getClientServerService()
                                   .then((value) {
                                 value.clearAllInfo();
                                 Navigator.pushNamedAndRemoveUntil(

@@ -3,7 +3,7 @@ import 'package:psyclog_app/service/WebServerService.dart';
 import 'package:psyclog_app/service/util/ServiceErrorHandling.dart';
 import 'package:psyclog_app/src/models/Client.dart';
 
-class ApprovedClientListViewModel extends ChangeNotifier {
+class TherapistApprovedListViewModel extends ChangeNotifier {
   WebServerService _serverService;
 
   List<Client> _registeredClientList;
@@ -22,7 +22,7 @@ class ApprovedClientListViewModel extends ChangeNotifier {
       return 0;
   }
 
-  ApprovedClientListViewModel() {
+  TherapistApprovedListViewModel() {
     _currentPage = 1;
     _totalPage = 1;
 

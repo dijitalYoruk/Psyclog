@@ -87,7 +87,7 @@ class _TherapistAppointmentPageState extends State<TherapistAppointmentPage> {
                                 maxRadius:
                                 MediaQuery.of(context).size.height * 0.025,
                                 backgroundImage: NetworkImage(
-                                    "https://instagram.fayt2-1.fna.fbcdn.net/v/t51.2885-19/s150x150/117315051_369085030753678_5319131320934149030_n.jpg?_nc_ht=instagram.fayt2-1.fna.fbcdn.net&_nc_ohc=tRNmhh4X0KcAX_7h_fq&oh=0cb73887d5990eb9ca7a32d9689561d9&oe=5F932D22"),
+                                    "https://avatarfiles.alphacoders.com/715/thumb-1920-71560.jpg"),
                               ),
                             )
                           ],

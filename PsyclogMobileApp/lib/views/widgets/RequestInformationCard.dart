@@ -1,6 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:psyclog_app/service/WebServerService.dart';
+import 'package:psyclog_app/service/ClientServerService.dart';
 import 'package:psyclog_app/service/util/ServiceErrorHandling.dart';
 import 'package:psyclog_app/views/util/ViewConstants.dart';
 
@@ -20,7 +20,7 @@ class RequestInformationCard extends StatefulWidget {
 class _RequestInformationCardState extends State<RequestInformationCard> {
   bool _onApply;
   TextEditingController _contactInfoController;
-  WebServerService _service;
+  ClientServerService _clientServerService;
   bool _applied;
 
   @override
@@ -36,7 +36,7 @@ class _RequestInformationCardState extends State<RequestInformationCard> {
 
   initializeService() async {
     try {
-      _service = await WebServerService.getWebServerService();
+      _clientServerService = await ClientServerService.getClientServerService();
     } catch (error) {
       print(error);
     }
@@ -50,7 +50,7 @@ class _RequestInformationCardState extends State<RequestInformationCard> {
 
     if (infoText.isNotEmpty) {
       String response =
-          await _service.createPatientRequest(widget.therapistID, infoText);
+          await _clientServerService.createPatientRequest(widget.therapistID, infoText);
 
       if (response == ServiceErrorHandling.successfulStatusCode) {
         _snackText = "Successfully created a patient request.";

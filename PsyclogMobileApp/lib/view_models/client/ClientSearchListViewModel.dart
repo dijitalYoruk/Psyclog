@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/widgets.dart';
-import 'package:psyclog_app/service/WebServerService.dart';
+import 'package:psyclog_app/service/ClientServerService.dart';
 import 'package:psyclog_app/service/util/ServiceErrorHandling.dart';
 import 'package:psyclog_app/src/models/Client.dart';
 import 'package:psyclog_app/src/models/Therapist.dart';
@@ -9,8 +9,8 @@ import 'package:psyclog_app/src/models/controller/UserModelController.dart';
 import 'package:psyclog_app/views/util/ViewErrorHandling.dart';
 import 'package:psyclog_app/views/util/ViewConstants.dart';
 
-class SearchTherapistListViewModel extends ChangeNotifier {
-  WebServerService _serverService;
+class ClientSearchListViewModel extends ChangeNotifier {
+  ClientServerService _serverService;
 
   List<Therapist> _currentTherapistList;
 
@@ -22,7 +22,7 @@ class SearchTherapistListViewModel extends ChangeNotifier {
   int _currentPage;
   int _totalPage;
 
-  SearchTherapistListViewModel() {
+  ClientSearchListViewModel() {
     _currentPage = 1;
     _totalPage = 1;
     _currentTherapistList = List<Therapist>();
@@ -41,18 +41,18 @@ class SearchTherapistListViewModel extends ChangeNotifier {
   }
 
   initializeService() async {
-    _serverService = await WebServerService.getWebServerService();
+    _serverService = await ClientServerService.getClientServerService();
 
     try {
       var response =
-          await _serverService.getRegisteredTherapistsByPage(_currentPage);
+          await _serverService.getTherapistsByPage(_currentPage);
 
       if (response != null) {
         var decodedBody = jsonDecode(response.body);
 
         _totalPage = decodedBody["data"]["psychologists"]["totalPages"];
 
-        _registeredTherapistList = (_serverService.currentUser as Client)
+        _registeredTherapistList = (_serverService.currentClient as Client)
             .clientRegisteredPsychologists;
 
         _currentTherapistList =
@@ -71,7 +71,7 @@ class SearchTherapistListViewModel extends ChangeNotifier {
   }
 
   Future<void> refreshPendingList() async {
-    _pendingTherapistList = await _serverService.getPendingTherapistsList();
+    _pendingTherapistList = await _serverService.getPendingTherapistsIDList();
 
     notifyListeners();
   }
@@ -88,7 +88,7 @@ class SearchTherapistListViewModel extends ChangeNotifier {
     List<Therapist> _therapistList;
 
     try {
-      var response = await _serverService.getRegisteredTherapistsByPage(page);
+      var response = await _serverService.getTherapistsByPage(page);
 
       if (response != null) {
         var decodedBody = jsonDecode(response.body);
