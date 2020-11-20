@@ -7,6 +7,8 @@ import 'package:psyclog_app/service/WebServerService.dart';
 import 'package:psyclog_app/service/middleware/UserRestrict.dart';
 import 'package:psyclog_app/service/util/ServiceConstants.dart';
 import 'package:psyclog_app/service/util/ServiceErrorHandling.dart';
+import 'package:psyclog_app/src/models/Patient.dart';
+import 'package:psyclog_app/src/models/controller/UserModelController.dart';
 
 class TherapistServerService extends WebServerService {
   static String _serverAddress;
@@ -36,7 +38,7 @@ class TherapistServerService extends WebServerService {
     return _therapistServerService;
   }
 
-  Future<Response> getPendingClientsByPage(int page) async {
+  Future<Response> getPendingPatientsByPage(int page) async {
     if (UserRestrict.restrictAccessByGivenRoles(
         [ServiceConstants.ROLE_PSYCHOLOGIST, ServiceConstants.ROLE_ADMIN], super.currentUser.userRole)) {
       final String currentUserToken = await getToken();
@@ -60,6 +62,44 @@ class TherapistServerService extends WebServerService {
     } else {
       print(ServiceErrorHandling.userRestrictionError);
       return null;
+    }
+  }
+
+  Future<List<Patient>> getRegisteredPatients() async {
+
+    final String currentUserToken = await getToken();
+
+    if (currentUserToken != null) {
+      List<Patient> _registeredPatientsList = List<Patient>();
+
+      try {
+
+        var response = await http.get('$_serverAddress/$_currentAPI/user/registered-patients',
+            headers: {'Authorization': "Bearer " + currentUserToken});
+
+        if (response.statusCode == ServiceConstants.STATUS_SUCCESS_CODE) {
+          dynamic _decodedBody = jsonDecode(response.body);
+
+          int numberOfPatients = _decodedBody['data']['registeredPatients']['patients'].length;
+
+          _registeredPatientsList = List<Patient>.generate(
+              numberOfPatients,
+                  (index) => UserModelController.createClientFromJSONForList(
+                  _decodedBody['data']['registeredPatients']['patients'][index]));
+
+          return _registeredPatientsList;
+        } else {
+          throw ServiceErrorHandling.couldNotCreateRequestError;
+        }
+
+        return _registeredPatientsList;
+
+      } catch (e) {
+        print(e);
+        throw ServiceErrorHandling.serverNotRespondingError;
+      }
+    } else {
+      throw ServiceErrorHandling.noTokenError;
     }
   }
 

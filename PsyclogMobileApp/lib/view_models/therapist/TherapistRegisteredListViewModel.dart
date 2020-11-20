@@ -1,26 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:psyclog_app/service/TherapistServerService.dart';
 import 'package:psyclog_app/service/util/ServiceErrorHandling.dart';
-import 'package:psyclog_app/src/models/Client.dart';
+import 'package:psyclog_app/src/models/Patient.dart';
 
 class TherapistRegisteredListViewModel extends ChangeNotifier {
   TherapistServerService _serverService;
 
-  List<Client> _registeredClientList;
+  List<Patient> _registeredPatientList;
 
-  Client getTherapistByElement(index) {
-    return _registeredClientList[index];
+  Patient getPatientByIndex(index) {
+    return _registeredPatientList[index];
   }
 
   int getClientListLength() {
-    if (_registeredClientList.isNotEmpty)
-      return _registeredClientList.length;
+    if (_registeredPatientList.isNotEmpty)
+      return _registeredPatientList.length;
     else
       return 0;
   }
 
   TherapistRegisteredListViewModel() {
-    _registeredClientList = List<Client>();
+    _registeredPatientList = List<Patient>();
 
     initializeService();
   }
@@ -28,7 +28,9 @@ class TherapistRegisteredListViewModel extends ChangeNotifier {
   initializeService() async {
     _serverService = await TherapistServerService.getTherapistServerService();
 
-    try {} catch (error) {
+    try {
+      _registeredPatientList = await _serverService.getRegisteredPatients();
+    } catch (error) {
       print(error);
       print(ServiceErrorHandling.serverNotRespondingError);
     }

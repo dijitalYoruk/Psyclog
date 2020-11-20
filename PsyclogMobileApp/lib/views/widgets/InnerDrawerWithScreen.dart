@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_inner_drawer/inner_drawer.dart';
 import 'package:psyclog_app/service/ClientServerService.dart';
 import 'package:psyclog_app/service/WebServerService.dart';
-import 'package:psyclog_app/src/models/Client.dart';
+import 'package:psyclog_app/src/models/Patient.dart';
 import 'package:psyclog_app/views/util/ViewConstants.dart';
 
 class InnerDrawerWithScreen extends StatefulWidget {
@@ -78,7 +78,7 @@ class _InnerDrawerWithScreenState extends State<InnerDrawerWithScreen> {
                         title: Text("Profile"),
                         leading: Icon(Icons.person),
                         onTap: () {
-                          if (_webServerService.currentUser is Client) {
+                          if (_webServerService.currentUser is Patient) {
                             Navigator.pushReplacementNamed(context, ViewConstants.clientProfileRoute);
                           }
                         },

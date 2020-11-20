@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:psyclog_app/src/models/Client.dart';
-import 'package:psyclog_app/src/models/ClientRequest.dart';
+import 'package:psyclog_app/src/models/Patient.dart';
+import 'package:psyclog_app/src/models/PatientRequest.dart';
 import 'package:psyclog_app/view_models/therapist/TherapistPendingListViewModel.dart';
 import 'package:psyclog_app/views/util/ViewConstants.dart';
 import 'package:psyclog_app/views/widgets/AwareListItem.dart';
@@ -79,9 +79,9 @@ class _TherapistPendingRequestPageState extends State<TherapistPendingRequestPag
               builder: (context, model, child) => SliverList(
                 delegate: SliverChildBuilderDelegate(
                   (context, index) {
-                    ClientRequest _request = model.getClientByIndex(index);
+                    PatientRequest _request = model.getPatientByIndex(index);
 
-                    Client client = _request.getClient;
+                    Patient client = _request.getPatient;
 
                     double containerHeight = MediaQuery.of(context).size.height / 6 - 20;
 

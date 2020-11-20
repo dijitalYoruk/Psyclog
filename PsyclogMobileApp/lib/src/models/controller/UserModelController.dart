@@ -1,4 +1,4 @@
-import 'package:psyclog_app/src/models/Client.dart';
+import 'package:psyclog_app/src/models/Patient.dart';
 import 'package:psyclog_app/src/models/Therapist.dart';
 import 'package:psyclog_app/src/models/User.dart';
 
@@ -13,9 +13,9 @@ class UserModelController {
     }
   }
 
-  static Client createClientFromJSON(dynamic decodedBody) {
+  static Patient createClientFromJSON(dynamic decodedBody) {
     try {
-      var client = Client.fromJson(decodedBody);
+      var client = Patient.fromJson(decodedBody);
       return client;
     } catch (e) {
       print(e);
@@ -23,9 +23,9 @@ class UserModelController {
     }
   }
 
-  static Client createClientFromJSONForToken(dynamic decodedBody) {
+  static Patient createClientFromJSONForToken(dynamic decodedBody) {
     try {
-      var client = Client.fromJsonForToken(decodedBody);
+      var client = Patient.fromJsonForToken(decodedBody);
       return client;
     } catch (e) {
       print(e);
@@ -53,9 +53,9 @@ class UserModelController {
     }
   }
 
-  static Client createClientFromJSONForList(dynamic decodedBody) {
+  static Patient createClientFromJSONForList(dynamic decodedBody) {
     try {
-      var client = Client.fromJsonForList(decodedBody);
+      var client = Patient.fromJsonForList(decodedBody);
       return client;
     } catch (e) {
       print(e);

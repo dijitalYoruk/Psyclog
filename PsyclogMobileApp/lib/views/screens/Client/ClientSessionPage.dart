@@ -163,6 +163,7 @@ class _ClientSessionPageState extends State<ClientSessionPage> {
                             color: ViewConstants.myLightBlue,
                             margin: EdgeInsets.only(left: index.isEven ? 20 : 10, right: index.isEven ? 10 : 20, bottom: 20),
                             child: FlatButton(
+                              splashColor: ViewConstants.myYellow,
                               onPressed: () {
                                 // TODO Send to Psychologist Search List
                               },

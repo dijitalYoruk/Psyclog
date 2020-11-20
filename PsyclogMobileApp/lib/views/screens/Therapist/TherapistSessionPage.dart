@@ -1,7 +1,9 @@
 import 'dart:ui';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:psyclog_app/src/models/Patient.dart';
 import 'package:psyclog_app/view_models/therapist/TherapistRegisteredListViewModel.dart';
 import 'package:psyclog_app/view_models/therapist/TherapistPendingListViewModel.dart';
 import 'package:psyclog_app/views/util/ViewConstants.dart';
@@ -12,13 +14,13 @@ class TherapistSessionPage extends StatefulWidget {
 }
 
 class _TherapistSessionPageState extends State<TherapistSessionPage> {
-  TherapistRegisteredListViewModel _approvedClientListViewModel;
+  TherapistRegisteredListViewModel _therapistRegisteredListViewModel;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    _approvedClientListViewModel = TherapistRegisteredListViewModel();
+    _therapistRegisteredListViewModel = TherapistRegisteredListViewModel();
   }
 
   @override
@@ -94,11 +96,7 @@ class _TherapistSessionPageState extends State<TherapistSessionPage> {
                                 children: [
                                   Text(
                                     "Pending Requests",
-                                    style: TextStyle(
-                                        color: ViewConstants.myWhite,
-                                        fontWeight: FontWeight.w700,
-                                        fontFamily: "OpenSans",
-                                        fontSize: 13),
+                                    style: GoogleFonts.lato(fontSize: 14, color: ViewConstants.myWhite, fontWeight: FontWeight.bold),
                                   ),
                                   Icon(Icons.arrow_forward)
                                 ],
@@ -135,14 +133,14 @@ class _TherapistSessionPageState extends State<TherapistSessionPage> {
                         minFontSize: 8,
                         maxFontSize: 20,
                         stepGranularity: 1,
-                        style: TextStyle(color: ViewConstants.myGrey, fontFamily: "OpenSans"),
+                        style: GoogleFonts.lato(fontSize: 13, color: ViewConstants.myGrey),
                       ),
                     ),
                   ),
                 ),
               ),
               ChangeNotifierProvider<TherapistRegisteredListViewModel>(
-                create: (context) => _approvedClientListViewModel,
+                create: (context) => _therapistRegisteredListViewModel,
                 child: Consumer<TherapistRegisteredListViewModel>(
                   builder: (context, model, child) => SliverGrid(
                     gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
@@ -150,14 +148,57 @@ class _TherapistSessionPageState extends State<TherapistSessionPage> {
                     ),
                     delegate: SliverChildBuilderDelegate(
                       (BuildContext context, int index) {
+
+                        Patient patient = model.getPatientByIndex(index);
+
                         return Card(
+                          clipBehavior: Clip.hardEdge,
                           elevation: 2,
                           shadowColor: ViewConstants.myLightBlue,
                           color: ViewConstants.myWhite,
                           margin: EdgeInsets.only(left: index.isEven ? 20 : 10, right: index.isEven ? 10 : 20, bottom: 20),
+                            child: Container(
+                              child: Stack(
+                                fit: StackFit.expand,
+                                children: [
+                                  Image.network("https://i.pravatar.cc?img=$index", fit: BoxFit.fill),
+                                  Container(
+                                    decoration: BoxDecoration(
+                                        gradient: LinearGradient(
+                                            begin: Alignment.topCenter,
+                                            end: Alignment.bottomCenter,
+                                            colors: [
+                                              ViewConstants.myLightBlue.withOpacity(0.3),
+                                              ViewConstants.myBlack.withOpacity(0.6),
+                                              ViewConstants.myBlack
+                                            ])),
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.only(bottom: 5.0),
+                                          child: Text(patient.getFullName(),
+                                              style: GoogleFonts.lato(fontSize: 18, color: ViewConstants.myWhite)),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.only(bottom: 3.0),
+                                          child: Text("Contact",
+                                              style: GoogleFonts.lato(fontSize: 12, color: ViewConstants.myYellow)),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.only(bottom: 5.0),
+                                          child: Text(patient.userEmail,
+                                              style: GoogleFonts.lato(fontSize: 11, color: ViewConstants.myWhite)),
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                ],
+                              ),
+                            )
                         );
                       },
-                      childCount: 20,
+                      childCount: model.getClientListLength(),
                     ),
                   ),
                 ),

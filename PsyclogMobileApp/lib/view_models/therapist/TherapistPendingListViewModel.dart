@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:psyclog_app/service/TherapistServerService.dart';
 import 'package:psyclog_app/service/util/ServiceErrorHandling.dart';
-import 'package:psyclog_app/src/models/ClientRequest.dart';
+import 'package:psyclog_app/src/models/PatientRequest.dart';
 import 'package:psyclog_app/src/models/controller/UserModelController.dart';
 import 'package:psyclog_app/views/util/ViewConstants.dart';
 import 'package:psyclog_app/views/util/ViewErrorHandling.dart';
@@ -11,7 +11,7 @@ import 'package:psyclog_app/views/util/ViewErrorHandling.dart';
 class TherapistPendingListViewModel extends ChangeNotifier {
   TherapistServerService _serverService;
 
-  List<ClientRequest> _pendingClientList;
+  List<PatientRequest> _pendingPatientList;
 
   int _currentPage;
   int _totalPage;
@@ -19,7 +19,7 @@ class TherapistPendingListViewModel extends ChangeNotifier {
   TherapistPendingListViewModel() {
     _currentPage = 1;
     _totalPage = 1;
-    _pendingClientList = List<ClientRequest>();
+    _pendingPatientList = List<PatientRequest>();
     initializeService();
   }
 
@@ -27,14 +27,14 @@ class TherapistPendingListViewModel extends ChangeNotifier {
     _serverService = await TherapistServerService.getTherapistServerService();
 
     try {
-      var response = await _serverService.getPendingClientsByPage(_currentPage);
+      var response = await _serverService.getPendingPatientsByPage(_currentPage);
 
       if (response != null) {
         var decodedBody = jsonDecode(response.body);
 
         _totalPage = decodedBody["data"]["requests"]["totalPages"];
 
-        _pendingClientList = await getClientsByPageFromService(_currentPage);
+        _pendingPatientList = await getPatientsByPageFromService(_currentPage);
       }
     } catch (error) {
       print(error);
@@ -44,30 +44,30 @@ class TherapistPendingListViewModel extends ChangeNotifier {
   }
 
   int getCurrentListLength() {
-    if (_pendingClientList.isNotEmpty)
-      return _pendingClientList.length;
+    if (_pendingPatientList.isNotEmpty)
+      return _pendingPatientList.length;
     else
       return 0;
   }
 
-  ClientRequest getClientByIndex(int index) {
-    return _pendingClientList[index];
+  PatientRequest getPatientByIndex(int index) {
+    return _pendingPatientList[index];
   }
 
-  Future<List<ClientRequest>> getClientsByPageFromService(int currentPage) async {
-    List<ClientRequest> _pendingList;
+  Future<List<PatientRequest>> getPatientsByPageFromService(int currentPage) async {
+    List<PatientRequest> _pendingList;
 
     try {
-      var response = await _serverService.getPendingClientsByPage(currentPage);
+      var response = await _serverService.getPendingPatientsByPage(currentPage);
 
       if (response != null) {
         var _decodedBody = jsonDecode(response.body);
 
         int numberOfClients = _decodedBody["data"]["requests"]["docs"].length;
 
-        _pendingList = List<ClientRequest>.generate(
+        _pendingList = List<PatientRequest>.generate(
             numberOfClients,
-            (index) => ClientRequest(
+            (index) => PatientRequest(
                 _decodedBody["data"]["requests"]["docs"][index]['_id'],
                 UserModelController.createClientFromJSONForList(_decodedBody["data"]["requests"]["docs"][index]['patient']),
                 _decodedBody["data"]["requests"]["docs"][index]['content'],
@@ -98,10 +98,10 @@ class TherapistPendingListViewModel extends ChangeNotifier {
 
         // Adding new therapists to the list
 
-        List<ClientRequest> _newRequests = await getClientsByPageFromService(_currentPage);
+        List<PatientRequest> _newRequests = await getPatientsByPageFromService(_currentPage);
 
         try {
-          _pendingClientList.addAll(_newRequests);
+          _pendingPatientList.addAll(_newRequests);
         } catch (e) {
           print(ViewErrorHandling.pageIsNotLoaded);
           _currentPage -= 1;
@@ -117,10 +117,10 @@ class TherapistPendingListViewModel extends ChangeNotifier {
   }
 
   Future<bool> acceptPendingRequestByIndex(int index) async {
-    String response = await _serverService.acceptRequestByID(_pendingClientList[index].getRequestID);
+    String response = await _serverService.acceptRequestByID(_pendingPatientList[index].getRequestID);
 
     if (response == ServiceErrorHandling.successfulStatusCode) {
-      _pendingClientList.removeAt(index);
+      _pendingPatientList.removeAt(index);
 
       // TODO User information has to be updated here
 
@@ -132,10 +132,10 @@ class TherapistPendingListViewModel extends ChangeNotifier {
   }
 
   Future<bool> denyPendingRequestByIndex(int index) async {
-    String response = await _serverService.denyRequestByID(_pendingClientList[index].getRequestID);
+    String response = await _serverService.denyRequestByID(_pendingPatientList[index].getRequestID);
 
     if (response == ServiceErrorHandling.successfulStatusCode) {
-      _pendingClientList.removeAt(index);
+      _pendingPatientList.removeAt(index);
 
       // TODO User information has to be updated here
 
@@ -147,12 +147,12 @@ class TherapistPendingListViewModel extends ChangeNotifier {
   }
 
   void _showLoadingIndicator() {
-    _pendingClientList.add(null);
+    _pendingPatientList.add(null);
     notifyListeners();
   }
 
   void _removeLoadingIndicator() {
-    _pendingClientList.remove(null);
+    _pendingPatientList.remove(null);
     notifyListeners();
   }
 }

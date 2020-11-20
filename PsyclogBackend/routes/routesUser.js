@@ -18,7 +18,8 @@ const {
    updateUser, 
    finishPatient,
    retrievePsychologists,
-   retrieveRegisteredPsychologists} = require('../controller/ControllerUser')
+   retrieveRegisteredPsychologists, 
+   retrievePatients } = require('../controller/ControllerUser')
 
 
 // =====================
@@ -29,7 +30,7 @@ routerUser.get('/registered-psychologists', middlewareRestrict(Constants.ROLE_US
 routerUser.post('/finish', middlewareRestrict(Constants.ROLE_PSYCHOLOGIST, Constants.ROLE_ADMIN), finishPatient)
 routerUser.get('/psychologists', middlewareRestrict(Constants.ROLE_ADMIN, Constants.ROLE_USER), retrievePsychologists)
 routerUser.get('/', middlewareRestrict(Constants.ROLE_ADMIN), retrieveUsers)
-
+routerUser.get('/registered-patients', middlewareRestrict(Constants.ROLE_PSYCHOLOGIST), retrievePatients)
 routerUser.route('/:userId')
           .get(middlewareRestrict(Constants.ROLE_ADMIN), retrieveUser)
           .patch(middlewareRestrict(Constants.ROLE_ADMIN), updateUser)

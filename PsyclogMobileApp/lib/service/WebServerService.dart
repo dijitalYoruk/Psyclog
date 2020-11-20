@@ -43,11 +43,11 @@ class WebServerService {
     final message = jsonEncode({"emailOrUsername": emailOrUsername, "password": password});
 
     try {
-      var result =
+      var response =
           await http.post('$_serverAddress/$_currentAPI/auth/signIn', headers: ModelConstants.jsonTypeHeader, body: message);
 
-      if (result.statusCode == ServiceConstants.STATUS_SUCCESS_CODE) {
-        bool isUserCreated = _serverService.saveCurrentUserInformation(result.body);
+      if (response.statusCode == ServiceConstants.STATUS_SUCCESS_CODE) {
+        bool isUserCreated = _serverService.saveCurrentUserInformation(response.body);
 
         if (isUserCreated) {
           return ServiceErrorHandling.successfulStatusCode;
@@ -75,10 +75,10 @@ class WebServerService {
     });
 
     try {
-      var result = await http.post('$_serverAddress/$_currentAPI/auth/signUp/patient',
+      var response = await http.post('$_serverAddress/$_currentAPI/auth/signUp/patient',
           headers: ModelConstants.jsonTypeHeader, body: message);
 
-      return result;
+      return response;
     } catch (e) {
       print(ServiceErrorHandling.couldNotSignUpError);
       return null;
@@ -90,13 +90,15 @@ class WebServerService {
 
     if (currentUserToken != null) {
       try {
-        var result = await http.get(
+        var response = await http.get(
           '$_serverAddress/$_currentAPI/auth/profile',
           headers: {'Authorization': "Bearer " + currentUserToken},
         );
 
-        if (result.statusCode == ServiceConstants.STATUS_SUCCESS_CODE) {
-          bool isUserCreated = saveCurrentUserInformationForToken(result.body);
+        if (response.statusCode == ServiceConstants.STATUS_SUCCESS_CODE) {
+          bool isUserCreated = saveCurrentUserInformationForToken(response.body);
+
+          print("Current Token: " + currentUserToken);
 
           if (isUserCreated) {
             return ServiceErrorHandling.successfulStatusCode;

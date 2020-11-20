@@ -1,7 +1,7 @@
 import 'package:custom_navigation_bar/custom_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:psyclog_app/service/WebServerService.dart';
-import 'package:psyclog_app/src/models/Client.dart';
+import 'package:psyclog_app/src/models/Patient.dart';
 import 'package:psyclog_app/src/models/Therapist.dart';
 import 'package:psyclog_app/views/screens/Client/ClientAppointmentPage.dart';
 import 'package:psyclog_app/views/screens/Client/ClientSessionPage.dart';
@@ -41,7 +41,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
       ),
       Builder(
         builder: (BuildContext context) {
-          if (_webServerService.currentUser is Client) {
+          if (_webServerService.currentUser is Patient) {
             return ClientSearchPage();
           } else if (_webServerService.currentUser is Therapist) {
             return Container();
@@ -53,7 +53,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
       ),
       Builder(
         builder: (BuildContext context) {
-          if (_webServerService.currentUser is Client) {
+          if (_webServerService.currentUser is Patient) {
             return ClientSessionPage();
           } else if (_webServerService.currentUser is Therapist) {
             return TherapistSessionPage();
@@ -65,7 +65,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
       ),
       Builder(
         builder: (BuildContext context) {
-          if (_webServerService.currentUser is Client) {
+          if (_webServerService.currentUser is Patient) {
             return ClientAppointmentPage();
           } else if (_webServerService.currentUser is Therapist) {
             return TherapistAppointmentPage();

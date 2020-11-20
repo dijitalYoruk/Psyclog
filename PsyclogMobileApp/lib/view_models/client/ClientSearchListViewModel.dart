@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/widgets.dart';
 import 'package:psyclog_app/service/ClientServerService.dart';
 import 'package:psyclog_app/service/util/ServiceErrorHandling.dart';
-import 'package:psyclog_app/src/models/Client.dart';
+import 'package:psyclog_app/src/models/Patient.dart';
 import 'package:psyclog_app/src/models/Therapist.dart';
 import 'package:psyclog_app/src/models/controller/UserModelController.dart';
 import 'package:psyclog_app/views/util/ViewErrorHandling.dart';
@@ -51,7 +51,7 @@ class ClientSearchListViewModel extends ChangeNotifier {
 
         _totalPage = decodedBody["data"]["psychologists"]["totalPages"];
 
-        _registeredTherapistsIDList = (_serverService.currentClient as Client).clientRegisteredPsychologists;
+        _registeredTherapistsIDList = (_serverService.currentClient as Patient).clientRegisteredPsychologists;
 
         _currentTherapistList = await getTherapistsByPageFromService(_currentPage);
 

@@ -29,13 +29,7 @@ class ClientRegisteredListViewModel extends ChangeNotifier {
     _serverService = await ClientServerService.getClientServerService();
 
     try {
-      var statusCode = await _serverService.checkUserByCurrentToken();
-
-      if (statusCode == ServiceErrorHandling.successfulStatusCode) {
-        _registeredTherapistList = await _serverService.getRegisteredPsychologists();
-      } else {
-        print(ServiceErrorHandling.tokenWrongError);
-      }
+      _registeredTherapistList = await _serverService.getRegisteredPsychologists();
     } catch (error) {
       print(error);
       print(ServiceErrorHandling.serverNotRespondingError);
