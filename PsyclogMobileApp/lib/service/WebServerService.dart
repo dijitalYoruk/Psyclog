@@ -131,6 +131,7 @@ class WebServerService {
       try {
         _currentUser =
             UserModelController.createClientFromJSONForToken(_decodedBody);
+
         return true;
       } catch (error) {
         print(ServiceErrorHandling.userInformationError);
@@ -142,6 +143,7 @@ class WebServerService {
       try {
         _currentUser =
             UserModelController.createTherapistFromJSONForToken(_decodedBody);
+
         return true;
       } catch (error) {
         print(ServiceErrorHandling.userInformationError);

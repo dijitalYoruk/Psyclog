@@ -3,7 +3,7 @@ import 'package:psyclog_app/service/ClientServerService.dart';
 import 'package:psyclog_app/service/util/ServiceErrorHandling.dart';
 import 'package:psyclog_app/src/models/Therapist.dart';
 
-class ClientApprovedListViewModel extends ChangeNotifier {
+class ClientRegisteredListViewModel extends ChangeNotifier {
   ClientServerService _serverService;
 
   List<dynamic> _registeredTherapistList;
@@ -19,7 +19,7 @@ class ClientApprovedListViewModel extends ChangeNotifier {
       return 0;
   }
 
-  ClientApprovedListViewModel() {
+  ClientRegisteredListViewModel() {
     _registeredTherapistList = List<Therapist>();
 
     initializeService();

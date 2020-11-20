@@ -1,4 +1,5 @@
 import 'package:psyclog_app/src/models/User.dart';
+import 'package:psyclog_app/views/util/CapExtension.dart';
 
 class Client extends User {
   final List<dynamic> _registeredPsychologists;
@@ -19,4 +20,14 @@ class Client extends User {
         _cash = parsedJson["data"]["profile"]["cash"] as int,
         super.fromJsonForToken(parsedJson);
 
+  Client.fromJsonForList(Map<String, dynamic> parsedJson)
+      : _registeredPsychologists = parsedJson["registeredPsychologists"] as List<dynamic>,
+        _cash = parsedJson["cash"] as int,
+        super.fromJsonForList(parsedJson);
+
+  String getFullName() {
+    return userFirstName.toString().inCaps +
+        " " +
+        userSurname.toString().inCaps;
+  }
 }

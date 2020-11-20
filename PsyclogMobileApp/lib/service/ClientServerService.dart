@@ -46,18 +46,18 @@ class ClientServerService extends WebServerService {
         [ServiceConstants.ROLE_USER, ServiceConstants.ROLE_ADMIN],
         super.currentUser.userRole)) {
       // Waiting for User Token to be retrieved
-      var userToken = await getToken();
+      final String currentUserToken = await getToken();
 
-      if (userToken != null) {
+      if (currentUserToken != null) {
         // Waiting for Therapist List
         try {
-          var res = await http.get(
+          var response = await http.get(
             '$_serverAddress/$_currentAPI/user/psychologists?page=' +
                 page.toString(),
-            headers: {'Authorization': "Bearer " + userToken.toString()},
+            headers: {'Authorization': "Bearer " + currentUserToken},
           );
 
-          return res;
+          return response;
         } catch (e) {
           print(ServiceErrorHandling.listNotRetrievedError);
         }
@@ -82,7 +82,7 @@ class ClientServerService extends WebServerService {
 
     if (currentUserToken != null) {
       try {
-        var result =
+        var response =
         await http.post('$_serverAddress/$_currentAPI/patientRequests',
             headers: {
               'Authorization': "Bearer " + currentUserToken,
@@ -90,7 +90,7 @@ class ClientServerService extends WebServerService {
             },
             body: message);
 
-        if (result.statusCode == ServiceConstants.STATUS_SUCCESS_CODE) {
+        if (response.statusCode == ServiceConstants.STATUS_SUCCESS_CODE) {
           return ServiceErrorHandling.successfulStatusCode;
         } else {
           return ServiceErrorHandling.couldNotCreateRequestError;
@@ -103,7 +103,7 @@ class ClientServerService extends WebServerService {
     }
   }
 
-  Future<Response> getPendingTherapistsList() async {
+  Future<Response> getPendingTherapistsByPage(int page) async {
 
     // TODO USER Restrictions
 
@@ -111,12 +111,13 @@ class ClientServerService extends WebServerService {
 
     if (currentUserToken != null) {
       try {
-        var result = await http.get(
-            '$_serverAddress/$_currentAPI/patientRequests',
+        var response = await http.get(
+            '$_serverAddress/$_currentAPI/patientRequests?page=' +
+                page.toString(),
             headers: {'Authorization': "Bearer " + currentUserToken});
 
-        if (result.statusCode == ServiceConstants.STATUS_SUCCESS_CODE) {
-          return result;
+        if (response.statusCode == ServiceConstants.STATUS_SUCCESS_CODE) {
+          return response;
         } else {
           throw ServiceErrorHandling.couldNotCreateRequestError;
         }
@@ -138,12 +139,12 @@ class ClientServerService extends WebServerService {
       List<String> _requestedTherapistList = List<String>();
 
       try {
-        var result = await http.get(
+        var response = await http.get(
             '$_serverAddress/$_currentAPI/patientRequests',
             headers: {'Authorization': "Bearer " + currentUserToken});
 
-        if (result.statusCode == ServiceConstants.STATUS_SUCCESS_CODE) {
-          dynamic _decodedBody = jsonDecode(result.body);
+        if (response.statusCode == ServiceConstants.STATUS_SUCCESS_CODE) {
+          dynamic _decodedBody = jsonDecode(response.body);
 
           for (int index = 0;
           index < _decodedBody['data']['requests']['totalDocs'];
@@ -164,7 +165,7 @@ class ClientServerService extends WebServerService {
     }
   }
 
-  Future<String> removePendingRequestByID(requestID) async {
+  Future<String> removePendingRequestByID(String requestID) async {
 
     // TODO USER Restrictions
 

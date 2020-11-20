@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_inner_drawer/inner_drawer.dart';
 import 'package:psyclog_app/service/ClientServerService.dart';
+import 'package:psyclog_app/service/WebServerService.dart';
+import 'package:psyclog_app/src/models/Client.dart';
 import 'package:psyclog_app/views/util/ViewConstants.dart';
 
 class InnerDrawerWithScreen extends StatefulWidget {
@@ -14,8 +16,7 @@ class InnerDrawerWithScreen extends StatefulWidget {
 }
 
 class _InnerDrawerWithScreenState extends State<InnerDrawerWithScreen> {
-
-  ClientServerService _clientServerService;
+  WebServerService _webServerService;
 
   @override
   void initState() {
@@ -26,12 +27,11 @@ class _InnerDrawerWithScreenState extends State<InnerDrawerWithScreen> {
   }
 
   initializeService() async {
-    _clientServerService = await ClientServerService.getClientServerService();
+    _webServerService = await WebServerService.getWebServerService();
   }
 
   @override
   Widget build(BuildContext context) {
-
     return InnerDrawer(
         onTapClose: true, // default false
         swipe: true, // default true
@@ -81,9 +81,10 @@ class _InnerDrawerWithScreenState extends State<InnerDrawerWithScreen> {
                         title: Text("Profile"),
                         leading: Icon(Icons.person),
                         onTap: () {
-                          Navigator.pushReplacementNamed(
-                              context,
-                              ViewConstants.clientProfileRoute);
+                          if (_webServerService.currentUser is Client) {
+                            Navigator.pushReplacementNamed(
+                                context, ViewConstants.clientProfileRoute);
+                          }
                         },
                       ),
                       ListTile(

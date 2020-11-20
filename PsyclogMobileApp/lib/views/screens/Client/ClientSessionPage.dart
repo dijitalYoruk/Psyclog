@@ -3,7 +3,7 @@ import 'dart:ui';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:psyclog_app/view_models/client/ClientApprovedListViewModel.dart';
+import 'package:psyclog_app/view_models/client/ClientRegisteredListViewModel.dart';
 import 'package:psyclog_app/views/util/ViewConstants.dart';
 
 class ClientSessionPage extends StatefulWidget {
@@ -12,14 +12,14 @@ class ClientSessionPage extends StatefulWidget {
 }
 
 class _ClientSessionPageState extends State<ClientSessionPage> {
-  ClientApprovedListViewModel _approvedTherapistListViewModel;
+  ClientRegisteredListViewModel _approvedTherapistListViewModel;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
 
-    _approvedTherapistListViewModel = ClientApprovedListViewModel();
+    _approvedTherapistListViewModel = ClientRegisteredListViewModel();
   }
 
   @override
@@ -154,9 +154,9 @@ class _ClientSessionPageState extends State<ClientSessionPage> {
                   ),
                 ),
               ),
-              ChangeNotifierProvider<ClientApprovedListViewModel>(
+              ChangeNotifierProvider<ClientRegisteredListViewModel>(
                 create: (context) => _approvedTherapistListViewModel,
-                child: Consumer<ClientApprovedListViewModel>(
+                child: Consumer<ClientRegisteredListViewModel>(
                   builder: (context, model, child) => SliverGrid(
                     gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
                       maxCrossAxisExtent: MediaQuery.of(context).size.width / 2,

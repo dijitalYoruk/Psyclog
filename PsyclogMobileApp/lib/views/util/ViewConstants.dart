@@ -22,9 +22,11 @@ class ViewConstants {
   static const String therapistProfileRoute = '/therapistProfile';
   static const String clientSessionRoute = '/clientSessions';
   static const String clientPendingRequestRoute = '/clientPendingRequests';
+  static const String therapistPendingRequestRoute = '/therapistPendingRequests';
 
   //Constraints for Widgets
   static const int therapistsPerPage = 10;
+  static const int clientsPerPage = 10;
   static const String allTherapists = "All";
   static const String preferredTherapists = "Preferred";
   static const String latestTherapists = "Latest";
@@ -50,6 +52,7 @@ class ViewConstants {
   static Color myLightGrey = HexColor('#eaeaea');
   static Color myGreyBlue = HexColor('CAE7FF');
   static Color darkGreyBlue = HexColor('040307');
+  static Color myGreen = HexColor('17b978');
 
   static TextStyle fieldStyle = TextStyle(
       fontFamily: 'Montserrat', fontSize: 15.0, color: HexColor("#ffffff"));

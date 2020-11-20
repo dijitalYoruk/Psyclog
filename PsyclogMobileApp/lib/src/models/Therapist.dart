@@ -22,6 +22,16 @@ class Therapist extends User {
             parsedJson['data']['user']['appointmentPrice'] as int,
         super.fromJson(parsedJson);
 
+  Therapist.fromJsonForToken(Map<String, dynamic> parsedJson)
+      : _patients = parsedJson['data']['profile']['patients'] as List<dynamic>,
+        _isPsychologistVerified =
+        parsedJson['data']['profile']['isPsychologistVerified'] as bool,
+        _isActiveForClientRequest =
+        parsedJson['data']['profile']['isActiveForClientRequest'] as bool,
+        _appointmentPrice =
+        parsedJson['data']['profile']['appointmentPrice'] as int,
+        super.fromJsonForToken(parsedJson);
+
   Therapist.fromJsonForList(Map<String, dynamic> parsedJson)
       : _patients = parsedJson['patients'] as List<dynamic>,
         _isPsychologistVerified = parsedJson['isPsychologistVerified'] as bool,

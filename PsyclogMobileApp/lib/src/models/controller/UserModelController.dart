@@ -58,9 +58,20 @@ class UserModelController {
     }
   }
 
+  static Client createClientFromJSONForList(dynamic decodedBody) {
+    try {
+      var client = Client.fromJsonForList(decodedBody);
+      return client;
+    }
+    catch (e) {
+      print(e);
+      throw Exception("");
+    }
+  }
+
   static Therapist createTherapistFromJSONForToken(dynamic decodedBody) {
     try {
-      var therapist = Therapist.fromJsonForList(decodedBody);
+      var therapist = Therapist.fromJsonForToken(decodedBody);
       return therapist;
     }
     catch (e) {

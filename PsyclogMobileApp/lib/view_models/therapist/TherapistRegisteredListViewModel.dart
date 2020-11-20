@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:psyclog_app/service/WebServerService.dart';
+import 'package:psyclog_app/service/TherapistServerService.dart';
 import 'package:psyclog_app/service/util/ServiceErrorHandling.dart';
 import 'package:psyclog_app/src/models/Client.dart';
 
-class TherapistApprovedListViewModel extends ChangeNotifier {
-  WebServerService _serverService;
+class TherapistRegisteredListViewModel extends ChangeNotifier {
+  TherapistServerService _serverService;
 
   List<Client> _registeredClientList;
-
-  int _currentPage;
-  int _totalPage;
 
   Client getTherapistByElement(index) {
     return _registeredClientList[index];
@@ -22,9 +19,7 @@ class TherapistApprovedListViewModel extends ChangeNotifier {
       return 0;
   }
 
-  TherapistApprovedListViewModel() {
-    _currentPage = 1;
-    _totalPage = 1;
+  TherapistRegisteredListViewModel() {
 
     _registeredClientList = List<Client>();
 
@@ -32,7 +27,7 @@ class TherapistApprovedListViewModel extends ChangeNotifier {
   }
 
   initializeService() async {
-    _serverService = await WebServerService.getWebServerService();
+    _serverService = await TherapistServerService.getTherapistServerService();
 
     try {
 

@@ -584,7 +584,7 @@ class _TherapistRegisterPageState extends State<TherapistRegisterPage> {
                             children: [
                               Padding(
                                 padding: const EdgeInsets.only(
-                                    right: 25, left: 25, top: 30, bottom: 10),
+                                    right: 25, left: 25, top: 0, bottom: 10),
                                 child: FlatButton(
                                   minWidth: constraints.minWidth,
                                   color: ViewConstants.myWhite,
@@ -641,7 +641,7 @@ class _TherapistRegisterPageState extends State<TherapistRegisterPage> {
                               ),
                               Padding(
                                 padding: const EdgeInsets.only(
-                                    right: 25, left: 25, top: 10, bottom: 30),
+                                    right: 25, left: 25, top: 10, bottom: 0),
                                 child: biographyField,
                               )
                             ],
