@@ -97,13 +97,14 @@ const signIn = catchAsync(async(req, res, next) => {
       return next(new ApiError(__('validation_password_username'), 400)) 
    }
 
+   console.log("->")
+
    // checking whether user exists in db.
    const user = await User.findOne({ 
       $or: [{email: emailOrUsername}, 
             {username: emailOrUsername}] 
    }).select('+password')
    
-
    if (!user) {
       return next(new ApiError(__('error_not_found', 'User'), 404)) 
    }

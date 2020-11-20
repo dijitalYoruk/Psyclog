@@ -11,14 +11,15 @@ const User = require('../model/user')
  */
 const banPatientAsAdmin = catchAsync(async (req, res, next) => {
     // get required data.
-    let { duration, patientId } = req.body
+    let { patientId, banTermination } = req.body
     
     // check whether patient exists
     const exists = await User.exists({ _id: patientId, role: Constants.ROLE_USER })
     if (!exists) return next(new ApiError(__('error_not_found', 'Patient'), 404))
     
     // ban patient
-    const banTerminationDate = Date.now() + duration * Constants.ONE_DAY
+    //const banTerminationDate = Date.now() + duration * Constants.ONE_DAY
+    const banTerminationDate = new Date(banTermination) 
     await User.findByIdAndUpdate(patientId, { banTerminationDate })
     
     res.status(200).json({

@@ -290,9 +290,12 @@ UserSchema.pre('save', async function(next) {
       this.isActiveForClientRequest = undefined
       this.registeredPsychologists = undefined
       this.isPsychologistVerified = undefined
+      this.banTerminationDate = undefined
       this.appointmentPrice = undefined
+      this.penaltyCount = undefined
       this.transcript = undefined
       this.biography = undefined
+      this.calendar = undefined
       this.patients = undefined
       this.wallet = undefined
       this.cv = undefined
@@ -312,6 +315,7 @@ UserSchema.pre('save', async function(next) {
    // seting irrelevant items for psychologist as undefined.
    else if (this.role === Constants.ROLE_PSYCHOLOGIST) {
       this.registeredPsychologists = undefined
+      this.banTerminationDate = undefined
    }
 
    // changing password

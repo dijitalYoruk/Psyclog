@@ -29,6 +29,21 @@ app.use(helmet()) // Set security HTTP headers
 app.use(xss()) // Data sanitization against XSS
 app.use(hpp()) // Prevent parameter pollution
 app.use(cors())
+/*app.use(cors(
+   {
+      origin:['*'],
+      credentials:true
+  }
+))
+
+app.use(function (req, res, next) {
+   res.header('Access-Control-Allow-Origin', "*");
+   res.header('Access-Control-Allow-Headers', true);
+   res.header('Access-Control-Allow-Credentials', 'Content-Type, X-Requested-With, Accept, Authorization');
+   res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+   next();
+ });*/
+
 initLocalization()
 
 if (process.env.NODE_ENV == 'development') {

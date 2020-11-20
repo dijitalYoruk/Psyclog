@@ -2,13 +2,8 @@
    <div>
       <v-list>
          <v-list-item>
-            <v-avatar style="border: 1px solid grey" size="100%">
-               <v-img :src="icon" rounded aspect-ratio="1"></v-img>
-            </v-avatar>
-         </v-list-item>
-         <v-list-item>
             <v-row>
-               <v-col class="col-12 text-center font-weight-bold body-1">{{ profileName }}</v-col>
+               <v-col class="col-12 text-center font-weight-bold body-1">{{ currentUser.username }}</v-col>
             </v-row>
          </v-list-item>
       </v-list>
@@ -37,28 +32,28 @@
 </style>
 
 <script>
+import { mapGetters } from "vuex";
+
 export default {
    data() {
       return {
-         profileName: "Fatih Uyanik",
          profileImg:  this.$iconURL,
          currentDrawerItem: 4,
          drawerItems: [
-            { text: this.$t("profile"), icon: "mdi-account" },
+            { text: this.$t("bans"), icon: "mdi-account" },
             { text: this.$t("users"), icon: "mdi-account-group" },
-            { text: this.$t("roles"), icon: "mdi-shield-account" },
-            { text: this.$t("survey"), icon: "mdi-align-horizontal-left" },
-            { text: this.$t("events"), icon: "mdi-calendar-clock" },
-            { text: this.$t("news"), icon: "mdi-newspaper-variant-outline" },
-            { text: this.$t("announcements"), icon: "mdi-message-alert" },
-            { text: this.$t("notifications"), icon: "mdi-bell" },
+            { text: this.$t("pending_verifications"), icon: "mdi-shield-account" },
+            { text: this.$t("support"), icon: "mdi-align-horizontal-left" },
          ],
       };
    },
    computed: {
       icon() {
          return this.$iconURL
-      }
+      },
+      ...mapGetters({
+      currentUser: "getCurrentUser"
+    }),
    },
    methods: {
       navigate(item) {

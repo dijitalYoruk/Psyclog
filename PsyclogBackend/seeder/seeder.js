@@ -1,20 +1,19 @@
-const ClientRequest = require('../model/clientRequest')
+const faker = require('faker')
+const dotenv = require('dotenv')
+const mongoose = require('mongoose')
 const Chat = require('../model/chat')
+const User = require('../model/user')
+const Wallet = require('../model/wallet')
+const Review = require('../model/review')
 const Message = require('../model/message')
 const Calendar = require('../model/calendar')
-const Wallet = require('../model/wallet')
 const Constants = require('../utils/constants')
-const Review = require('../model/review')
-const Appointment = require('../model/appointment')
-const User = require('../model/user')
-const mongoose = require('mongoose')
-const dotenv = require('dotenv')
-const faker = require('faker')
-const { getToday } = require('../utils/util')
 const ForumPost = require('../model/forumPost')
 const ForumTopic = require('../model/forumTopic')
 const PatientNote = require('../model/patientNote')
-
+const Appointment = require('../model/appointment')
+const ClientRequest = require('../model/clientRequest')
+const { getToday } = require('../utils/util')
 dotenv.config({ path: './config.env' })
 
 // ============================
@@ -48,7 +47,6 @@ const seedUsersData = async () => {
       const surname = faker.name.lastName()
       const email = faker.internet.email()
       const name = faker.name.firstName()
-
        
       if (i % 2 === 0) { // seed Psychologist
          const appointmentPrice = 100
@@ -72,7 +70,7 @@ const seedUsersData = async () => {
             biography, patients, 
             profileImage, clientRequests, 
             isPsychologistVerified, 
-            isActiveForClientRequest 
+            isActiveForClientRequest
          }
          
 
@@ -99,12 +97,17 @@ const seedUsersData = async () => {
          const clientRequests = []
          const cash = 3000
 
+         const duration = Math.floor(Math.random() * 5) - 1
+         const banTerminationDate = duration <= 0 ? undefined : 
+                  Date.now() + duration * Constants.ONE_DAY
+
          const data = { 
             username, name, 
             surname, email, 
             clientRequests, 
             role, password, 
             registeredPsychologists,
+            banTerminationDate,
             passwordConfirm 
          }
          
@@ -241,6 +244,22 @@ const seedUsersData = async () => {
          })
       }
    }
+
+   const username = 'psyclogAdmin'
+   const name = 'Fatih'
+   const surname = 'Uyanik'
+   const email = 'fatihsevban15@gmail.com'
+   const role = Constants.ROLE_ADMIN
+
+   const data = { 
+      username, name, 
+      surname, email, 
+      role, password, 
+      passwordConfirm,
+      isActive:true
+   }
+
+   await User.create(data)
 }
 
 

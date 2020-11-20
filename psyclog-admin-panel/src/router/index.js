@@ -11,6 +11,12 @@ import store from '@/store/store.js'
 import Auth from '@/components/auth/Auth.vue'
 import AuthSignIn from '@/components/auth/SignIn.vue'
 
+// user
+import User from '@/components/user/User.vue'
+import UserIndex from '@/components/user/UserIndex.vue'
+import UserPatients from '@/components/user/UserPatients.vue'
+import UserPsychologists from '@/components/user/UserPsychologists.vue'
+
 import Error404 from '@/components/404.vue'
 
 Vue.use(VueRouter)
@@ -22,6 +28,14 @@ const routes = [
     component: AuthSignIn,
     meta: {
       requiresVisitor: true
+    }
+  },
+  {
+    path: '/home',
+    name: 'home',
+    component: UserIndex,
+    meta: {
+      requiresAuth: true
     }
   },
   {
@@ -40,6 +54,31 @@ const routes = [
     ],
     meta: {
       requiresVisitor: true
+    }
+  },
+  {
+    path: "/user",
+    component: User,
+    children: [{
+        path: "",
+        name: "user.index",
+        component: UserIndex,
+        children: [
+          {
+            path: "patients",
+            name: "user.index.patients",
+            component: UserPatients
+          },
+          {
+            path: "psychologists",
+            name: "user.index.psychologists",
+            component: UserPsychologists
+          } 
+        ]
+      }
+    ],
+    meta: {
+      requiresAuth: true
     }
   },
   {

@@ -31,19 +31,20 @@ const actions = {
     signInUser({ commit }, payload) {
         return new Promise((resolve, reject) => {
             axios.post(URL.SIGN_IN, { 
-                usernameOrEmail: payload.usernameOrEmail, 
+                emailOrUsername: payload.usernameOrEmail, 
                 password: payload.password
             })
             .then(response => {
-                const data = response.data
-                const accessToken = data.accessToken
+                const data = response.data.data.user
+                const accessToken = response.data.data.token
                 const user = {
-                    uuid: data.uuid,
+                    id: data._id,
                     name: data.name,
+                    surname: data.surname,
                     username: data.username,
                     email: data.email,
                 }
-
+                
                 localStorage.setItem('accessToken', accessToken);
                 localStorage.setItem('user', JSON.stringify(user));
                 commit('setAccessToken', accessToken);
@@ -51,69 +52,27 @@ const actions = {
                 resolve(response);
             })
             .catch(error => {
-                reject(error.data);
+                if (error.response) {
+                    reject(error.response.data.message);
+                } else {
+                    reject(this.$t('alert_error_server'));
+                }
             });
         });
     },
     sendResetPasswordEmail({ commit }, payload) {
         return new Promise((resolve, reject) => {
-            axios.post(URL.REQUEST_PASSWORD_RESET, payload)
+            axios.post(URL.FORGOT_PASSWORD, payload)
             .then(response => {
                 resolve(response);           
             })
             .catch(error => {
-                reject(error);           
+                if (error.response) {
+                    reject(error.response.data.message);
+                } else {
+                    reject(this.$t('alert_error_server'));
+                }        
             })  
-        });
-    },
-    resetPassword({ commit }, payload) {
-        return new Promise((resolve, reject) => {
-            axios.post(URL.RESET_PASSWORD, { 
-                passwordToken: payload.passwordToken,
-                password: payload.password,
-            })
-            .then(response => {
-                resolve(response);
-            })
-            .catch(error => {
-                reject(error);
-            });
-        });
-    },
-    verifyEmailToken({ commit }, payload) {
-        return new Promise((resolve, reject) => {
-            axios.post(URL.EMAIL_VERIFICATION, { 
-                token: payload.emailToken
-            })
-            .then(response => {
-                resolve(response.data);
-            })
-            .catch(error => {
-                reject(error);
-            });
-        });
-    },
-    updateProfile({rootState, commit}, payload) {
-        return new Promise((resolve, reject) => {
-            axios.post(URL.PROFILE, payload, {
-                headers: {
-                    'Authorization': `Bearer ${rootState.auth.accessToken}`
-                }
-            })
-            .then(response => {
-                const data = response.data
-                const user = {
-                    uuid: data.uuid,
-                    name: data.name,
-                    username: data.username,
-                    email: data.email,
-                }
-                commit('setCurrentUser', user)
-                resolve(response);
-            })
-            .catch(error => {
-                reject(error);
-            });
         });
     }
 }

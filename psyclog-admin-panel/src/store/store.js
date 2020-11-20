@@ -1,6 +1,8 @@
 import Vue  from 'vue'
 import Vuex from 'vuex'
 import auth from '@/store/modules/auth'
+import user from '@/store/modules/user'
+import ban from '@/store/modules/ban'
 
 import * as mutations from '@/store/general/mutations'
 import * as actions   from '@/store/general/actions'
@@ -14,6 +16,8 @@ export default new Vuex.Store({
   actions,
   getters,
   modules: {
-    auth
+    auth,
+    user,
+    ban
   }
 })

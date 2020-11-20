@@ -65,14 +65,14 @@ export default {
             })
             .then(result => {
                if (result.data.success == false) {
-                  console.log(this.$t("alert_error_send_password_email"));
+                  this.$toast.error(this.$t("alert_error_send_password_email"));
                } else {
-                  console.log(this.$t("alert_success_send_password_email"));
+                  this.$toast.success(this.$t("alert_success_send_password_email"));
                   this.goToSigIn();
                }
             })
-            .catch(() => {
-               console.log(this.$t("alert_error_send_password_email"));
+            .catch(exception => {
+                  this.$toast.error(exception)
             });
       }
    }

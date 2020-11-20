@@ -41,10 +41,23 @@ const retrieveUsers = catchAsync(async (req, res, next) => {
    // getting params.
    const page = req.query.page
    const role = req.query.role || Constants.ROLE_USER
+   const search = req.query.search
    
-   // paginating users.
-   const users = await User.paginate({ role }, { page, limit:10 })
+   let users = []
 
+   // paginating users.
+   if  (role == Constants.ROLE_PSYCHOLOGIST) {
+      users = await User.paginate({ role, isPsychologistVerified: true, $or: [
+         { username: { $regex: new RegExp(search.toLowerCase(), "i") } },
+         { email: { $regex: new RegExp(search.toLowerCase(), "i") } },
+      ]}, { page, limit:10, options: { sort: { penaltyCount: 'desc' }}})
+   } else {
+      users = await User.paginate({ role, $or: [
+         { username: { $regex: new RegExp(search.toLowerCase(), "i") } },
+         { email: { $regex: new RegExp(search.toLowerCase(), "i") } },
+      ]}, { page, limit:10})
+   }
+   
    res.status(200).json({
       status: 200, 
       data: { users } 
@@ -61,7 +74,7 @@ const retrievePsychologists = catchAsync(async (req, res, next) => {
    const role = Constants.ROLE_PSYCHOLOGIST
 
    // paginating users.
-   const psychologists = await User.paginate({ role }, { page, limit:10 })
+   const psychologists = await User.paginate({ role, isPsychologistVerified: true }, { page, limit:10 })
    res.status(200).json({
       status: 200, 
       data: { psychologists } 
@@ -109,12 +122,12 @@ const retrieveUser = catchAsync(async (req, res, next) => {
  * Deletes a specific user.
  */ 
 const deleteUser = catchAsync(async (req, res) => {   
-   const id = req.params.userId
+   const id = req.body.userId
    const user = await User.findById(id)
    await user.remove()
 
-   res.status(204).json({
-      status: 204,
+   res.status(200).json({
+      status: 200,
       data: { message: __('success_delete', 'User') }
    })
 })
