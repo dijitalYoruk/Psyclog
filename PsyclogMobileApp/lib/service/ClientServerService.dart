@@ -7,10 +7,11 @@ import 'package:http/http.dart';
 import 'package:psyclog_app/service/WebServerService.dart';
 import 'package:psyclog_app/service/util/ServiceConstants.dart';
 import 'package:psyclog_app/service/util/ServiceErrorHandling.dart';
+import 'package:psyclog_app/src/models/Therapist.dart';
+import 'package:psyclog_app/src/models/controller/UserModelController.dart';
 import 'middleware/UserRestrict.dart';
 
 class ClientServerService extends WebServerService {
-
   static String _serverAddress;
   static ClientServerService _clientServerService;
   static FlutterSecureStorage _secureStorage;
@@ -19,7 +20,6 @@ class ClientServerService extends WebServerService {
   get currentClient => super.currentUser;
 
   static Future<ClientServerService> getClientServerService() async {
-
     // TODO USER Restrictions
 
     if (_serverAddress == null) {
@@ -43,8 +43,7 @@ class ClientServerService extends WebServerService {
 
   Future<Response> getTherapistsByPage(int page) async {
     if (UserRestrict.restrictAccessByGivenRoles(
-        [ServiceConstants.ROLE_USER, ServiceConstants.ROLE_ADMIN],
-        super.currentUser.userRole)) {
+        [ServiceConstants.ROLE_USER, ServiceConstants.ROLE_ADMIN], super.currentUser.userRole)) {
       // Waiting for User Token to be retrieved
       final String currentUserToken = await getToken();
 
@@ -52,8 +51,7 @@ class ClientServerService extends WebServerService {
         // Waiting for Therapist List
         try {
           var response = await http.get(
-            '$_serverAddress/$_currentAPI/user/psychologists?page=' +
-                page.toString(),
+            '$_serverAddress/$_currentAPI/user/psychologists?page=' + page.toString(),
             headers: {'Authorization': "Bearer " + currentUserToken},
           );
 
@@ -72,23 +70,16 @@ class ClientServerService extends WebServerService {
   }
 
   createPatientRequest(String therapistID, String infoMessage) async {
-
     // TODO USER Restrictions
 
-    final message =
-    jsonEncode({"psychologist": therapistID, "content": infoMessage});
+    final message = jsonEncode({"psychologist": therapistID, "content": infoMessage});
 
     final String currentUserToken = await getToken();
 
     if (currentUserToken != null) {
       try {
-        var response =
-        await http.post('$_serverAddress/$_currentAPI/patientRequests',
-            headers: {
-              'Authorization': "Bearer " + currentUserToken,
-              'Content-Type': 'application/json'
-            },
-            body: message);
+        var response = await http.post('$_serverAddress/$_currentAPI/patientRequests',
+            headers: {'Authorization': "Bearer " + currentUserToken, 'Content-Type': 'application/json'}, body: message);
 
         if (response.statusCode == ServiceConstants.STATUS_SUCCESS_CODE) {
           return ServiceErrorHandling.successfulStatusCode;
@@ -104,16 +95,13 @@ class ClientServerService extends WebServerService {
   }
 
   Future<Response> getPendingTherapistsByPage(int page) async {
-
     // TODO USER Restrictions
 
     final String currentUserToken = await getToken();
 
     if (currentUserToken != null) {
       try {
-        var response = await http.get(
-            '$_serverAddress/$_currentAPI/patientRequests?page=' +
-                page.toString(),
+        var response = await http.get('$_serverAddress/$_currentAPI/patientRequests?page=' + page.toString(),
             headers: {'Authorization': "Bearer " + currentUserToken});
 
         if (response.statusCode == ServiceConstants.STATUS_SUCCESS_CODE) {
@@ -130,7 +118,6 @@ class ClientServerService extends WebServerService {
   }
 
   Future<List<String>> getPendingTherapistsIDList() async {
-
     // TODO USER Restrictions
 
     final String currentUserToken = await getToken();
@@ -139,18 +126,14 @@ class ClientServerService extends WebServerService {
       List<String> _requestedTherapistList = List<String>();
 
       try {
-        var response = await http.get(
-            '$_serverAddress/$_currentAPI/patientRequests',
-            headers: {'Authorization': "Bearer " + currentUserToken});
+        var response = await http
+            .get('$_serverAddress/$_currentAPI/patientRequests', headers: {'Authorization': "Bearer " + currentUserToken});
 
         if (response.statusCode == ServiceConstants.STATUS_SUCCESS_CODE) {
           dynamic _decodedBody = jsonDecode(response.body);
 
-          for (int index = 0;
-          index < _decodedBody['data']['requests']['totalDocs'];
-          index++) {
-            _requestedTherapistList.add(_decodedBody['data']['requests']['docs']
-            [index]['psychologist']['_id']);
+          for (int index = 0; index < _decodedBody['data']['requests']['totalDocs']; index++) {
+            _requestedTherapistList.add(_decodedBody['data']['requests']['docs'][index]['psychologist']['_id']);
           }
 
           return _requestedTherapistList;
@@ -166,21 +149,17 @@ class ClientServerService extends WebServerService {
   }
 
   Future<String> removePendingRequestByID(String requestID) async {
-
     // TODO USER Restrictions
 
     final String currentUserToken = await getToken();
 
     if (currentUserToken != null) {
       try {
-        var request = http.Request('DELETE',
-            Uri.parse('$_serverAddress/$_currentAPI/patientRequests'));
+        var request = http.Request('DELETE', Uri.parse('$_serverAddress/$_currentAPI/patientRequests'));
         request.body = jsonEncode({"requestId": requestID});
 
-        request.headers.addAll(<String, String>{
-          'Authorization': "Bearer " + currentUserToken,
-          'Content-Type': 'application/json'
-        });
+        request.headers
+            .addAll(<String, String>{'Authorization': "Bearer " + currentUserToken, 'Content-Type': 'application/json'});
 
         print(request.body);
 
@@ -195,6 +174,39 @@ class ClientServerService extends WebServerService {
         }
       } catch (e) {
         return ServiceErrorHandling.serverNotRespondingError;
+      }
+    } else {
+      throw ServiceErrorHandling.noTokenError;
+    }
+  }
+
+  Future<List<Therapist>> getRegisteredPsychologists() async {
+    final String currentUserToken = await getToken();
+
+    if (currentUserToken != null) {
+      List<Therapist> _registeredPsychologistList = List<Therapist>();
+
+      try {
+        var response = await http.get('$_serverAddress/$_currentAPI/user/registered-psychologists',
+            headers: {'Authorization': "Bearer " + currentUserToken});
+
+        if (response.statusCode == ServiceConstants.STATUS_SUCCESS_CODE) {
+          dynamic _decodedBody = jsonDecode(response.body);
+
+          int numberOfTherapists = _decodedBody['data']['registeredPsychologists']['registeredPsychologists'].length;
+
+          _registeredPsychologistList = List<Therapist>.generate(
+              numberOfTherapists,
+              (index) => UserModelController.createTherapistFromJSONForList(
+                  _decodedBody['data']['registeredPsychologists']['registeredPsychologists'][index]));
+
+          return _registeredPsychologistList;
+        } else {
+          throw ServiceErrorHandling.couldNotCreateRequestError;
+        }
+      } catch (e) {
+        print(e);
+        throw ServiceErrorHandling.serverNotRespondingError;
       }
     } else {
       throw ServiceErrorHandling.noTokenError;

@@ -40,16 +40,14 @@ class WebServerService {
   }
 
   Future<String> attemptLogin(String emailOrUsername, String password) async {
-    final message =
-        jsonEncode({"emailOrUsername": emailOrUsername, "password": password});
+    final message = jsonEncode({"emailOrUsername": emailOrUsername, "password": password});
 
     try {
-      var result = await http.post('$_serverAddress/$_currentAPI/auth/signIn',
-          headers: ModelConstants.jsonTypeHeader, body: message);
+      var result =
+          await http.post('$_serverAddress/$_currentAPI/auth/signIn', headers: ModelConstants.jsonTypeHeader, body: message);
 
       if (result.statusCode == ServiceConstants.STATUS_SUCCESS_CODE) {
-        bool isUserCreated =
-            _serverService.saveCurrentUserInformation(result.body);
+        bool isUserCreated = _serverService.saveCurrentUserInformation(result.body);
 
         if (isUserCreated) {
           return ServiceErrorHandling.successfulStatusCode;
@@ -66,12 +64,7 @@ class WebServerService {
   }
 
   Future<Response> attemptUserSignUp(
-      String username,
-      String password,
-      String passwordCheck,
-      String email,
-      String firstName,
-      String lastName) async {
+      String username, String password, String passwordCheck, String email, String firstName, String lastName) async {
     final message = jsonEncode({
       "username": username,
       "email": email,
@@ -82,10 +75,8 @@ class WebServerService {
     });
 
     try {
-      var result = await http.post(
-          '$_serverAddress/$_currentAPI/auth/signUp/patient',
-          headers: ModelConstants.jsonTypeHeader,
-          body: message);
+      var result = await http.post('$_serverAddress/$_currentAPI/auth/signUp/patient',
+          headers: ModelConstants.jsonTypeHeader, body: message);
 
       return result;
     } catch (e) {
@@ -129,8 +120,7 @@ class WebServerService {
 
     if (_decodedBody["data"]["profile"]["role"] == ModelConstants.clientRole) {
       try {
-        _currentUser =
-            UserModelController.createClientFromJSONForToken(_decodedBody);
+        _currentUser = UserModelController.createClientFromJSONForToken(_decodedBody);
 
         return true;
       } catch (error) {
@@ -138,11 +128,9 @@ class WebServerService {
         print(error);
       }
       return false;
-    } else if (_decodedBody["data"]["profile"]["role"] ==
-        ModelConstants.therapistRole) {
+    } else if (_decodedBody["data"]["profile"]["role"] == ModelConstants.therapistRole) {
       try {
-        _currentUser =
-            UserModelController.createTherapistFromJSONForToken(_decodedBody);
+        _currentUser = UserModelController.createTherapistFromJSONForToken(_decodedBody);
 
         return true;
       } catch (error) {
@@ -168,11 +156,9 @@ class WebServerService {
         print(e);
         return false;
       }
-    } else if (_decodedBody["data"]["user"]["role"] ==
-        ModelConstants.therapistRole) {
+    } else if (_decodedBody["data"]["user"]["role"] == ModelConstants.therapistRole) {
       try {
-        _currentUser =
-            UserModelController.createTherapistFromJSON(_decodedBody);
+        _currentUser = UserModelController.createTherapistFromJSON(_decodedBody);
         _setToken(_decodedBody["data"]["token"]);
         return true;
       } catch (e) {

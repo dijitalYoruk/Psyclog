@@ -9,9 +9,7 @@ class RequestInformationCard extends StatefulWidget {
   final String therapistName;
   final bool currentUserApplied;
 
-  const RequestInformationCard(
-      {Key key, this.therapistID, this.therapistName, this.currentUserApplied})
-      : super(key: key);
+  const RequestInformationCard({Key key, this.therapistID, this.therapistName, this.currentUserApplied}) : super(key: key);
 
   @override
   _RequestInformationCardState createState() => _RequestInformationCardState();
@@ -29,8 +27,7 @@ class _RequestInformationCardState extends State<RequestInformationCard> {
     super.initState();
     _onApply = false;
     _contactInfoController = TextEditingController();
-    _applied =
-        widget.currentUserApplied != null ? widget.currentUserApplied : false;
+    _applied = widget.currentUserApplied != null ? widget.currentUserApplied : false;
     initializeService();
   }
 
@@ -49,8 +46,7 @@ class _RequestInformationCardState extends State<RequestInformationCard> {
     _onApply = !_onApply;
 
     if (infoText.isNotEmpty) {
-      String response =
-          await _clientServerService.createPatientRequest(widget.therapistID, infoText);
+      String response = await _clientServerService.createPatientRequest(widget.therapistID, infoText);
 
       if (response == ServiceErrorHandling.successfulStatusCode) {
         _snackText = "Successfully created a patient request.";
@@ -98,17 +94,11 @@ class _RequestInformationCardState extends State<RequestInformationCard> {
           alignment: Alignment.bottomCenter,
           child: AnimatedContainer(
             decoration: BoxDecoration(
-              color: _onApply
-                  ? ViewConstants.myBlack.withOpacity(0.75)
-                  : ViewConstants.myBlack,
+              color: _onApply ? ViewConstants.myBlack.withOpacity(0.75) : ViewConstants.myBlack,
               borderRadius: BorderRadius.circular(10),
             ),
-            width: _onApply
-                ? constraints.maxWidth * 0.9
-                : constraints.maxWidth * 0.5,
-            height: _onApply
-                ? constraints.maxHeight
-                : constraints.maxHeight * 0.075,
+            width: _onApply ? constraints.maxWidth * 0.9 : constraints.maxWidth * 0.5,
+            height: _onApply ? constraints.maxHeight : constraints.maxHeight * 0.075,
             duration: Duration(milliseconds: 666),
             curve: Curves.easeOutCirc,
             child: AnimatedSwitcher(
@@ -133,10 +123,8 @@ class _RequestInformationCardState extends State<RequestInformationCard> {
                           },
                           child: Text("Apply",
                               textAlign: TextAlign.center,
-                              style: ViewConstants.fieldStyle.copyWith(
-                                  fontSize: 15,
-                                  color: ViewConstants.myWhite,
-                                  fontWeight: FontWeight.w500)),
+                              style: ViewConstants.fieldStyle
+                                  .copyWith(fontSize: 15, color: ViewConstants.myWhite, fontWeight: FontWeight.w500)),
                         ),
                       )
                     : Container(
@@ -148,10 +136,8 @@ class _RequestInformationCardState extends State<RequestInformationCard> {
                         child: Center(
                           child: Text("Pending",
                               textAlign: TextAlign.center,
-                              style: ViewConstants.fieldStyle.copyWith(
-                                  fontSize: 15,
-                                  color: ViewConstants.myBlack,
-                                  fontWeight: FontWeight.w500)),
+                              style: ViewConstants.fieldStyle
+                                  .copyWith(fontSize: 15, color: ViewConstants.myBlack, fontWeight: FontWeight.w500)),
                         ),
                       ),
               ),
@@ -169,8 +155,7 @@ class _RequestInformationCardState extends State<RequestInformationCard> {
                           children: [
                             Container(
                               color: ViewConstants.myBlack.withOpacity(0.5),
-                              margin: EdgeInsets.only(
-                                  bottom: constraints.maxHeight * 0.075),
+                              margin: EdgeInsets.only(bottom: constraints.maxHeight * 0.075),
                               child: Column(
                                 children: [
                                   Flexible(
@@ -203,19 +188,12 @@ class _RequestInformationCardState extends State<RequestInformationCard> {
                                             maxLines: null,
                                             maxLength: 250,
                                             controller: _contactInfoController,
-                                            style: TextStyle(
-                                                fontSize: 20,
-                                                color: ViewConstants.myWhite),
+                                            style: TextStyle(fontSize: 20, color: ViewConstants.myWhite),
                                             decoration: InputDecoration(
-                                              contentPadding:
-                                                  EdgeInsets.symmetric(
-                                                      horizontal: 20,
-                                                      vertical: 20),
+                                              contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                                               border: InputBorder.none,
                                               hintText: 'Your message...',
-                                              hintStyle: TextStyle(
-                                                  fontSize: 20,
-                                                  color: ViewConstants.myWhite),
+                                              hintStyle: TextStyle(fontSize: 20, color: ViewConstants.myWhite),
                                             ),
                                           )
                                         ],
@@ -237,10 +215,8 @@ class _RequestInformationCardState extends State<RequestInformationCard> {
                                 },
                                 child: Text("Contact",
                                     textAlign: TextAlign.center,
-                                    style: ViewConstants.fieldStyle.copyWith(
-                                        fontSize: 15,
-                                        color: ViewConstants.myWhite,
-                                        fontWeight: FontWeight.w500)),
+                                    style: ViewConstants.fieldStyle
+                                        .copyWith(fontSize: 15, color: ViewConstants.myWhite, fontWeight: FontWeight.w500)),
                               ),
                             ),
                           ],

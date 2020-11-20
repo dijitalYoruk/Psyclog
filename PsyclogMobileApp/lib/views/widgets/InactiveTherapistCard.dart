@@ -7,8 +7,7 @@ class InactiveTherapistCard extends StatelessWidget {
   final Therapist therapist;
   final Color pageColor;
 
-  const InactiveTherapistCard({Key key, this.therapist, this.pageColor})
-      : super(key: key);
+  const InactiveTherapistCard({Key key, this.therapist, this.pageColor}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -48,10 +47,7 @@ class InactiveTherapistCard extends StatelessWidget {
                       Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
-                          "Dr. " +
-                              therapist.userFirstName.toString().inCaps +
-                              " " +
-                              therapist.userSurname.toString().inCaps,
+                          "Dr. " + therapist.userFirstName.toString().inCaps + " " + therapist.userSurname.toString().inCaps,
                           style: TextStyle(
                               fontSize: 12,
                               color: ViewConstants.darkGreyBlue,

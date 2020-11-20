@@ -11,12 +11,10 @@ import 'package:psyclog_app/views/widgets/AwareListItem.dart';
 
 class TherapistPendingRequestPage extends StatefulWidget {
   @override
-  _TherapistPendingRequestPageState createState() =>
-      _TherapistPendingRequestPageState();
+  _TherapistPendingRequestPageState createState() => _TherapistPendingRequestPageState();
 }
 
-class _TherapistPendingRequestPageState
-    extends State<TherapistPendingRequestPage> {
+class _TherapistPendingRequestPageState extends State<TherapistPendingRequestPage> {
   TherapistPendingListViewModel _pendingListViewModel;
 
   @override
@@ -32,9 +30,7 @@ class _TherapistPendingRequestPageState
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment(10, 10),
-            colors: [ViewConstants.myWhite, ViewConstants.myLightBlue]),
+            begin: Alignment.topLeft, end: Alignment(10, 10), colors: [ViewConstants.myWhite, ViewConstants.myLightBlue]),
       ),
       child: CustomScrollView(slivers: <Widget>[
         SliverAppBar(
@@ -63,8 +59,7 @@ class _TherapistPendingRequestPageState
             child: Container(
               padding: EdgeInsets.all(18),
               height: MediaQuery.of(context).size.height / 8,
-              decoration: BoxDecoration(
-                  color: ViewConstants.myLightBlue.withOpacity(0.4)),
+              decoration: BoxDecoration(color: ViewConstants.myLightBlue.withOpacity(0.4)),
               child: Center(
                 child: AutoSizeText(
                   "You can check your pending requests here. To deny the request, slide left; to accept it, slide right.",
@@ -72,8 +67,7 @@ class _TherapistPendingRequestPageState
                   minFontSize: 8,
                   maxFontSize: 20,
                   stepGranularity: 1,
-                  style: TextStyle(
-                      color: ViewConstants.myGrey, fontFamily: "OpenSans"),
+                  style: TextStyle(color: ViewConstants.myGrey, fontFamily: "OpenSans"),
                 ),
               ),
             ),
@@ -89,12 +83,10 @@ class _TherapistPendingRequestPageState
 
                     Client client = _request.getClient;
 
-                    double containerHeight =
-                        MediaQuery.of(context).size.height / 6 - 20;
+                    double containerHeight = MediaQuery.of(context).size.height / 6 - 20;
 
                     return AwareListItem(itemCreated: () {
-                      SchedulerBinding.instance
-                          .addPostFrameCallback((duration) {
+                      SchedulerBinding.instance.addPostFrameCallback((duration) {
                         model.handleItemCreated(index);
                       });
                     }, child: Builder(builder: (BuildContext context) {
@@ -103,24 +95,17 @@ class _TherapistPendingRequestPageState
                       } else {
                         return Dismissible(
                           key: UniqueKey(),
-                          confirmDismiss: (direction) =>
-                              checkDismissibleAction(index, direction),
-                          dismissThresholds: {
-                            DismissDirection.endToStart: 0.7,
-                            DismissDirection.startToEnd: 0.7
-                          },
+                          confirmDismiss: (direction) => checkDismissibleAction(index, direction),
+                          dismissThresholds: {DismissDirection.endToStart: 0.7, DismissDirection.startToEnd: 0.7},
                           background: Container(
                             padding: EdgeInsets.symmetric(horizontal: 25),
                             decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                    begin: Alignment.centerLeft,
-                                    end: Alignment.centerRight,
-                                    colors: [
-                                  ViewConstants.myGreen.withOpacity(0.85),
-                                  ViewConstants.myGreen.withOpacity(0.65),
-                                  ViewConstants.myPink.withOpacity(0.65),
-                                  ViewConstants.myPink.withOpacity(0.85)
-                                ])),
+                                gradient: LinearGradient(begin: Alignment.centerLeft, end: Alignment.centerRight, colors: [
+                              ViewConstants.myGreen.withOpacity(0.85),
+                              ViewConstants.myGreen.withOpacity(0.65),
+                              ViewConstants.myPink.withOpacity(0.65),
+                              ViewConstants.myPink.withOpacity(0.85)
+                            ])),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -147,8 +132,7 @@ class _TherapistPendingRequestPageState
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10),
                               ),
-                              margin: EdgeInsets.symmetric(
-                                  horizontal: 15, vertical: 10),
+                              margin: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                               elevation: 2,
                               child: Container(
                                 height: containerHeight + 20,
@@ -163,8 +147,7 @@ class _TherapistPendingRequestPageState
                                       height: containerHeight,
                                       width: containerHeight,
                                       decoration: BoxDecoration(
-                                        color: ViewConstants.myLightBlue
-                                            .withOpacity(0.4),
+                                        color: ViewConstants.myLightBlue.withOpacity(0.4),
                                         borderRadius: BorderRadius.circular(10),
                                       ),
                                     ),
@@ -172,32 +155,21 @@ class _TherapistPendingRequestPageState
                                       child: Padding(
                                         padding: const EdgeInsets.all(10.0),
                                         child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
                                             Text(
                                               client.getFullName(),
                                               style: GoogleFonts.lato(
-                                                  fontSize: 15,
-                                                  color: ViewConstants.myBlack,
-                                                  fontWeight: FontWeight.bold),
+                                                  fontSize: 15, color: ViewConstants.myBlack, fontWeight: FontWeight.bold),
                                             ),
                                             Expanded(
                                               child: Padding(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        vertical: 8.0),
+                                                padding: const EdgeInsets.symmetric(vertical: 8.0),
                                                 child: SingleChildScrollView(
-                                                  physics:
-                                                      BouncingScrollPhysics(),
-                                                  scrollDirection: Axis
-                                                      .vertical, //.horizontal
-                                                  child: Text(
-                                                      _request.getContent,
-                                                      style: GoogleFonts.lato(
-                                                          fontSize: 12,
-                                                          color: ViewConstants
-                                                              .myBlack)),
+                                                  physics: BouncingScrollPhysics(),
+                                                  scrollDirection: Axis.vertical, //.horizontal
+                                                  child: Text(_request.getContent,
+                                                      style: GoogleFonts.lato(fontSize: 12, color: ViewConstants.myBlack)),
                                                 ),
                                               ),
                                             ),
@@ -220,8 +192,7 @@ class _TherapistPendingRequestPageState
     );
   }
 
-  Future<bool> checkDismissibleAction(
-      int index, DismissDirection direction) async {
+  Future<bool> checkDismissibleAction(int index, DismissDirection direction) async {
     return await showDialog<bool>(
         barrierColor: Colors.transparent,
         context: context,
@@ -234,8 +205,7 @@ class _TherapistPendingRequestPageState
                       borderRadius: BorderRadius.circular(10),
                     ),
                     backgroundColor: ViewConstants.myWhite,
-                    title:
-                        Text("Are you sure you want to accept this request?"),
+                    title: Text("Are you sure you want to accept this request?"),
                     titleTextStyle: TextStyle(color: ViewConstants.myGrey),
                     insetPadding: EdgeInsets.all(20),
                     actionsPadding: EdgeInsets.all(10),
@@ -246,8 +216,7 @@ class _TherapistPendingRequestPageState
                           style: TextStyle(color: ViewConstants.myLightBlue),
                         ),
                         onPressed: () async {
-                          bool isAccepted = await _pendingListViewModel
-                              .acceptPendingRequestByIndex(index);
+                          bool isAccepted = await _pendingListViewModel.acceptPendingRequestByIndex(index);
                           if (isAccepted)
                             Navigator.of(context).pop(true);
                           else

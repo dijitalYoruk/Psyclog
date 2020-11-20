@@ -27,8 +27,7 @@ class ClientPendingListViewModel extends ChangeNotifier {
     _serverService = await ClientServerService.getClientServerService();
 
     try {
-      var response =
-          await _serverService.getPendingTherapistsByPage(_currentPage);
+      var response = await _serverService.getPendingTherapistsByPage(_currentPage);
 
       if (response != null) {
         var decodedBody = jsonDecode(response.body);
@@ -55,13 +54,11 @@ class ClientPendingListViewModel extends ChangeNotifier {
     return _pendingTherapistList[index];
   }
 
-  Future<List<TherapistRequest>> getTherapistByPageFromService(
-      int currentPage) async {
+  Future<List<TherapistRequest>> getTherapistByPageFromService(int currentPage) async {
     List<TherapistRequest> _pendingList;
 
     try {
-      var response =
-          await _serverService.getPendingTherapistsByPage(currentPage);
+      var response = await _serverService.getPendingTherapistsByPage(currentPage);
 
       if (response != null) {
         var _decodedBody = jsonDecode(response.body);
@@ -73,8 +70,7 @@ class ClientPendingListViewModel extends ChangeNotifier {
             (index) => TherapistRequest(
                 _decodedBody["data"]["requests"]["docs"][index]['_id'],
                 UserModelController.createTherapistFromJSONForList(
-                    _decodedBody["data"]["requests"]["docs"][index]
-                        ['psychologist'])));
+                    _decodedBody["data"]["requests"]["docs"][index]['psychologist'])));
 
         return _pendingList;
       }
@@ -88,13 +84,10 @@ class ClientPendingListViewModel extends ChangeNotifier {
   Future<void> handleItemCreated(int index) async {
     if (_serverService != null) {
       var itemPosition = index + 1;
-      var requestMoreData =
-          itemPosition % ViewConstants.therapistsPerPage == 0 && itemPosition != 0;
+      var requestMoreData = itemPosition % ViewConstants.therapistsPerPage == 0 && itemPosition != 0;
       var pageToRequest = 1 + (itemPosition ~/ ViewConstants.therapistsPerPage);
 
-      if (requestMoreData &&
-          pageToRequest > _currentPage &&
-          _currentPage < _totalPage) {
+      if (requestMoreData && pageToRequest > _currentPage && _currentPage < _totalPage) {
         print('handleItemCreated | pageToRequest: $pageToRequest');
         _currentPage = pageToRequest;
 
@@ -103,8 +96,7 @@ class ClientPendingListViewModel extends ChangeNotifier {
 
         // Adding new therapists to the list
 
-        List<TherapistRequest> _newRequests =
-            await getTherapistByPageFromService(_currentPage);
+        List<TherapistRequest> _newRequests = await getTherapistByPageFromService(_currentPage);
 
         try {
           _pendingTherapistList.addAll(_newRequests);
@@ -123,8 +115,7 @@ class ClientPendingListViewModel extends ChangeNotifier {
   }
 
   Future<bool> removePendingRequestByIndex(int index) async {
-    String response = await _serverService
-        .removePendingRequestByID(_pendingTherapistList[index].getRequestID);
+    String response = await _serverService.removePendingRequestByID(_pendingTherapistList[index].getRequestID);
 
     if (response == ServiceErrorHandling.successfulStatusCode) {
       _pendingTherapistList.removeAt(index);

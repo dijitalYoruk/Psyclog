@@ -11,8 +11,7 @@ import 'package:psyclog_app/views/widgets/AwareListItem.dart';
 
 class ClientPendingRequestPage extends StatefulWidget {
   @override
-  _ClientPendingRequestPageState createState() =>
-      _ClientPendingRequestPageState();
+  _ClientPendingRequestPageState createState() => _ClientPendingRequestPageState();
 }
 
 class _ClientPendingRequestPageState extends State<ClientPendingRequestPage> {
@@ -31,9 +30,7 @@ class _ClientPendingRequestPageState extends State<ClientPendingRequestPage> {
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment(10, 10),
-            colors: [ViewConstants.myWhite, ViewConstants.myLightBlue]),
+            begin: Alignment.topLeft, end: Alignment(10, 10), colors: [ViewConstants.myWhite, ViewConstants.myLightBlue]),
       ),
       child: CustomScrollView(slivers: <Widget>[
         SliverAppBar(
@@ -62,8 +59,7 @@ class _ClientPendingRequestPageState extends State<ClientPendingRequestPage> {
             child: Container(
               padding: EdgeInsets.all(18),
               height: MediaQuery.of(context).size.height / 8,
-              decoration: BoxDecoration(
-                  color: ViewConstants.myLightBlue.withOpacity(0.4)),
+              decoration: BoxDecoration(color: ViewConstants.myLightBlue.withOpacity(0.4)),
               child: Center(
                 child: AutoSizeText(
                   "You can check your pending requests or remove them by sliding the cards to the left.",
@@ -71,8 +67,7 @@ class _ClientPendingRequestPageState extends State<ClientPendingRequestPage> {
                   minFontSize: 8,
                   maxFontSize: 20,
                   stepGranularity: 1,
-                  style: TextStyle(
-                      color: ViewConstants.myGrey, fontFamily: "OpenSans"),
+                  style: TextStyle(color: ViewConstants.myGrey, fontFamily: "OpenSans"),
                 ),
               ),
             ),
@@ -84,18 +79,15 @@ class _ClientPendingRequestPageState extends State<ClientPendingRequestPage> {
               builder: (context, model, child) => SliverList(
                 delegate: SliverChildBuilderDelegate(
                   (context, index) {
-                    TherapistRequest _request =
-                        model.getTherapistByIndex(index);
+                    TherapistRequest _request = model.getTherapistByIndex(index);
 
                     Therapist therapist = _request.getTherapist;
 
-                    double containerHeight =
-                        MediaQuery.of(context).size.height / 5 - 20;
+                    double containerHeight = MediaQuery.of(context).size.height / 5 - 20;
 
                     return AwareListItem(
                       itemCreated: () {
-                        SchedulerBinding.instance
-                            .addPostFrameCallback((duration) {
+                        SchedulerBinding.instance.addPostFrameCallback((duration) {
                           model.handleItemCreated(index);
                         });
                       },
@@ -106,11 +98,8 @@ class _ClientPendingRequestPageState extends State<ClientPendingRequestPage> {
                           } else {
                             return Dismissible(
                               key: UniqueKey(),
-                              confirmDismiss: (direction) =>
-                                  checkDismissibleAction(index),
-                              dismissThresholds: {
-                                DismissDirection.endToStart: 0.7
-                              },
+                              confirmDismiss: (direction) => checkDismissibleAction(index),
+                              dismissThresholds: {DismissDirection.endToStart: 0.7},
                               direction: DismissDirection.endToStart,
                               background: Container(
                                 padding: EdgeInsets.symmetric(horizontal: 25),
@@ -118,10 +107,7 @@ class _ClientPendingRequestPageState extends State<ClientPendingRequestPage> {
                                     gradient: LinearGradient(
                                         begin: Alignment.centerLeft,
                                         end: Alignment.centerRight,
-                                        colors: [
-                                      ViewConstants.myPink,
-                                      ViewConstants.myPink.withOpacity(0.50)
-                                    ])),
+                                        colors: [ViewConstants.myPink, ViewConstants.myPink.withOpacity(0.50)])),
                                 child: Align(
                                   alignment: Alignment.centerRight,
                                   child: Icon(
@@ -135,12 +121,10 @@ class _ClientPendingRequestPageState extends State<ClientPendingRequestPage> {
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10),
                                   ),
-                                  margin: EdgeInsets.symmetric(
-                                      horizontal: 15, vertical: 10),
+                                  margin: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                                   elevation: 2,
                                   child: Container(
-                                    height:
-                                        MediaQuery.of(context).size.height / 5,
+                                    height: MediaQuery.of(context).size.height / 5,
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(10),
                                       color: ViewConstants.myWhite,
@@ -151,122 +135,81 @@ class _ClientPendingRequestPageState extends State<ClientPendingRequestPage> {
                                           margin: EdgeInsets.all(10),
                                           height: containerHeight,
                                           width: containerHeight,
-                                          decoration: BoxDecoration(
-                                            color: ViewConstants.myLightBlue
-                                                .withOpacity(0.4),
-                                            borderRadius:
-                                                BorderRadius.circular(10),
+                                          child: ClipRRect(
+                                            borderRadius: BorderRadius.circular(10),
+                                            clipBehavior: Clip.hardEdge,
+                                            child: Image.network("https://i.pravatar.cc?img=$index", fit: BoxFit.fill),
                                           ),
                                         ),
                                         Expanded(
                                           child: Padding(
                                             padding: const EdgeInsets.all(10.0),
                                             child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
+                                              crossAxisAlignment: CrossAxisAlignment.start,
                                               children: [
                                                 Text(
-                                                  "Dr. " +
-                                                      therapist.getFullName(),
+                                                  "Dr. " + therapist.getFullName(),
                                                   style: GoogleFonts.lato(
                                                       fontSize: 15,
-                                                      color:
-                                                          ViewConstants.myBlack,
-                                                      fontWeight:
-                                                          FontWeight.bold),
+                                                      color: ViewConstants.myBlack,
+                                                      fontWeight: FontWeight.bold),
                                                 ),
                                                 Padding(
-                                                  padding: const EdgeInsets
-                                                      .symmetric(vertical: 5.0),
+                                                  padding: const EdgeInsets.symmetric(vertical: 5.0),
                                                   child: Text(
                                                     "Family and Marriage Therapist",
                                                     style: GoogleFonts.lato(
                                                         fontSize: 12,
-                                                        color: ViewConstants
-                                                            .myPink,
-                                                        fontWeight:
-                                                            FontWeight.w600),
+                                                        color: ViewConstants.myPink,
+                                                        fontWeight: FontWeight.w600),
                                                   ),
                                                 ),
                                                 Padding(
-                                                  padding: const EdgeInsets
-                                                      .symmetric(vertical: 3.0),
+                                                  padding: const EdgeInsets.symmetric(vertical: 3.0),
                                                   child: Text(
                                                     "Appointment Price: " +
-                                                        therapist
-                                                            .appointmentPrice
-                                                            .toString() +
+                                                        therapist.appointmentPrice.toString() +
                                                         " \$ per Hour",
                                                     style: GoogleFonts.lato(
-                                                        fontSize: 12,
-                                                        color: ViewConstants
-                                                            .myBlack,
-                                                        fontWeight:
-                                                            FontWeight.w500),
-                                                  ),
+                                                    fontSize: 12,
+                                                    color: ViewConstants.myBlack,
+                                                    fontWeight: FontWeight.w500),
+                                                ),
                                                 ),
                                                 Expanded(
                                                   child: Row(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment.end,
+                                                    crossAxisAlignment: CrossAxisAlignment.end,
                                                     children: [
                                                       FlatButton(
-                                                        materialTapTargetSize:
-                                                            MaterialTapTargetSize
-                                                                .shrinkWrap,
+                                                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                                         onPressed: () {},
-                                                        padding:
-                                                            EdgeInsets.zero,
+                                                        padding: EdgeInsets.zero,
                                                         child: Text(
                                                           "CV",
-                                                          style: GoogleFonts
-                                                              .lato(),
+                                                          style: GoogleFonts.lato(),
                                                         ),
-                                                        color: ViewConstants
-                                                            .myGrey,
-                                                        splashColor:
-                                                            ViewConstants
-                                                                .myLightBlue,
-                                                        shape:
-                                                            RoundedRectangleBorder(
-                                                          borderRadius:
-                                                              BorderRadius.only(
-                                                                  bottomLeft: Radius
-                                                                      .circular(
-                                                                          5)),
+                                                        color: ViewConstants.myGrey,
+                                                        splashColor: ViewConstants.myLightBlue,
+                                                        shape: RoundedRectangleBorder(
+                                                          borderRadius: BorderRadius.only(bottomLeft: Radius.circular(5)),
                                                         ),
                                                       ),
                                                       Expanded(
                                                         child: Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .symmetric(
-                                                                  horizontal:
-                                                                      5.0),
+                                                          padding: const EdgeInsets.symmetric(horizontal: 5.0),
                                                           child: FlatButton(
-                                                            materialTapTargetSize:
-                                                                MaterialTapTargetSize
-                                                                    .shrinkWrap,
-                                                            padding:
-                                                                EdgeInsets.zero,
+                                                            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                                            padding: EdgeInsets.zero,
                                                             onPressed: () {},
                                                             child: Text(
                                                               "Biography",
-                                                              style: GoogleFonts
-                                                                  .lato(),
+                                                              style: GoogleFonts.lato(),
                                                             ),
-                                                            color: ViewConstants
-                                                                .myPink,
-                                                            splashColor:
-                                                                ViewConstants
-                                                                    .myBlack,
-                                                            shape:
-                                                                RoundedRectangleBorder(
+                                                            color: ViewConstants.myPink,
+                                                            splashColor: ViewConstants.myBlack,
+                                                            shape: RoundedRectangleBorder(
                                                               borderRadius:
-                                                                  BorderRadius.only(
-                                                                      bottomRight:
-                                                                          Radius.circular(
-                                                                              5)),
+                                                                  BorderRadius.only(bottomRight: Radius.circular(5)),
                                                             ),
                                                           ),
                                                         ),
@@ -316,8 +259,7 @@ class _ClientPendingRequestPageState extends State<ClientPendingRequestPage> {
                     style: TextStyle(color: ViewConstants.myLightBlue),
                   ),
                   onPressed: () async {
-                    bool isRemoved = await _pendingListViewModel
-                        .removePendingRequestByIndex(index);
+                    bool isRemoved = await _pendingListViewModel.removePendingRequestByIndex(index);
                     if (isRemoved)
                       Navigator.of(context).pop(true);
                     else

@@ -6,9 +6,9 @@ import 'package:psyclog_app/src/models/Therapist.dart';
 class ClientRegisteredListViewModel extends ChangeNotifier {
   ClientServerService _serverService;
 
-  List<dynamic> _registeredTherapistList;
+  List<Therapist> _registeredTherapistList;
 
-  Therapist getTherapistByElement(index) {
+  Therapist getTherapistByIndex(index) {
     return _registeredTherapistList[index];
   }
 
@@ -29,7 +29,13 @@ class ClientRegisteredListViewModel extends ChangeNotifier {
     _serverService = await ClientServerService.getClientServerService();
 
     try {
+      var statusCode = await _serverService.checkUserByCurrentToken();
 
+      if (statusCode == ServiceErrorHandling.successfulStatusCode) {
+        _registeredTherapistList = await _serverService.getRegisteredPsychologists();
+      } else {
+        print(ServiceErrorHandling.tokenWrongError);
+      }
     } catch (error) {
       print(error);
       print(ServiceErrorHandling.serverNotRespondingError);

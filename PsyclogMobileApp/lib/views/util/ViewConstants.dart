@@ -54,17 +54,14 @@ class ViewConstants {
   static Color darkGreyBlue = HexColor('040307');
   static Color myGreen = HexColor('17b978');
 
-  static TextStyle fieldStyle = TextStyle(
-      fontFamily: 'Montserrat', fontSize: 15.0, color: HexColor("#ffffff"));
-  static TextStyle hintStyle =
-      TextStyle(color: ViewConstants.myBlack, fontSize: 13);
+  static TextStyle fieldStyle = TextStyle(fontFamily: 'Montserrat', fontSize: 15.0, color: HexColor("#ffffff"));
+  static TextStyle hintStyle = TextStyle(color: ViewConstants.myBlack, fontSize: 13);
   static HexColor fieldBackgroundColor = ViewConstants.myWhite;
   static OutlineInputBorder fieldBorderStyle = new OutlineInputBorder(
     borderRadius: const BorderRadius.all(
       const Radius.circular(20.0),
     ),
-    borderSide: BorderSide(
-        color: Colors.transparent, width: 0, style: BorderStyle.none),
+    borderSide: BorderSide(color: Colors.transparent, width: 0, style: BorderStyle.none),
   );
 
   static ThemeData lightTheme = ThemeData(

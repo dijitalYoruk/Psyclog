@@ -91,10 +91,7 @@ class _ClientTherapistsListPageState extends State<ClientTherapistsListPage> {
                         title: Center(
                           child: Text(pageTitle,
                               textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  fontSize: 16,
-                                  color: pageTitleColor,
-                                  fontWeight: FontWeight.bold)),
+                              style: TextStyle(fontSize: 16, color: pageTitleColor, fontWeight: FontWeight.bold)),
                         ),
                         centerTitle: true,
                         background: LoadingIndicator(
@@ -125,19 +122,24 @@ class _ClientTherapistsListPageState extends State<ClientTherapistsListPage> {
                         delegate: SliverChildBuilderDelegate(
                           (context, index) {
                             bool currentUserApplied;
+                            bool currentUserRegistered;
 
-                            Therapist _currentIndexedTherapist =
-                                model.getTherapistByElement(index);
+                            Therapist _currentIndexedTherapist = model.getTherapistByElement(index);
 
-                            if (_currentIndexedTherapist != null)
-                              currentUserApplied = model.checkPendingStatus(
-                                  _currentIndexedTherapist.userID);
+                            if (_currentIndexedTherapist != null) {
+                              currentUserApplied = model.checkAppliedStatus(_currentIndexedTherapist.userID);
+                              currentUserRegistered = model.checkRegisteredStatus(_currentIndexedTherapist.userID);
+                            }
 
                             return AwareListItem(
                               itemCreated: () {
-                                print("List Item:" + index.toString() + " Applied: " + currentUserApplied.toString());
-                                SchedulerBinding.instance
-                                    .addPostFrameCallback((duration) {
+                                print("List Item:" +
+                                    index.toString() +
+                                    " Applied: " +
+                                    currentUserApplied.toString() +
+                                    " Registered: " +
+                                    currentUserRegistered.toString());
+                                SchedulerBinding.instance.addPostFrameCallback((duration) {
                                   model.handleItemCreated(index);
                                 });
                               },
@@ -146,12 +148,10 @@ class _ClientTherapistsListPageState extends State<ClientTherapistsListPage> {
                                   if (_currentIndexedTherapist == null) {
                                     return Padding(
                                       padding: const EdgeInsets.all(10.0),
-                                      child: Center(
-                                          child: CircularProgressIndicator()),
+                                      child: Center(child: CircularProgressIndicator()),
                                     );
                                   } else if (_currentIndexedTherapist.isActive) {
-                                    double containerHeight =
-                                        MediaQuery.of(context).size.height / 8 + 20;
+                                    double containerHeight = MediaQuery.of(context).size.height / 8 + 20;
 
                                     return Card(
                                       shape: RoundedRectangleBorder(
@@ -169,84 +169,66 @@ class _ClientTherapistsListPageState extends State<ClientTherapistsListPage> {
                                           children: [
                                             Container(
                                               margin: EdgeInsets.all(10),
-                                              decoration: BoxDecoration(
-                                                color:
-                                                    pageColor.withOpacity(0.25),
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
+                                              height: MediaQuery.of(context).size.height / 8,
+                                              width: MediaQuery.of(context).size.height / 8,
+                                              child: ClipRRect(
+                                                borderRadius: BorderRadius.circular(10),
+                                                clipBehavior: Clip.hardEdge,
+                                                child: Image.network("https://i.pravatar.cc?img=$index", fit: BoxFit.fill),
                                               ),
-                                              height: MediaQuery.of(context)
-                                                  .size
-                                                  .height /
-                                                  8,
-                                              width: MediaQuery.of(context)
-                                                      .size
-                                                      .height /
-                                                  8,
                                             ),
                                             Expanded(
                                               child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(10.0),
+                                                padding: const EdgeInsets.all(10.0),
                                                 child: Row(
                                                   children: [
                                                     Expanded(
                                                       child: Column(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .start,
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
+                                                        mainAxisAlignment: MainAxisAlignment.start,
+                                                        crossAxisAlignment: CrossAxisAlignment.start,
                                                         children: [
                                                           Align(
-                                                            alignment: Alignment
-                                                                .centerLeft,
+                                                            alignment: Alignment.centerLeft,
                                                             child: Text(
                                                               "Dr. " +
-                                                                  _currentIndexedTherapist
-                                                                      .userFirstName
-                                                                      .toString()
-                                                                      .inCaps +
+                                                                  _currentIndexedTherapist.userFirstName.toString().inCaps +
                                                                   " " +
-                                                                  _currentIndexedTherapist
-                                                                      .userSurname
-                                                                      .toString()
-                                                                      .inCaps,
-                                                              style: GoogleFonts.lato(fontSize: 16, color: ViewConstants.myBlack, fontWeight: FontWeight.bold),
+                                                                  _currentIndexedTherapist.userSurname.toString().inCaps,
+                                                              style: GoogleFonts.lato(
+                                                                  fontSize: 16,
+                                                                  color: ViewConstants.myBlack,
+                                                                  fontWeight: FontWeight.bold),
                                                             ),
                                                           ),
                                                           Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                    .only(top: 3),
+                                                            padding: const EdgeInsets.only(top: 3),
                                                             child: Text(
                                                               "Family and Marriage Therapist",
-                                                              style: GoogleFonts.lato(fontSize: 13, color: ViewConstants.myBlue, fontWeight: FontWeight.w600),
+                                                              style: GoogleFonts.lato(
+                                                                  fontSize: 13,
+                                                                  color: ViewConstants.myBlue,
+                                                                  fontWeight: FontWeight.w600),
                                                             ),
                                                           ),
                                                           Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                    .only(top: 3),
+                                                            padding: const EdgeInsets.only(top: 3),
                                                             child: Text(
-                                                              Random()
-                                                                      .nextInt(20)
-                                                                      .toString() +
-                                                                  " years experience",
-                                                              style: GoogleFonts.lato(fontSize: 12, color: ViewConstants.myPink, fontWeight: FontWeight.w600),
+                                                              Random().nextInt(20).toString() + " years experience",
+                                                              style: GoogleFonts.lato(
+                                                                  fontSize: 12,
+                                                                  color: ViewConstants.myPink,
+                                                                  fontWeight: FontWeight.w600),
                                                             ),
                                                           ),
                                                           Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                    .only(top: 3),
+                                                            padding: const EdgeInsets.only(top: 3),
                                                             child: Text(
-                                                              _currentIndexedTherapist
-                                                                      .appointmentPrice
-                                                                      .toString() +
+                                                              _currentIndexedTherapist.appointmentPrice.toString() +
                                                                   "\$ per Hour",
-                                                              style: GoogleFonts.lato(fontSize: 12, color: ViewConstants.myBlack, fontWeight: FontWeight.bold),
+                                                              style: GoogleFonts.lato(
+                                                                  fontSize: 12,
+                                                                  color: ViewConstants.myBlack,
+                                                                  fontWeight: FontWeight.bold),
                                                             ),
                                                           ),
                                                         ],
@@ -258,32 +240,31 @@ class _ClientTherapistsListPageState extends State<ClientTherapistsListPage> {
                                             ),
                                             Container(
                                               height: containerHeight,
-                                              color: pageColor ==
-                                                      ViewConstants.myWhite
+                                              color: pageColor == ViewConstants.myWhite
                                                   ? ViewConstants.myLightGrey
                                                   : pageColor.withOpacity(0.25),
-                                              child: IconButton(
-                                                icon: Icon(Icons.arrow_forward),
-                                                color: pageColor ==
-                                                        ViewConstants.myWhite
-                                                    ? ViewConstants.myBlack
-                                                    : pageColor,
-                                                onPressed: () async {
+                                              child: currentUserRegistered
+                                                  ? Padding(
+                                                      padding: const EdgeInsets.all(12.0),
+                                                      child: Icon(Icons.done, color: pageColor),
+                                                    )
+                                                  : IconButton(
+                                                      padding: const EdgeInsets.all(8.0),
+                                                      icon: Icon(Icons.arrow_forward),
+                                                      color: pageColor == ViewConstants.myWhite
+                                                          ? ViewConstants.myBlack
+                                                          : pageColor,
+                                                      onPressed: () async {
+                                                        // Waiting for Client to complete its interaction with the request
+                                                        await Navigator.pushNamed(
+                                                            context, ViewConstants.therapistRequestRoute,
+                                                            arguments: TherapistRequestScreenArguments(
+                                                                _currentIndexedTherapist, currentUserApplied));
 
-                                                  // Waiting for Client to complete its interaction with the request
-                                                  await Navigator.pushNamed(
-                                                      context,
-                                                      ViewConstants
-                                                          .therapistRequestRoute,
-                                                      arguments:
-                                                          TherapistRequestScreenArguments(
-                                                              _currentIndexedTherapist,
-                                                              currentUserApplied));
-
-                                                  // Refresh pending therapist list after Therapist Request Page to keep thew list fresh
-                                                  model.refreshPendingList();
-                                                },
-                                              ),
+                                                        // Refresh pending therapist list after Therapist Request Page to keep thew list fresh
+                                                        model.refreshPendingList();
+                                                      },
+                                                    ),
                                             )
                                           ],
                                         ),
@@ -291,9 +272,7 @@ class _ClientTherapistsListPageState extends State<ClientTherapistsListPage> {
                                       ),
                                     );
                                   } else if (!_currentIndexedTherapist.isActive) {
-                                    return InactiveTherapistCard(
-                                        therapist: _currentIndexedTherapist,
-                                        pageColor: pageColor);
+                                    return InactiveTherapistCard(therapist: _currentIndexedTherapist, pageColor: pageColor);
                                   } else {
                                     return CircularProgressIndicator();
                                   }
@@ -301,8 +280,7 @@ class _ClientTherapistsListPageState extends State<ClientTherapistsListPage> {
                               ),
                             );
                           },
-                          childCount:
-                              model.getCurrentListLength(),
+                          childCount: model.getCurrentListLength(),
                         ),
                       ),
                     ),

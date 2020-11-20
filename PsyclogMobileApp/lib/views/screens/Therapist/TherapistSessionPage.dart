@@ -58,10 +58,7 @@ class _TherapistSessionPageState extends State<TherapistSessionPage> {
                               ),
                               child: Text("Clients",
                                   textAlign: TextAlign.left,
-                                  style: TextStyle(
-                                      fontSize: 30,
-                                      color: ViewConstants.myBlack,
-                                      fontWeight: FontWeight.bold)),
+                                  style: TextStyle(fontSize: 30, color: ViewConstants.myBlack, fontWeight: FontWeight.bold)),
                             ),
                             Padding(
                               padding: EdgeInsets.only(
@@ -71,14 +68,12 @@ class _TherapistSessionPageState extends State<TherapistSessionPage> {
                               child: CircleAvatar(
                                 child: InkWell(
                                   onTap: () {
-                                    Navigator.pushNamed(context,
-                                        ViewConstants.therapistProfileRoute);
+                                    Navigator.pushNamed(context, ViewConstants.therapistProfileRoute);
                                   },
                                 ),
-                                maxRadius:
-                                    MediaQuery.of(context).size.height * 0.025,
-                                backgroundImage: NetworkImage(
-                                    "https://avatarfiles.alphacoders.com/715/thumb-1920-71560.jpg"),
+                                maxRadius: MediaQuery.of(context).size.height * 0.025,
+                                backgroundImage:
+                                    NetworkImage("https://avatarfiles.alphacoders.com/715/thumb-1920-71560.jpg"),
                               ),
                             ),
                           ],
@@ -87,18 +82,15 @@ class _TherapistSessionPageState extends State<TherapistSessionPage> {
                           child: Container(
                             width: MediaQuery.of(context).size.width,
                             height: MediaQuery.of(context).size.height / 12,
-                            margin:
-                                EdgeInsets.only(top: 20, right: 20, left: 20),
+                            margin: EdgeInsets.only(top: 20, right: 20, left: 20),
                             child: FlatButton(
-                              color:
-                                  ViewConstants.myLightBlue.withOpacity(0.75),
+                              color: ViewConstants.myLightBlue.withOpacity(0.75),
                               splashColor: ViewConstants.myPink,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
                                     "Pending Requests",
@@ -112,8 +104,7 @@ class _TherapistSessionPageState extends State<TherapistSessionPage> {
                                 ],
                               ),
                               onPressed: () async {
-                                Navigator.pushNamed(context,
-                                    ViewConstants.therapistPendingRequestRoute);
+                                Navigator.pushNamed(context, ViewConstants.therapistPendingRequestRoute);
                               },
                             ),
                           ),
@@ -136,8 +127,7 @@ class _TherapistSessionPageState extends State<TherapistSessionPage> {
                   child: Container(
                     padding: EdgeInsets.all(18),
                     height: MediaQuery.of(context).size.height / 8,
-                    decoration: BoxDecoration(
-                        color: ViewConstants.myLightBlue.withOpacity(0.4)),
+                    decoration: BoxDecoration(color: ViewConstants.myLightBlue.withOpacity(0.4)),
                     child: Center(
                       child: AutoSizeText(
                         "From the list below, you can find the registered clients for fast and efficient access to your notes.",
@@ -145,9 +135,7 @@ class _TherapistSessionPageState extends State<TherapistSessionPage> {
                         minFontSize: 8,
                         maxFontSize: 20,
                         stepGranularity: 1,
-                        style: TextStyle(
-                            color: ViewConstants.myGrey,
-                            fontFamily: "OpenSans"),
+                        style: TextStyle(color: ViewConstants.myGrey, fontFamily: "OpenSans"),
                       ),
                     ),
                   ),
@@ -166,10 +154,7 @@ class _TherapistSessionPageState extends State<TherapistSessionPage> {
                           elevation: 2,
                           shadowColor: ViewConstants.myLightBlue,
                           color: ViewConstants.myWhite,
-                          margin: EdgeInsets.only(
-                              left: index.isEven ? 20 : 10,
-                              right: index.isEven ? 10 : 20,
-                              bottom: 20),
+                          margin: EdgeInsets.only(left: index.isEven ? 20 : 10, right: index.isEven ? 10 : 20, bottom: 20),
                         );
                       },
                       childCount: 20,

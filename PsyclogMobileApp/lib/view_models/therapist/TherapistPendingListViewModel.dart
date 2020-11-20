@@ -27,8 +27,7 @@ class TherapistPendingListViewModel extends ChangeNotifier {
     _serverService = await TherapistServerService.getTherapistServerService();
 
     try {
-      var response =
-          await _serverService.getPendingClientsByPage(_currentPage);
+      var response = await _serverService.getPendingClientsByPage(_currentPage);
 
       if (response != null) {
         var decodedBody = jsonDecode(response.body);
@@ -36,7 +35,6 @@ class TherapistPendingListViewModel extends ChangeNotifier {
         _totalPage = decodedBody["data"]["requests"]["totalPages"];
 
         _pendingClientList = await getClientsByPageFromService(_currentPage);
-
       }
     } catch (error) {
       print(error);
@@ -56,13 +54,11 @@ class TherapistPendingListViewModel extends ChangeNotifier {
     return _pendingClientList[index];
   }
 
-  Future<List<ClientRequest>> getClientsByPageFromService(
-      int currentPage) async {
+  Future<List<ClientRequest>> getClientsByPageFromService(int currentPage) async {
     List<ClientRequest> _pendingList;
 
     try {
-      var response =
-          await _serverService.getPendingClientsByPage(currentPage);
+      var response = await _serverService.getPendingClientsByPage(currentPage);
 
       if (response != null) {
         var _decodedBody = jsonDecode(response.body);
@@ -73,12 +69,10 @@ class TherapistPendingListViewModel extends ChangeNotifier {
             numberOfClients,
             (index) => ClientRequest(
                 _decodedBody["data"]["requests"]["docs"][index]['_id'],
-                UserModelController.createClientFromJSONForList(
-                    _decodedBody["data"]["requests"]["docs"][index]['patient']),
+                UserModelController.createClientFromJSONForList(_decodedBody["data"]["requests"]["docs"][index]['patient']),
                 _decodedBody["data"]["requests"]["docs"][index]['content'],
                 _decodedBody["data"]["requests"]["docs"][index]['createdAt'],
-                _decodedBody["data"]["requests"]["docs"][index]
-                    ['psychologist']));
+                _decodedBody["data"]["requests"]["docs"][index]['psychologist']));
 
         return _pendingList;
       }
@@ -92,14 +86,10 @@ class TherapistPendingListViewModel extends ChangeNotifier {
   Future<void> handleItemCreated(int index) async {
     if (_serverService != null) {
       var itemPosition = index + 1;
-      var requestMoreData =
-          itemPosition % ViewConstants.clientsPerPage == 0 &&
-              itemPosition != 0;
+      var requestMoreData = itemPosition % ViewConstants.clientsPerPage == 0 && itemPosition != 0;
       var pageToRequest = 1 + (itemPosition ~/ ViewConstants.clientsPerPage);
 
-      if (requestMoreData &&
-          pageToRequest > _currentPage &&
-          _currentPage < _totalPage) {
+      if (requestMoreData && pageToRequest > _currentPage && _currentPage < _totalPage) {
         print('handleItemCreated | pageToRequest: $pageToRequest');
         _currentPage = pageToRequest;
 
@@ -108,8 +98,7 @@ class TherapistPendingListViewModel extends ChangeNotifier {
 
         // Adding new therapists to the list
 
-        List<ClientRequest> _newRequests =
-        await getClientsByPageFromService(_currentPage);
+        List<ClientRequest> _newRequests = await getClientsByPageFromService(_currentPage);
 
         try {
           _pendingClientList.addAll(_newRequests);
@@ -130,14 +119,13 @@ class TherapistPendingListViewModel extends ChangeNotifier {
   Future<bool> acceptPendingRequestByIndex(int index) async {
     String response = await _serverService.acceptRequestByID(_pendingClientList[index].getRequestID);
 
-    if(response == ServiceErrorHandling.successfulStatusCode) {
+    if (response == ServiceErrorHandling.successfulStatusCode) {
       _pendingClientList.removeAt(index);
 
       // TODO User information has to be updated here
 
       return true;
-    }
-    else {
+    } else {
       print("Accepting Pending request failed. Response: " + response);
       return false;
     }
@@ -146,18 +134,16 @@ class TherapistPendingListViewModel extends ChangeNotifier {
   Future<bool> denyPendingRequestByIndex(int index) async {
     String response = await _serverService.denyRequestByID(_pendingClientList[index].getRequestID);
 
-    if(response == ServiceErrorHandling.successfulStatusCode) {
+    if (response == ServiceErrorHandling.successfulStatusCode) {
       _pendingClientList.removeAt(index);
 
       // TODO User information has to be updated here
 
       return true;
-    }
-    else {
+    } else {
       print("Accepting Pending request failed. Response: " + response);
       return false;
     }
-
   }
 
   void _showLoadingIndicator() {

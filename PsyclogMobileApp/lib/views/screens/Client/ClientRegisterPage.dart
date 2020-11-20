@@ -8,9 +8,7 @@ class ClientRegisterPage extends StatefulWidget {
   _ClientRegisterPageState createState() => _ClientRegisterPageState();
 }
 
-class _ClientRegisterPageState extends State<ClientRegisterPage>
-    with SingleTickerProviderStateMixin {
-
+class _ClientRegisterPageState extends State<ClientRegisterPage> with SingleTickerProviderStateMixin {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
   final _passwordCheckController = TextEditingController();
@@ -38,7 +36,6 @@ class _ClientRegisterPageState extends State<ClientRegisterPage>
   PageController _pageController;
   Future<bool> _data;
   int _pageIndex;
-
 
   @override
   void setState(fn) {
@@ -93,8 +90,8 @@ class _ClientRegisterPageState extends State<ClientRegisterPage>
     final String firstName = _firstNameController.text;
     final String lastName = _lastNameController.text;
 
-    final Response result = await _serverService.attemptUserSignUp(
-        username, password, passwordCheck, email, firstName, lastName);
+    final Response result =
+        await _serverService.attemptUserSignUp(username, password, passwordCheck, email, firstName, lastName);
 
     if (result.statusCode == 200) {
       print("User is created");
@@ -121,7 +118,6 @@ class _ClientRegisterPageState extends State<ClientRegisterPage>
 
   @override
   Widget build(BuildContext context) {
-
     double _nextButtonWidth;
     double _backButtonWidth;
 
@@ -150,29 +146,16 @@ class _ClientRegisterPageState extends State<ClientRegisterPage>
             borderSide: BorderSide(color: ViewConstants.myWhite),
           ),
           errorText: _usernameValidate ? _usernameErrorText : null,
-          errorStyle: TextStyle(
-              fontSize: 15,
-              color: ViewConstants.myPink,
-              fontWeight: FontWeight.w400),
+          errorStyle: TextStyle(fontSize: 15, color: ViewConstants.myPink, fontWeight: FontWeight.w400),
           hintText: 'Type your username',
-          hintStyle: TextStyle(
-              fontSize: 15,
-              color: ViewConstants.myWhite,
-              fontWeight: FontWeight.w400),
+          hintStyle: TextStyle(fontSize: 15, color: ViewConstants.myWhite, fontWeight: FontWeight.w400),
         ),
-        style: TextStyle(
-            color: ViewConstants.myWhite,
-            fontWeight: FontWeight.w500,
-            fontSize: 15),
+        style: TextStyle(color: ViewConstants.myWhite, fontWeight: FontWeight.w500, fontSize: 15),
         onEditingComplete: () {
           primaryFocus.unfocus(disposition: disposition);
           setState(() {
-            _usernameController.text.isEmpty
-                ? _usernameValidate = true
-                : _usernameValidate = false;
-            _usernameValidate
-                ? _usernameErrorText = "This field cannot be empty"
-                : _usernameErrorText = null;
+            _usernameController.text.isEmpty ? _usernameValidate = true : _usernameValidate = false;
+            _usernameValidate ? _usernameErrorText = "This field cannot be empty" : _usernameErrorText = null;
           });
         },
       ),
@@ -203,27 +186,16 @@ class _ClientRegisterPageState extends State<ClientRegisterPage>
             borderSide: BorderSide(color: ViewConstants.myWhite),
           ),
           errorText: _passwordValidate ? _passwordErrorText : null,
-          errorStyle: TextStyle(
-              fontSize: 15,
-              color: ViewConstants.myPink,
-              fontWeight: FontWeight.w400),
+          errorStyle: TextStyle(fontSize: 15, color: ViewConstants.myPink, fontWeight: FontWeight.w400),
           hintText: 'Type your password',
-          hintStyle: TextStyle(
-              fontSize: 15,
-              color: ViewConstants.myWhite,
-              fontWeight: FontWeight.w400),
+          hintStyle: TextStyle(fontSize: 15, color: ViewConstants.myWhite, fontWeight: FontWeight.w400),
         ),
-        style: TextStyle(
-            color: ViewConstants.myWhite, fontWeight: FontWeight.w500),
+        style: TextStyle(color: ViewConstants.myWhite, fontWeight: FontWeight.w500),
         onEditingComplete: () {
           primaryFocus.unfocus(disposition: disposition);
           setState(() {
-            _passwordController.text.isEmpty
-                ? _passwordValidate = true
-                : _passwordValidate = false;
-            _passwordValidate
-                ? _passwordErrorText = "This field cannot be empty"
-                : _passwordErrorText = null;
+            _passwordController.text.isEmpty ? _passwordValidate = true : _passwordValidate = false;
+            _passwordValidate ? _passwordErrorText = "This field cannot be empty" : _passwordErrorText = null;
           });
         },
       ),
@@ -254,27 +226,16 @@ class _ClientRegisterPageState extends State<ClientRegisterPage>
             borderSide: BorderSide(color: ViewConstants.myWhite),
           ),
           errorText: _passwordCheckValidate ? _passwordCheckErrorText : null,
-          errorStyle: TextStyle(
-              fontSize: 15,
-              color: ViewConstants.myPink,
-              fontWeight: FontWeight.w400),
+          errorStyle: TextStyle(fontSize: 15, color: ViewConstants.myPink, fontWeight: FontWeight.w400),
           hintText: 'Match your password',
-          hintStyle: TextStyle(
-              fontSize: 15,
-              color: ViewConstants.myWhite,
-              fontWeight: FontWeight.w400),
+          hintStyle: TextStyle(fontSize: 15, color: ViewConstants.myWhite, fontWeight: FontWeight.w400),
         ),
-        style: TextStyle(
-            color: ViewConstants.myWhite, fontWeight: FontWeight.w500),
+        style: TextStyle(color: ViewConstants.myWhite, fontWeight: FontWeight.w500),
         onEditingComplete: () {
           primaryFocus.unfocus(disposition: disposition);
           setState(() {
-            _passwordCheckController.text.isEmpty
-                ? _passwordCheckValidate = true
-                : _passwordCheckValidate = false;
-            _passwordCheckValidate
-                ? _passwordCheckErrorText = "This field cannot be empty"
-                : _passwordCheckErrorText = null;
+            _passwordCheckController.text.isEmpty ? _passwordCheckValidate = true : _passwordCheckValidate = false;
+            _passwordCheckValidate ? _passwordCheckErrorText = "This field cannot be empty" : _passwordCheckErrorText = null;
           });
         },
       ),
@@ -305,29 +266,16 @@ class _ClientRegisterPageState extends State<ClientRegisterPage>
               borderSide: BorderSide(color: ViewConstants.myWhite),
             ),
             errorText: _emailValidate ? _emailErrorText : null,
-            errorStyle: TextStyle(
-                fontSize: 15,
-                color: ViewConstants.myPink,
-                fontWeight: FontWeight.w400),
+            errorStyle: TextStyle(fontSize: 15, color: ViewConstants.myPink, fontWeight: FontWeight.w400),
             hintText: 'Type your e-mail',
-            hintStyle: TextStyle(
-                fontSize: 15,
-                color: ViewConstants.myWhite,
-                fontWeight: FontWeight.w400),
+            hintStyle: TextStyle(fontSize: 15, color: ViewConstants.myWhite, fontWeight: FontWeight.w400),
           ),
-          style: TextStyle(
-              color: ViewConstants.myWhite,
-              fontWeight: FontWeight.w500,
-              fontSize: 15),
+          style: TextStyle(color: ViewConstants.myWhite, fontWeight: FontWeight.w500, fontSize: 15),
           onEditingComplete: () {
             primaryFocus.unfocus(disposition: disposition);
             setState(() {
-              _emailController.text.isEmpty
-                  ? _emailValidate = true
-                  : _emailValidate = false;
-              _emailValidate
-                  ? _emailErrorText = "This field cannot be empty"
-                  : _emailErrorText = null;
+              _emailController.text.isEmpty ? _emailValidate = true : _emailValidate = false;
+              _emailValidate ? _emailErrorText = "This field cannot be empty" : _emailErrorText = null;
             });
           }),
     );
@@ -357,29 +305,16 @@ class _ClientRegisterPageState extends State<ClientRegisterPage>
             borderSide: BorderSide(color: ViewConstants.myWhite),
           ),
           errorText: _firstNameValidate ? _firstNameErrorText : null,
-          errorStyle: TextStyle(
-              fontSize: 15,
-              color: ViewConstants.myPink,
-              fontWeight: FontWeight.w400),
+          errorStyle: TextStyle(fontSize: 15, color: ViewConstants.myPink, fontWeight: FontWeight.w400),
           hintText: 'Type your first name',
-          hintStyle: TextStyle(
-              fontSize: 15,
-              color: ViewConstants.myWhite,
-              fontWeight: FontWeight.w400),
+          hintStyle: TextStyle(fontSize: 15, color: ViewConstants.myWhite, fontWeight: FontWeight.w400),
         ),
-        style: TextStyle(
-            color: ViewConstants.myWhite,
-            fontWeight: FontWeight.w500,
-            fontSize: 15),
+        style: TextStyle(color: ViewConstants.myWhite, fontWeight: FontWeight.w500, fontSize: 15),
         onEditingComplete: () {
           primaryFocus.unfocus(disposition: disposition);
           setState(() {
-            _firstNameController.text.isEmpty
-                ? _firstNameValidate = true
-                : _firstNameValidate = false;
-            _firstNameValidate
-                ? _firstNameErrorText = "This field cannot be empty"
-                : _firstNameErrorText = null;
+            _firstNameController.text.isEmpty ? _firstNameValidate = true : _firstNameValidate = false;
+            _firstNameValidate ? _firstNameErrorText = "This field cannot be empty" : _firstNameErrorText = null;
           });
         },
       ),
@@ -409,29 +344,16 @@ class _ClientRegisterPageState extends State<ClientRegisterPage>
             borderSide: BorderSide(color: ViewConstants.myWhite),
           ),
           errorText: _lastNameValidate ? _lastNameErrorText : null,
-          errorStyle: TextStyle(
-              fontSize: 15,
-              color: ViewConstants.myPink,
-              fontWeight: FontWeight.w400),
+          errorStyle: TextStyle(fontSize: 15, color: ViewConstants.myPink, fontWeight: FontWeight.w400),
           hintText: 'Type your surname',
-          hintStyle: TextStyle(
-              fontSize: 15,
-              color: ViewConstants.myWhite,
-              fontWeight: FontWeight.w400),
+          hintStyle: TextStyle(fontSize: 15, color: ViewConstants.myWhite, fontWeight: FontWeight.w400),
         ),
-        style: TextStyle(
-            color: ViewConstants.myWhite,
-            fontWeight: FontWeight.w500,
-            fontSize: 15),
+        style: TextStyle(color: ViewConstants.myWhite, fontWeight: FontWeight.w500, fontSize: 15),
         onEditingComplete: () {
           primaryFocus.unfocus(disposition: disposition);
           setState(() {
-            _lastNameController.text.isEmpty
-                ? _lastNameValidate = true
-                : _lastNameValidate = false;
-            _lastNameValidate
-                ? _lastNameErrorText = "This field cannot be empty"
-                : _lastNameErrorText = null;
+            _lastNameController.text.isEmpty ? _lastNameValidate = true : _lastNameValidate = false;
+            _lastNameValidate ? _lastNameErrorText = "This field cannot be empty" : _lastNameErrorText = null;
           });
         },
       ),
@@ -454,10 +376,8 @@ class _ClientRegisterPageState extends State<ClientRegisterPage>
                     child: Padding(
                       padding: const EdgeInsets.only(top: 50, bottom: 20),
                       child: Text("Please fill your account information",
-                          style: ViewConstants.fieldStyle.copyWith(
-                              color: ViewConstants.myWhite,
-                              fontWeight: FontWeight.w500,
-                              fontSize: 18)),
+                          style: ViewConstants.fieldStyle
+                              .copyWith(color: ViewConstants.myWhite, fontWeight: FontWeight.w500, fontSize: 18)),
                     ),
                   ),
                 ),
@@ -474,18 +394,15 @@ class _ClientRegisterPageState extends State<ClientRegisterPage>
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Padding(
-                              padding: const EdgeInsets.only(
-                                  right: 25, left: 25, top: 30, bottom: 10),
+                              padding: const EdgeInsets.only(right: 25, left: 25, top: 30, bottom: 10),
                               child: usernameField,
                             ),
                             Padding(
-                              padding: const EdgeInsets.only(
-                                  right: 25, left: 25, top: 10, bottom: 10),
+                              padding: const EdgeInsets.only(right: 25, left: 25, top: 10, bottom: 10),
                               child: passwordField,
                             ),
                             Padding(
-                              padding: const EdgeInsets.only(
-                                  right: 25, left: 25, top: 10, bottom: 30),
+                              padding: const EdgeInsets.only(right: 25, left: 25, top: 10, bottom: 30),
                               child: passwordFieldCheck,
                             )
                           ],
@@ -498,18 +415,15 @@ class _ClientRegisterPageState extends State<ClientRegisterPage>
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Padding(
-                              padding: const EdgeInsets.only(
-                                  right: 25, left: 25, top: 30, bottom: 10),
+                              padding: const EdgeInsets.only(right: 25, left: 25, top: 30, bottom: 10),
                               child: emailField,
                             ),
                             Padding(
-                              padding: const EdgeInsets.only(
-                                  right: 25, left: 25, top: 10, bottom: 10),
+                              padding: const EdgeInsets.only(right: 25, left: 25, top: 10, bottom: 10),
                               child: firstNameField,
                             ),
                             Padding(
-                              padding: const EdgeInsets.only(
-                                  right: 25, left: 25, top: 10, bottom: 30),
+                              padding: const EdgeInsets.only(right: 25, left: 25, top: 10, bottom: 30),
                               child: lastNameField,
                             )
                           ],
@@ -526,18 +440,13 @@ class _ClientRegisterPageState extends State<ClientRegisterPage>
                               child: Center(
                                 child: TweenAnimationBuilder(
                                   duration: Duration(milliseconds: 600),
-                                  tween: Tween(
-                                      begin: 0.0,
-                                      end: MediaQuery.of(context).size.height /
-                                          3),
+                                  tween: Tween(begin: 0.0, end: MediaQuery.of(context).size.height / 3),
                                   curve: Curves.easeIn,
-                                  builder: (BuildContext context, double size,
-                                      Widget child) {
+                                  builder: (BuildContext context, double size, Widget child) {
                                     return Icon(
                                       Icons.done,
                                       size: size,
-                                      color:
-                                          ViewConstants.myWhite,
+                                      color: ViewConstants.myWhite,
                                     );
                                   },
                                 ),
@@ -568,14 +477,9 @@ class _ClientRegisterPageState extends State<ClientRegisterPage>
                     child: SafeArea(
                       child: Padding(
                         padding: const EdgeInsets.only(bottom: 20.0),
-                        child: StatefulBuilder(builder:
-                            (BuildContext context, StateSetter setState) {
-                          _backButtonWidth = MediaQuery.of(context).size.width *
-                              ((3 - _pageIndex) / 4) *
-                              0.9;
-                          _nextButtonWidth = MediaQuery.of(context).size.width *
-                              ((_pageIndex + 1) / 4) *
-                              0.9;
+                        child: StatefulBuilder(builder: (BuildContext context, StateSetter setState) {
+                          _backButtonWidth = MediaQuery.of(context).size.width * ((3 - _pageIndex) / 4) * 0.9;
+                          _nextButtonWidth = MediaQuery.of(context).size.width * ((_pageIndex + 1) / 4) * 0.9;
 
                           return Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -594,27 +498,21 @@ class _ClientRegisterPageState extends State<ClientRegisterPage>
                                   splashColor: Colors.transparent,
                                   highlightColor: Colors.transparent,
                                   onPressed: () {
-                                    primaryFocus.unfocus(
-                                        disposition: disposition);
+                                    primaryFocus.unfocus(disposition: disposition);
                                     if (_pageIndex > 0) {
                                       setState(() {
-                                        _pageIndex =
-                                            _pageController.page.toInt() - 1;
-                                        _pageController.animateToPage(
-                                            _pageIndex,
-                                            duration: Duration(milliseconds: 1),
-                                            curve: Curves.decelerate);
+                                        _pageIndex = _pageController.page.toInt() - 1;
+                                        _pageController.animateToPage(_pageIndex,
+                                            duration: Duration(milliseconds: 1), curve: Curves.decelerate);
                                       });
                                     } else if (_pageIndex == 0) {
-                                      print(
-                                          "Navigating Back to Register Page...");
+                                      print("Navigating Back to Register Page...");
                                       Navigator.pop(context);
                                     }
                                   },
                                   child: Text(
                                     "Back",
-                                    style:
-                                        TextStyle(color: ViewConstants.myWhite),
+                                    style: TextStyle(color: ViewConstants.myWhite),
                                   ),
                                 ),
                               ),
@@ -632,16 +530,12 @@ class _ClientRegisterPageState extends State<ClientRegisterPage>
                                   splashColor: Colors.transparent,
                                   highlightColor: Colors.transparent,
                                   onPressed: () {
-                                    primaryFocus.unfocus(
-                                        disposition: disposition);
+                                    primaryFocus.unfocus(disposition: disposition);
                                     if (_pageIndex < 2) {
                                       setState(() {
-                                        _pageIndex =
-                                            _pageController.page.toInt() + 1;
-                                        _pageController.animateToPage(
-                                            _pageIndex,
-                                            duration: Duration(milliseconds: 1),
-                                            curve: Curves.decelerate);
+                                        _pageIndex = _pageController.page.toInt() + 1;
+                                        _pageController.animateToPage(_pageIndex,
+                                            duration: Duration(milliseconds: 1), curve: Curves.decelerate);
                                       });
                                     } else if (_pageIndex == 2) {
                                       // TODO Control Point for User Registration
@@ -657,8 +551,7 @@ class _ClientRegisterPageState extends State<ClientRegisterPage>
                                   },
                                   child: Text(
                                     (_pageIndex != 2 ? "Next" : "Continue"),
-                                    style:
-                                        TextStyle(color: ViewConstants.myWhite),
+                                    style: TextStyle(color: ViewConstants.myWhite),
                                   ),
                                 ),
                               ),

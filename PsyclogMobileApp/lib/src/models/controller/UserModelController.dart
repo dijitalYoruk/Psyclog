@@ -7,8 +7,7 @@ class UserModelController {
     try {
       var user = User.fromJson(decodedBody);
       return user;
-    }
-    catch (e) {
+    } catch (e) {
       print(e);
       throw Exception("");
     }
@@ -18,8 +17,7 @@ class UserModelController {
     try {
       var client = Client.fromJson(decodedBody);
       return client;
-    }
-    catch (e) {
+    } catch (e) {
       print(e);
       throw Exception("");
     }
@@ -29,8 +27,7 @@ class UserModelController {
     try {
       var client = Client.fromJsonForToken(decodedBody);
       return client;
-    }
-    catch (e) {
+    } catch (e) {
       print(e);
       throw Exception("");
     }
@@ -40,8 +37,7 @@ class UserModelController {
     try {
       var therapist = Therapist.fromJson(decodedBody);
       return therapist;
-    }
-    catch (e) {
+    } catch (e) {
       print(e);
       throw Exception("");
     }
@@ -51,8 +47,7 @@ class UserModelController {
     try {
       var therapist = Therapist.fromJsonForList(decodedBody);
       return therapist;
-    }
-    catch (e) {
+    } catch (e) {
       print(e);
       throw Exception("");
     }
@@ -62,8 +57,7 @@ class UserModelController {
     try {
       var client = Client.fromJsonForList(decodedBody);
       return client;
-    }
-    catch (e) {
+    } catch (e) {
       print(e);
       throw Exception("");
     }
@@ -73,8 +67,7 @@ class UserModelController {
     try {
       var therapist = Therapist.fromJsonForToken(decodedBody);
       return therapist;
-    }
-    catch (e) {
+    } catch (e) {
       print(e);
       throw Exception("");
     }

@@ -9,8 +9,7 @@ class ClientProfilePage extends StatefulWidget {
   _ClientProfilePageState createState() => _ClientProfilePageState();
 }
 
-class _ClientProfilePageState extends State<ClientProfilePage>
-    with TickerProviderStateMixin {
+class _ClientProfilePageState extends State<ClientProfilePage> with TickerProviderStateMixin {
   WebServerService _serverService;
   User _currentUser;
   Future<bool> _futureData;
@@ -81,8 +80,7 @@ class _ClientProfilePageState extends State<ClientProfilePage>
                         stretch: true,
                         floating: false,
                         backgroundColor: Colors.transparent,
-                        expandedHeight:
-                            MediaQuery.of(context).size.height * 0.4,
+                        expandedHeight: MediaQuery.of(context).size.height * 0.4,
                         flexibleSpace: FlexibleSpaceBar(
                           collapseMode: CollapseMode.pin,
                           stretchModes: [StretchMode.zoomBackground],
@@ -96,8 +94,7 @@ class _ClientProfilePageState extends State<ClientProfilePage>
                                   color: ViewConstants.myBlack.withOpacity(0.3),
                                   spreadRadius: 5,
                                   blurRadius: 7,
-                                  offset: Offset(
-                                      0, 3), // changes position of shadow
+                                  offset: Offset(0, 3), // changes position of shadow
                                 ),
                               ],
                             ),
@@ -107,23 +104,18 @@ class _ClientProfilePageState extends State<ClientProfilePage>
                                 if (snapshot.data == true) {
                                   return SafeArea(
                                     child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceEvenly,
+                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                       children: [
                                         Column(
                                           children: [
                                             Card(
                                               shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
+                                                borderRadius: BorderRadius.circular(10),
                                               ),
                                               clipBehavior: Clip.antiAlias,
                                               margin: EdgeInsets.all(15),
                                               child: SizedBox(
-                                                height: MediaQuery.of(context)
-                                                        .size
-                                                        .height *
-                                                    0.12,
+                                                height: MediaQuery.of(context).size.height * 0.12,
                                                 child: Image.network(
                                                   "https://avatarfiles.alphacoders.com/715/thumb-1920-71560.jpg",
                                                   fit: BoxFit.scaleDown,
@@ -131,13 +123,9 @@ class _ClientProfilePageState extends State<ClientProfilePage>
                                               ),
                                             ),
                                             Text(
-                                              _currentUser.userFirstName
-                                                      .toString()
-                                                      .inCaps +
+                                              _currentUser.userFirstName.toString().inCaps +
                                                   " " +
-                                                  _currentUser.userSurname
-                                                      .toString()
-                                                      .inCaps,
+                                                  _currentUser.userSurname.toString().inCaps,
                                               style: TextStyle(
                                                 fontSize: 16,
                                                 color: ViewConstants.myBlack,
@@ -147,13 +135,11 @@ class _ClientProfilePageState extends State<ClientProfilePage>
                                               textAlign: TextAlign.center,
                                             ),
                                             Padding(
-                                              padding:
-                                                  const EdgeInsets.all(5.0),
+                                              padding: const EdgeInsets.all(5.0),
                                               child: Text(
                                                 _currentUser.userEmail,
                                                 style: TextStyle(
-                                                    color:
-                                                        ViewConstants.myBlack,
+                                                    color: ViewConstants.myBlack,
                                                     fontWeight: FontWeight.w700,
                                                     fontFamily: "OpenSans",
                                                     fontSize: 12),
@@ -162,82 +148,61 @@ class _ClientProfilePageState extends State<ClientProfilePage>
                                           ],
                                         ),
                                         Align(
-                                          alignment:
-                                              FractionalOffset.bottomCenter,
+                                          alignment: FractionalOffset.bottomCenter,
                                           child: Padding(
                                             padding: const EdgeInsets.all(8.0),
                                             child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
+                                              mainAxisAlignment: MainAxisAlignment.center,
                                               children: [
                                                 Expanded(
                                                     child: MaterialButton(
                                                   shape: RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.only(
-                                                              topLeft: Radius
-                                                                  .circular(10),
-                                                              bottomLeft: Radius
-                                                                  .circular(
-                                                                      10))),
+                                                      borderRadius: BorderRadius.only(
+                                                          topLeft: Radius.circular(10), bottomLeft: Radius.circular(10))),
                                                   elevation: 0,
                                                   focusElevation: 0,
                                                   highlightElevation: 0,
                                                   hoverElevation: 0,
-                                                  splashColor:
-                                                      ViewConstants.myLightBlue,
+                                                  splashColor: ViewConstants.myLightBlue,
                                                   color: ViewConstants.myBlack,
                                                   padding: EdgeInsets.zero,
                                                   child: Text(
                                                     "My Stories",
                                                     style: TextStyle(
-                                                        color: ViewConstants
-                                                            .myWhite,
-                                                        fontWeight:
-                                                            FontWeight.w700,
+                                                        color: ViewConstants.myWhite,
+                                                        fontWeight: FontWeight.w700,
                                                         fontFamily: "OpenSans",
                                                         fontSize: 12),
                                                   ),
                                                   onPressed: () {
                                                     setState(() {
-                                                      _profileTabController
-                                                          .index = 0;
+                                                      _profileTabController.index = 0;
                                                     });
                                                   },
                                                 )),
                                                 Expanded(
                                                     child: MaterialButton(
                                                   shape: RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.only(
-                                                              topRight: Radius
-                                                                  .circular(10),
-                                                              bottomRight:
-                                                                  Radius
-                                                                      .circular(
-                                                                          10))),
+                                                      borderRadius: BorderRadius.only(
+                                                          topRight: Radius.circular(10), bottomRight: Radius.circular(10))),
                                                   elevation: 0,
                                                   focusElevation: 0,
                                                   highlightElevation: 0,
                                                   hoverElevation: 0,
-                                                  splashColor:
-                                                      ViewConstants.myLightBlue,
+                                                  splashColor: ViewConstants.myLightBlue,
                                                   color: ViewConstants.myBlack,
                                                   padding: EdgeInsets.zero,
                                                   child: Text(
                                                     "My Therapists",
                                                     style: TextStyle(
-                                                        color: ViewConstants
-                                                            .myWhite,
-                                                        fontWeight:
-                                                            FontWeight.w700,
+                                                        color: ViewConstants.myWhite,
+                                                        fontWeight: FontWeight.w700,
                                                         fontFamily: "OpenSans",
                                                         fontSize: 12),
                                                   ),
                                                   onPressed: () {
                                                     setState(() {
-                                                      _profileTabController
-                                                          .index = 1;
+                                                      _profileTabController.index = 1;
                                                     });
                                                   },
                                                 )),

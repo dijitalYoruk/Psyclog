@@ -8,8 +8,7 @@ import 'package:psyclog_app/views/util/ViewConstants.dart';
 class InnerDrawerWithScreen extends StatefulWidget {
   final Widget scaffoldArea;
 
-  const InnerDrawerWithScreen({Key key, @required this.scaffoldArea})
-      : super(key: key);
+  const InnerDrawerWithScreen({Key key, @required this.scaffoldArea}) : super(key: key);
 
   @override
   _InnerDrawerWithScreenState createState() => _InnerDrawerWithScreenState();
@@ -72,9 +71,7 @@ class _InnerDrawerWithScreenState extends State<InnerDrawerWithScreen> {
                         leading: Icon(Icons.home),
                         onTap: () {
                           Navigator.pushNamedAndRemoveUntil(
-                              context,
-                              ViewConstants.homeRoute,
-                              ((Route<dynamic> route) => false));
+                              context, ViewConstants.homeRoute, ((Route<dynamic> route) => false));
                         },
                       ),
                       ListTile(
@@ -82,8 +79,7 @@ class _InnerDrawerWithScreenState extends State<InnerDrawerWithScreen> {
                         leading: Icon(Icons.person),
                         onTap: () {
                           if (_webServerService.currentUser is Client) {
-                            Navigator.pushReplacementNamed(
-                                context, ViewConstants.clientProfileRoute);
+                            Navigator.pushReplacementNamed(context, ViewConstants.clientProfileRoute);
                           }
                         },
                       ),
@@ -92,9 +88,7 @@ class _InnerDrawerWithScreenState extends State<InnerDrawerWithScreen> {
                         leading: Icon(Icons.monetization_on),
                         onTap: () {
                           Navigator.pushNamedAndRemoveUntil(
-                              context,
-                              ViewConstants.walletRoute,
-                              ((Route<dynamic> route) => false));
+                              context, ViewConstants.walletRoute, ((Route<dynamic> route) => false));
                         },
                       ),
                       ListTile(
@@ -102,9 +96,7 @@ class _InnerDrawerWithScreenState extends State<InnerDrawerWithScreen> {
                         leading: Icon(Icons.calendar_today),
                         onTap: () {
                           Navigator.pushNamedAndRemoveUntil(
-                              context,
-                              ViewConstants.sessionRoute,
-                              ((Route<dynamic> route) => false));
+                              context, ViewConstants.sessionRoute, ((Route<dynamic> route) => false));
                         },
                       ),
                       Expanded(
@@ -114,13 +106,10 @@ class _InnerDrawerWithScreenState extends State<InnerDrawerWithScreen> {
                             title: Text("Log Out"),
                             leading: Icon(Icons.arrow_back_ios),
                             onTap: () {
-                              ClientServerService.getClientServerService()
-                                  .then((value) {
+                              ClientServerService.getClientServerService().then((value) {
                                 value.clearAllInfo();
                                 Navigator.pushNamedAndRemoveUntil(
-                                    context,
-                                    ViewConstants.welcomeRoute,
-                                    (Route<dynamic> route) => false);
+                                    context, ViewConstants.welcomeRoute, (Route<dynamic> route) => false);
                               });
                             },
                           ),

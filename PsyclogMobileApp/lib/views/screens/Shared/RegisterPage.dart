@@ -7,7 +7,6 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,10 +43,8 @@ class _RegisterPageState extends State<RegisterPage> {
                     Expanded(
                       child: Text("Create a User Account",
                           textAlign: TextAlign.center,
-                          style: ViewConstants.fieldStyle.copyWith(
-                              fontSize: 15,
-                              color: ViewConstants.myBlack,
-                              fontWeight: FontWeight.bold)),
+                          style: ViewConstants.fieldStyle
+                              .copyWith(fontSize: 15, color: ViewConstants.myBlack, fontWeight: FontWeight.bold)),
                     ),
                     Icon(
                       Icons.arrow_forward_ios,
@@ -68,17 +65,14 @@ class _RegisterPageState extends State<RegisterPage> {
                 color: ViewConstants.myWhite,
                 child: MaterialButton(
                   onPressed: () {
-                    Navigator.pushNamed(
-                        context, ViewConstants.registerTherapistRoute);
+                    Navigator.pushNamed(context, ViewConstants.registerTherapistRoute);
                   },
                   child: Row(children: [
                     Expanded(
                       child: Text("Create a Therapist Account",
                           textAlign: TextAlign.center,
-                          style: ViewConstants.fieldStyle.copyWith(
-                              fontSize: 15,
-                              color: ViewConstants.myBlack,
-                              fontWeight: FontWeight.bold)),
+                          style: ViewConstants.fieldStyle
+                              .copyWith(fontSize: 15, color: ViewConstants.myBlack, fontWeight: FontWeight.bold)),
                     ),
                     Icon(
                       Icons.arrow_forward_ios,

@@ -38,15 +38,12 @@ class TherapistServerService extends WebServerService {
 
   Future<Response> getPendingClientsByPage(int page) async {
     if (UserRestrict.restrictAccessByGivenRoles(
-        [ServiceConstants.ROLE_PSYCHOLOGIST, ServiceConstants.ROLE_ADMIN],
-        super.currentUser.userRole)) {
+        [ServiceConstants.ROLE_PSYCHOLOGIST, ServiceConstants.ROLE_ADMIN], super.currentUser.userRole)) {
       final String currentUserToken = await getToken();
 
       if (currentUserToken != null) {
         try {
-          var result = await http.get(
-              '$_serverAddress/$_currentAPI/patientRequests?page=' +
-                  page.toString(),
+          var result = await http.get('$_serverAddress/$_currentAPI/patientRequests?page=' + page.toString(),
               headers: {'Authorization': "Bearer " + currentUserToken});
 
           if (result.statusCode == ServiceConstants.STATUS_SUCCESS_CODE) {
@@ -72,13 +69,8 @@ class TherapistServerService extends WebServerService {
 
     if (currentUserToken != null) {
       try {
-        var response = await http.post(
-            '$_serverAddress/$_currentAPI/patientRequests/accept',
-            headers: {
-              'Authorization': "Bearer " + currentUserToken,
-              'Content-Type': 'application/json'
-            },
-            body: message);
+        var response = await http.post('$_serverAddress/$_currentAPI/patientRequests/accept',
+            headers: {'Authorization': "Bearer " + currentUserToken, 'Content-Type': 'application/json'}, body: message);
 
         print(response.body);
 
@@ -101,13 +93,8 @@ class TherapistServerService extends WebServerService {
 
     if (currentUserToken != null) {
       try {
-        var response = await http.post(
-            '$_serverAddress/$_currentAPI/patientRequests/deny',
-            headers: {
-              'Authorization': "Bearer " + currentUserToken,
-              'Content-Type': 'application/json'
-            },
-            body: message);
+        var response = await http.post('$_serverAddress/$_currentAPI/patientRequests/deny',
+            headers: {'Authorization': "Bearer " + currentUserToken, 'Content-Type': 'application/json'}, body: message);
 
         print(response.body);
 

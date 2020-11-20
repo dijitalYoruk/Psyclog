@@ -16,8 +16,7 @@ class _LoginPageState extends State<LoginPage> {
   final UnfocusDisposition disposition = UnfocusDisposition.scope;
 
   // Keyboard animation
-  KeyboardVisibilityNotification _keyboardVisibility =
-      KeyboardVisibilityNotification();
+  KeyboardVisibilityNotification _keyboardVisibility = KeyboardVisibilityNotification();
   int _keyboardVisibilitySubscriberId;
   bool _keyboardState;
   Alignment childAlignment = Alignment.center;
@@ -74,8 +73,7 @@ class _LoginPageState extends State<LoginPage> {
     final String result = await _serverService.attemptLogin(username, password);
 
     if (result == ServiceErrorHandling.successfulStatusCode) {
-      Navigator.pushNamedAndRemoveUntil(
-          context, ViewConstants.homeRoute, (Route<dynamic> route) => false);
+      Navigator.pushNamedAndRemoveUntil(context, ViewConstants.homeRoute, (Route<dynamic> route) => false);
     } else {
       final snackBar = SnackBar(
           shape: RoundedRectangleBorder(
@@ -105,109 +103,85 @@ class _LoginPageState extends State<LoginPage> {
                 Container(
                   color: Colors.transparent,
                   height: MediaQuery.of(context).size.height,
-                  child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        SafeArea(
-                          top: true,
-                          child: Align(
-                            alignment: Alignment.topCenter,
-                            child: Container(
-                              padding: EdgeInsets.only(top: 25),
-                              width: MediaQuery.of(context).size.width * 0.45,
-                              child: Image.asset(
-                                  "assets/PSYCLOG_white_text.png",
-                                  fit: BoxFit.fitWidth),
-                            ),
+                  child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
+                    SafeArea(
+                      top: true,
+                      child: Align(
+                        alignment: Alignment.topCenter,
+                        child: Container(
+                          padding: EdgeInsets.only(top: 25),
+                          width: MediaQuery.of(context).size.width * 0.45,
+                          child: Image.asset("assets/PSYCLOG_white_text.png", fit: BoxFit.fitWidth),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Container(
+                          height: MediaQuery.of(context).size.height * 0.15,
+                          child: LayoutBuilder(
+                            builder: (context, constraints) {
+                              return Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+                                Container(
+                                  margin: EdgeInsets.only(bottom: 15),
+                                  width: constraints.maxWidth * 0.75,
+                                  height: constraints.maxHeight / 3,
+                                  child: Material(
+                                    elevation: 5.0,
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    color: ViewConstants.myWhite,
+                                    child: MaterialButton(
+                                      padding: EdgeInsets.zero,
+                                      minWidth: constraints.maxWidth * 0.75,
+                                      height: constraints.maxHeight / 3,
+                                      onPressed: () {
+                                        primaryFocus.unfocus(disposition: disposition);
+                                        _login(context);
+                                      },
+                                      child: Text("Log in",
+                                          textAlign: TextAlign.center,
+                                          style: ViewConstants.fieldStyle.copyWith(
+                                              fontSize: 18, color: ViewConstants.myBlack, fontWeight: FontWeight.bold)),
+                                    ),
+                                  ),
+                                ),
+                                InkWell(
+                                  onTap: () {
+                                    primaryFocus.unfocus(disposition: disposition);
+                                    Navigator.pushNamed(context, ViewConstants.registerRoute);
+                                  },
+                                  splashColor: Colors.transparent,
+                                  highlightColor: Colors.transparent,
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(bottom: 20.0),
+                                    child: SafeArea(
+                                      top: false,
+                                      bottom: true,
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Text("You don't have an account?",
+                                              style: TextStyle(
+                                                  fontSize: 12, color: ViewConstants.myWhite, fontWeight: FontWeight.w400)),
+                                          Text("\t\tSign up here",
+                                              style: TextStyle(
+                                                  fontSize: 12, color: ViewConstants.myWhite, fontWeight: FontWeight.w900)),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              ]);
+                            },
                           ),
                         ),
-                        Expanded(
-                          child: Align(
-                            alignment: Alignment.bottomCenter,
-                            child: Container(
-                              height: MediaQuery.of(context).size.height * 0.15,
-                              child: LayoutBuilder(
-                                builder: (context, constraints) {
-                                  return Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        Container(
-                                          margin: EdgeInsets.only(bottom: 15),
-                                          width: constraints.maxWidth * 0.75,
-                                          height: constraints.maxHeight / 3,
-                                          child: Material(
-                                            elevation: 5.0,
-                                            borderRadius:
-                                                BorderRadius.circular(10.0),
-                                            color: ViewConstants.myWhite,
-                                            child: MaterialButton(
-                                              padding: EdgeInsets.zero,
-                                              minWidth: constraints.maxWidth * 0.75,
-                                              height: constraints.maxHeight / 3,
-                                              onPressed: () {
-                                                primaryFocus.unfocus(
-                                                    disposition: disposition);
-                                                _login(context);
-                                              },
-                                              child: Text("Log in",
-                                                  textAlign: TextAlign.center,
-                                                  style: ViewConstants.fieldStyle.copyWith(
-                                                      fontSize: 18,
-                                                      color: ViewConstants.myBlack,
-                                                      fontWeight: FontWeight.bold)),
-                                            ),
-                                          ),
-                                        ),
-                                        InkWell(
-                                          onTap: () {
-                                            primaryFocus.unfocus(
-                                                disposition: disposition);
-                                            Navigator.pushNamed(context,
-                                                ViewConstants.registerRoute);
-                                          },
-                                          splashColor: Colors.transparent,
-                                          highlightColor: Colors.transparent,
-                                          child: Padding(
-                                            padding: const EdgeInsets.only(
-                                                bottom: 20.0),
-                                            child: SafeArea(
-                                              top: false,
-                                              bottom: true,
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: [
-                                                  Text(
-                                                      "You don't have an account?",
-                                                      style: TextStyle(
-                                                          fontSize: 12,
-                                                          color: ViewConstants
-                                                              .myWhite,
-                                                          fontWeight:
-                                                              FontWeight.w400)),
-                                                  Text("\t\tSign up here",
-                                                      style: TextStyle(
-                                                          fontSize: 12,
-                                                          color: ViewConstants
-                                                              .myWhite,
-                                                          fontWeight:
-                                                              FontWeight.w900)),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                        )
-                                      ]);
-                                },
-                              ),
-                            ),
-                          ),
-                        ),
-                      ]),
+                      ),
+                    ),
+                  ]),
                 ),
                 Container(
-                  padding: EdgeInsets.only(
-                      top: MediaQuery.of(context).size.height / 10),
+                  padding: EdgeInsets.only(top: MediaQuery.of(context).size.height / 10),
                   color: Colors.transparent,
                   height: MediaQuery.of(context).size.height * 0.85,
                   child: AnimatedContainer(
@@ -226,8 +200,7 @@ class _LoginPageState extends State<LoginPage> {
                         mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
                           Padding(
-                            padding: const EdgeInsets.only(
-                                right: 25, left: 25, top: 30, bottom: 10),
+                            padding: const EdgeInsets.only(right: 25, left: 25, top: 30, bottom: 10),
                             child: Theme(
                               data: ThemeData(
                                 primaryColor: ViewConstants.myBlack,
@@ -247,8 +220,7 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsets.only(
-                                right: 25, left: 25, top: 10, bottom: 10),
+                            padding: const EdgeInsets.only(right: 25, left: 25, top: 10, bottom: 10),
                             child: Theme(
                               data: ThemeData(
                                 primaryColor: ViewConstants.myBlack,
@@ -276,10 +248,7 @@ class _LoginPageState extends State<LoginPage> {
                               child: MaterialButton(
                                 child: Text(
                                   "Forgot Password?",
-                                  style: TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w400,
-                                      color: ViewConstants.myBlack),
+                                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w400, color: ViewConstants.myBlack),
                                 ),
                                 onPressed: () {},
                               ),

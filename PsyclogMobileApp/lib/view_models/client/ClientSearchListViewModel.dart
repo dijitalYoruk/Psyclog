@@ -15,7 +15,7 @@ class ClientSearchListViewModel extends ChangeNotifier {
   List<Therapist> _currentTherapistList;
 
   // TODO will check if the the therapist is registered before
-  List<dynamic> _registeredTherapistList;
+  List<dynamic> _registeredTherapistsIDList;
 
   List<String> _pendingTherapistList;
 
@@ -44,23 +44,20 @@ class ClientSearchListViewModel extends ChangeNotifier {
     _serverService = await ClientServerService.getClientServerService();
 
     try {
-      var response =
-          await _serverService.getTherapistsByPage(_currentPage);
+      var response = await _serverService.getTherapistsByPage(_currentPage);
 
       if (response != null) {
         var decodedBody = jsonDecode(response.body);
 
         _totalPage = decodedBody["data"]["psychologists"]["totalPages"];
 
-        _registeredTherapistList = (_serverService.currentClient as Client)
-            .clientRegisteredPsychologists;
+        _registeredTherapistsIDList = (_serverService.currentClient as Client).clientRegisteredPsychologists;
 
-        _currentTherapistList =
-            await getTherapistsByPageFromService(_currentPage);
+        _currentTherapistList = await getTherapistsByPageFromService(_currentPage);
 
         await refreshPendingList();
 
-        print("Registered Therapists: " + _registeredTherapistList.toString());
+        print("Registered Therapists: " + _registeredTherapistsIDList.toString());
         print("Pending Therapists: " + _pendingTherapistList.toString());
       }
     } catch (error) {
@@ -76,8 +73,16 @@ class ClientSearchListViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  bool checkPendingStatus(String therapistID) {
+  bool checkAppliedStatus(String therapistID) {
     if (_pendingTherapistList.contains(therapistID)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  bool checkRegisteredStatus(String therapistID) {
+    if (_registeredTherapistsIDList.contains(therapistID)) {
       return true;
     } else {
       return false;
@@ -93,13 +98,12 @@ class ClientSearchListViewModel extends ChangeNotifier {
       if (response != null) {
         var decodedBody = jsonDecode(response.body);
 
-        int numberOfTherapist =
-            decodedBody["data"]["psychologists"]["docs"].length;
+        int numberOfTherapist = decodedBody["data"]["psychologists"]["docs"].length;
 
         _therapistList = List<Therapist>.generate(
             numberOfTherapist,
-            (index) => UserModelController.createTherapistFromJSONForList(
-                decodedBody["data"]["psychologists"]["docs"][index]));
+            (index) =>
+                UserModelController.createTherapistFromJSONForList(decodedBody["data"]["psychologists"]["docs"][index]));
 
         return _therapistList;
       }
@@ -113,14 +117,10 @@ class ClientSearchListViewModel extends ChangeNotifier {
   Future handleItemCreated(int index) async {
     if (_serverService != null) {
       var itemPosition = index + 1;
-      var requestMoreData =
-          itemPosition % ViewConstants.therapistsPerPage == 0 &&
-              itemPosition != 0;
+      var requestMoreData = itemPosition % ViewConstants.therapistsPerPage == 0 && itemPosition != 0;
       var pageToRequest = 1 + (itemPosition ~/ ViewConstants.therapistsPerPage);
 
-      if (requestMoreData &&
-          pageToRequest > _currentPage &&
-          _currentPage < _totalPage) {
+      if (requestMoreData && pageToRequest > _currentPage && _currentPage < _totalPage) {
         print('handleItemCreated | pageToRequest: $pageToRequest');
         _currentPage = pageToRequest;
 
@@ -129,8 +129,7 @@ class ClientSearchListViewModel extends ChangeNotifier {
 
         // Adding new therapists to the list
 
-        List<Therapist> _newTherapists =
-            await getTherapistsByPageFromService(_currentPage);
+        List<Therapist> _newTherapists = await getTherapistsByPageFromService(_currentPage);
 
         try {
           _currentTherapistList.addAll(_newTherapists);

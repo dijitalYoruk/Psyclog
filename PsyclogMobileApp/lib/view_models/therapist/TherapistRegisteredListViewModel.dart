@@ -20,7 +20,6 @@ class TherapistRegisteredListViewModel extends ChangeNotifier {
   }
 
   TherapistRegisteredListViewModel() {
-
     _registeredClientList = List<Client>();
 
     initializeService();
@@ -29,9 +28,7 @@ class TherapistRegisteredListViewModel extends ChangeNotifier {
   initializeService() async {
     _serverService = await TherapistServerService.getTherapistServerService();
 
-    try {
-
-    } catch (error) {
+    try {} catch (error) {
       print(error);
       print(ServiceErrorHandling.serverNotRespondingError);
     }

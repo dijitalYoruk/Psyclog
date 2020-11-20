@@ -32,14 +32,11 @@ class RouteController {
         return PageRouteBuilder(
           settings: settings,
           transitionDuration: Duration(milliseconds: 1666),
-          pageBuilder: (BuildContext context, Animation<double> animation,
-              Animation<double> secondaryAnimation) {
+          pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
             return WelcomePage();
           },
-          transitionsBuilder: (BuildContext context,
-              Animation<double> animation,
-              Animation<double> secondaryAnimation,
-              Widget child) {
+          transitionsBuilder:
+              (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
             var curve = Curves.linearToEaseOut;
 
             var curvedAnimation = CurvedAnimation(
@@ -58,14 +55,11 @@ class RouteController {
         return PageRouteBuilder(
           settings: settings,
           transitionDuration: Duration(milliseconds: 800),
-          pageBuilder: (BuildContext context, Animation<double> animation,
-              Animation<double> secondaryAnimation) {
+          pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
             return LoginPage();
           },
-          transitionsBuilder: (BuildContext context,
-              Animation<double> animation,
-              Animation<double> secondaryAnimation,
-              Widget child) {
+          transitionsBuilder:
+              (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
             return FadeTransition(
               opacity: animation,
               child: child,
@@ -77,14 +71,11 @@ class RouteController {
         return PageRouteBuilder(
           settings: settings,
           transitionDuration: Duration(milliseconds: 800),
-          pageBuilder: (BuildContext context, Animation<double> animation,
-              Animation<double> secondaryAnimation) {
+          pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
             return RegisterPage();
           },
-          transitionsBuilder: (BuildContext context,
-              Animation<double> animation,
-              Animation<double> secondaryAnimation,
-              Widget child) {
+          transitionsBuilder:
+              (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
             var curve = Curves.linearToEaseOut;
 
             var curvedAnimation = CurvedAnimation(
@@ -103,20 +94,16 @@ class RouteController {
         return PageRouteBuilder(
           settings: settings,
           transitionDuration: Duration(milliseconds: 800),
-          pageBuilder: (BuildContext context, Animation<double> animation,
-              Animation<double> secondaryAnimation) {
+          pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
             return ClientRegisterPage();
           },
-          transitionsBuilder: (BuildContext context,
-              Animation<double> animation,
-              Animation<double> secondaryAnimation,
-              Widget child) {
+          transitionsBuilder:
+              (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
             var curve = Curves.decelerate;
 
             var begin = Offset(1.0, 0.0);
             var end = Offset.zero;
-            var tween =
-                Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+            var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
             var offsetAnimation = animation.drive(tween);
 
             return SlideTransition(
@@ -130,20 +117,16 @@ class RouteController {
         return PageRouteBuilder(
           settings: settings,
           transitionDuration: Duration(milliseconds: 800),
-          pageBuilder: (BuildContext context, Animation<double> animation,
-              Animation<double> secondaryAnimation) {
+          pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
             return TherapistRegisterPage();
           },
-          transitionsBuilder: (BuildContext context,
-              Animation<double> animation,
-              Animation<double> secondaryAnimation,
-              Widget child) {
+          transitionsBuilder:
+              (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
             var curve = Curves.decelerate;
 
             var begin = Offset(1.0, 0.0);
             var end = Offset.zero;
-            var tween =
-            Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+            var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
             var offsetAnimation = animation.drive(tween);
 
             return SlideTransition(
@@ -157,14 +140,11 @@ class RouteController {
         return PageRouteBuilder(
           settings: settings,
           transitionDuration: Duration(milliseconds: 800),
-          pageBuilder: (BuildContext context, Animation<double> animation,
-              Animation<double> secondaryAnimation) {
+          pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
             return InnerDrawerWithScreen(scaffoldArea: HomePage());
           },
-          transitionsBuilder: (BuildContext context,
-              Animation<double> animation,
-              Animation<double> secondaryAnimation,
-              Widget child) {
+          transitionsBuilder:
+              (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
             var curve = Curves.linearToEaseOut;
 
             var curvedAnimation = CurvedAnimation(
@@ -189,14 +169,11 @@ class RouteController {
         return PageRouteBuilder(
           settings: settings,
           transitionDuration: Duration(milliseconds: 800),
-          pageBuilder: (BuildContext context, Animation<double> animation,
-              Animation<double> secondaryAnimation) {
+          pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
             return ClientTherapistsListPage(pageName: pageName);
           },
-          transitionsBuilder: (BuildContext context,
-              Animation<double> animation,
-              Animation<double> secondaryAnimation,
-              Widget child) {
+          transitionsBuilder:
+              (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
             var curve = Curves.linear;
 
             var curvedAnimation = CurvedAnimation(
@@ -217,16 +194,11 @@ class RouteController {
         return PageRouteBuilder(
           settings: settings,
           transitionDuration: Duration(milliseconds: 800),
-          pageBuilder: (BuildContext context, Animation<double> animation,
-              Animation<double> secondaryAnimation) {
-            return ClientRequestPage(
-                therapist: _args.therapist,
-                currentUserApplied: _args.currentUserApplied);
+          pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
+            return ClientRequestPage(therapist: _args.therapist, currentUserApplied: _args.currentUserApplied);
           },
-          transitionsBuilder: (BuildContext context,
-              Animation<double> animation,
-              Animation<double> secondaryAnimation,
-              Widget child) {
+          transitionsBuilder:
+              (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
             var curve = Curves.linear;
 
             var curvedAnimation = CurvedAnimation(
@@ -245,14 +217,11 @@ class RouteController {
         return PageRouteBuilder(
           settings: settings,
           transitionDuration: Duration(milliseconds: 800),
-          pageBuilder: (BuildContext context, Animation<double> animation,
-              Animation<double> secondaryAnimation) {
+          pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
             return InnerDrawerWithScreen(scaffoldArea: ClientProfilePage());
           },
-          transitionsBuilder: (BuildContext context,
-              Animation<double> animation,
-              Animation<double> secondaryAnimation,
-              Widget child) {
+          transitionsBuilder:
+              (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
             var curve = Curves.linearToEaseOut;
 
             var curvedAnimation = CurvedAnimation(
@@ -271,14 +240,11 @@ class RouteController {
         return PageRouteBuilder(
           settings: settings,
           transitionDuration: Duration(milliseconds: 800),
-          pageBuilder: (BuildContext context, Animation<double> animation,
-              Animation<double> secondaryAnimation) {
+          pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
             return InnerDrawerWithScreen(scaffoldArea: TherapistProfilePage());
           },
-          transitionsBuilder: (BuildContext context,
-              Animation<double> animation,
-              Animation<double> secondaryAnimation,
-              Widget child) {
+          transitionsBuilder:
+              (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
             var curve = Curves.linearToEaseOut;
 
             var curvedAnimation = CurvedAnimation(
@@ -297,20 +263,16 @@ class RouteController {
         return PageRouteBuilder(
           settings: settings,
           transitionDuration: Duration(milliseconds: 800),
-          pageBuilder: (BuildContext context, Animation<double> animation,
-              Animation<double> secondaryAnimation) {
+          pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
             return ClientPendingRequestPage();
           },
-          transitionsBuilder: (BuildContext context,
-              Animation<double> animation,
-              Animation<double> secondaryAnimation,
-              Widget child) {
+          transitionsBuilder:
+              (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
             var curve = Curves.decelerate;
 
             var begin = Offset(1.0, 0.0);
             var end = Offset.zero;
-            var tween =
-            Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+            var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
             var offsetAnimation = animation.drive(tween);
 
             return SlideTransition(
@@ -324,20 +286,16 @@ class RouteController {
         return PageRouteBuilder(
           settings: settings,
           transitionDuration: Duration(milliseconds: 800),
-          pageBuilder: (BuildContext context, Animation<double> animation,
-              Animation<double> secondaryAnimation) {
+          pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
             return TherapistPendingRequestPage();
           },
-          transitionsBuilder: (BuildContext context,
-              Animation<double> animation,
-              Animation<double> secondaryAnimation,
-              Widget child) {
+          transitionsBuilder:
+              (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
             var curve = Curves.decelerate;
 
             var begin = Offset(1.0, 0.0);
             var end = Offset.zero;
-            var tween =
-            Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+            var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
             var offsetAnimation = animation.drive(tween);
 
             return SlideTransition(
@@ -349,27 +307,19 @@ class RouteController {
         break;
       case ViewConstants.sessionRoute:
         return MaterialPageRoute(
-            settings: settings,
-            builder: (_) =>
-                InnerDrawerWithScreen(scaffoldArea: SessionTherapistPage()));
+            settings: settings, builder: (_) => InnerDrawerWithScreen(scaffoldArea: SessionTherapistPage()));
         break;
       case ViewConstants.walletRoute:
-        return MaterialPageRoute(
-            settings: settings,
-            builder: (_) => InnerDrawerWithScreen(scaffoldArea: WalletPage()));
+        return MaterialPageRoute(settings: settings, builder: (_) => InnerDrawerWithScreen(scaffoldArea: WalletPage()));
         break;
       case ViewConstants.videoCallRoute:
-        return MaterialPageRoute(
-            settings: settings,
-            builder: (_) =>
-                InnerDrawerWithScreen(scaffoldArea: VideoCallPage()));
+        return MaterialPageRoute(settings: settings, builder: (_) => InnerDrawerWithScreen(scaffoldArea: VideoCallPage()));
         break;
       default:
         return MaterialPageRoute(
             settings: settings,
             builder: (_) => Scaffold(
-                  body: Center(
-                      child: Text('No route defined for ${settings.name}')),
+                  body: Center(child: Text('No route defined for ${settings.name}')),
                 ));
         break;
     }
