@@ -21,6 +21,11 @@ import UserPsychologists from '@/components/user/UserPsychologists.vue'
 import PendingPsychologists from '@/components/pendingPsychologists/PendingPsychologists.vue'
 import PendingPsychologistsIndex from '@/components/pendingPsychologists/PendingPsychologistsIndex.vue'
 
+// support
+import SupportMessage from '@/components/supportMessages/SupportMessage.vue'
+import SupportMessageIndex from '@/components/supportMessages/SupportMessageIndex.vue'
+
+
 import Error404 from '@/components/404.vue'
 
 Vue.use(VueRouter)
@@ -90,8 +95,22 @@ const routes = [
     component: PendingPsychologists,
     children: [{
         path: "",
-        name: "PendingPsychologistsIndex.index",
+        name: "pending.index",
         component: PendingPsychologistsIndex
+      }
+    ],
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: "/supportMessage",
+    component: SupportMessage,
+    children: [
+      {
+        path: "",
+        name: "support.index",
+        component: SupportMessageIndex
       }
     ],
     meta: {

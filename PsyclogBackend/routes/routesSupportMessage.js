@@ -26,7 +26,7 @@ const {
 routerSupportMessage.use(middlewareAuth)
 
 routerSupportMessage.route('/')
-    .get(middlewareRestrict(Constants.ROLE_USER), retrieveSupportMessages)
+    .get(middlewareRestrict(Constants.ROLE_ADMIN), retrieveSupportMessages)
     .delete(middlewareRestrict(Constants.ROLE_ADMIN), removeSupportMessage)
     .post(middlewareRestrict(Constants.ROLE_PSYCHOLOGIST, Constants.ROLE_USER), createSupportMessage)
 

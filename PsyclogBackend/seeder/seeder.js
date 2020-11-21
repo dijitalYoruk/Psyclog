@@ -14,6 +14,7 @@ const PatientNote = require('../model/patientNote')
 const Appointment = require('../model/appointment')
 const ClientRequest = require('../model/clientRequest')
 const { getToday } = require('../utils/util')
+const SupportMessage = require('../model/supportMessage')
 dotenv.config({ path: './config.env' })
 
 // ============================
@@ -41,6 +42,12 @@ const seedUsersData = async () => {
    const phone = '+905428580909'
    const password = '0123456789'
    const passwordConfirm = '0123456789'
+
+   const supportMessages = [
+      Constants.SUPPORT_COMPLAINT,
+      Constants.SUPPORT_PROBLEM,
+      Constants.SUPPORT_INFO
+   ]
 
    for (let i = 0; i < 100; i++) {
 
@@ -128,6 +135,26 @@ const seedUsersData = async () => {
          await calendar.save()
          await wallet.save()
          patients.push(user)
+
+
+         const supportMessageCount = Math.floor(Math.random() * 5) - 1
+         for (let i = 0; i < supportMessageCount; i++) {
+            const author = user._id
+            const message = faker.lorem.paragraph()
+            const isHandled = Math.random() < 0.2 
+            const statusIndex = Math.floor(Math.random() * 3)    
+            const status = supportMessages[statusIndex]
+            let complaint = undefined
+
+            if (status == Constants.SUPPORT_COMPLAINT) {
+               complaint = await randomUser()
+            } 
+            
+            const supportMessage = new SupportMessage({message, isHandled, 
+               author, complaint, status})
+         
+            await supportMessage.save()
+         }
       }
    }
 
@@ -140,7 +167,7 @@ const seedUsersData = async () => {
 
       for (let j = i; j < i + 5; j++) {
          if (i % 2 == 0) {
-            psychologist.patients.push(patients[i]._id)
+            psychologist.patients.push(patients[j]._id)
             patients[j].registeredPsychologists.push(psychologist)
             patients[j].passwordConfirm = passwordConfirm
             patients[j].password = password
@@ -263,6 +290,11 @@ const seedUsersData = async () => {
    await User.create(data)
 }
 
+const randomUser = async () => {
+   const userCount = await User.countDocuments()
+   const skip = Math.floor(Math.random * userCount)
+   return await User.findOne({}).skip(skip)
+}
 
 const seedReviewsData = async (author, psychologist) => {
       const rating = 3

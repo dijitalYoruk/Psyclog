@@ -16,11 +16,13 @@ const actions = {
                 resolve(response.data.data)
             })
             .catch(error => {
-                reject(error.response.message)
-                //window.console.log("error: " + error.message);
+                if (error.response) {
+                    reject(error.response.data.message);
+                } else {
+                    reject(this.$t('alert_error_server'));
+                }
             });
         })
-        
     },    
     removeBanFromPatient({ rootState }, payload) {
         return new Promise((resolve, reject) => {
@@ -63,17 +65,7 @@ const actions = {
     }
 }
 
-const getters = {
-    getAllUsers(state) {
-        return state.allUsers;
-    },
-    getAllUsersCurrentPage(state) {
-        return state.allUsersCurrentPage;
-    },
-    getAllUsersTotalPage(state) {
-        return state.allUsersTotalPage;
-    }
-}
+const getters = {}
 
 export default {
     state,

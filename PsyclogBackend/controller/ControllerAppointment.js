@@ -303,7 +303,7 @@ const retrievePersonalAppointments = catchAsync(async (req, res, next) => {
 })
 
 cron.schedule('0 0 * * *', async () => {
-    const fourDayBefore = Date.now() - 1000 * 60 * 60 * 4
+    const fourDayBefore = Date.now() - 1000 * 60 * 60 * 7
     const appointments = await Appointment.find({ 
         appointmentDate : { $lte: fourDayBefore } })
     const promises = []

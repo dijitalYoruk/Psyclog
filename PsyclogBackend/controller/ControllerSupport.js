@@ -37,12 +37,13 @@ const retrieveSupportMessages = catchAsync(async (req, res, next) => {
     
     // getting params.
     const page = req.query.page
-    const status = req.query.status || ''
+    const status = req.query.status || Constants.SUPPORT_PROBLEM
+    const isHandled = req.query.isHandled || false
    
     // paginating messages.
-    const supportMessages = await SupportMessage.paginate({ status }, { 
+    const supportMessages = await SupportMessage.paginate({ status, isHandled }, { 
         page, limit:10, populate: { 
-            path: 'author', select: 'username name surname profileImage email phoneNumber'
+            path: 'author complaint', select: 'username name surname phone profileImage email phoneNumber'
         } 
     })
 
@@ -101,7 +102,9 @@ const removeSupportMessage = catchAsync(async (req, res, next) => {
 
 const handleSupportMessage = catchAsync(async (req, res, next) => {
     // getting params.
-    let { supportMessage } = req.body
+    let supportMessage = req.body.supportMessage 
+    const isHandled = req.body.isHandled || false
+
 
     // retrieve message.
     supportMessage = await SupportMessage.findById(supportMessage)
@@ -110,13 +113,13 @@ const handleSupportMessage = catchAsync(async (req, res, next) => {
         return next(new ApiError(__('error_not_found', 'Support Message'), 404))
     }
 
-    supportMessage.isHandled = true
+    supportMessage.isHandled = isHandled
     await supportMessage.save()
 
     res.status(200).json({
         status: 200,
         data: { 
-            message: __('handled')
+            message: isHandled ? 'Handled' : 'Unhandled'
         } 
     })
 })

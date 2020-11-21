@@ -25,5 +25,8 @@ export const URL = {
     DELETE_USER: 'user',
     UPDATE_BAN_PENALTY: 'ban/penalty',
     RETRIEVE_UNVERIFIED_PSYCHOLOGISTS: 'user/psychologists/unverified',
-    UPDATE_USER: 'user'
+    UPDATE_USER: 'user',
+    RETRIEVE_SUPPORT_MESSAGES: 'support',
+    DELETE_SUPPORT_MESSAGE: 'support',
+    HANDLE_SUPPORT_MESSAGE: 'support/handle'
 }

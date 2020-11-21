@@ -1,5 +1,6 @@
 import Vue  from 'vue'
 import Vuex from 'vuex'
+import support from '@/store/modules/support'
 import auth from '@/store/modules/auth'
 import user from '@/store/modules/user'
 import ban from '@/store/modules/ban'
@@ -16,6 +17,7 @@ export default new Vuex.Store({
   actions,
   getters,
   modules: {
+    support,
     auth,
     user,
     ban
