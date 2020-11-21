@@ -86,76 +86,25 @@ const actions = {
             });
         });
     },
-
-
-
-
-
-
-
-/*
-    retrieveUser({ rootState }, payload) {
-        return new Promise((resolve, reject) => {
-            axios.get(URL.SHOW_USER_DETAIL, {
-                data: payload,
-                headers: {
-                    'Authorization': `Bearer ${rootState.auth.accessToken}`,
-                }
-            })
-            .then(response => {
-                resolve(response.data.data);
-            })
-            .catch(error => {
-                reject(error.response.data);
-            });
-        });
-    },
     updateUser({ rootState }, payload) {
         return new Promise((resolve, reject) => {
-            axios.put(URL.UPDATE_USER, payload, {
+            axios.patch(URL.UPDATE_USER, payload, {
                 headers: {
                     'Authorization': `Bearer ${rootState.auth.accessToken}`,
                 }
             })
             .then(response => {
-                resolve(response.data)
+                resolve(response.data.data)
             })
             .catch(error => {
-                reject(error.response.data)
+                if (error.response) {
+                    reject(error.response.data.message);
+                } else {
+                    reject(this.$t('alert_error_server'));
+                }
             });
         });
-    },*/
-  /*  deleteUser({ rootState, dispatch, commit }, payload) {
-        const data = {'uuid' :payload.uuid}
-
-        return new Promise((resolve, reject) => {
-            axios.delete(URL.DELETE_USER, {
-                data, 
-                headers: {
-                    'Authorization': `Bearer ${rootState.auth.accessToken}`,
-                }
-            })
-            .then(response => {
-                let page = payload.page;
-
-                if (page == state.allUsersTotalPage && state.allUsers.length == 1 && page > 1) { 
-                    payload.page--
-                    dispatch('retrieveAllUsers', payload)
-                }
-                else if (page == state.allUsersTotalPage && state.allUsers.length == 1 && page == 1) { 
-                    commit('clearAllUsers') 
-                }
-                else {
-                    dispatch('retrieveAllUsers', payload)
-                } 
-
-                resolve(response.data)
-            })
-            .catch(error => {
-                reject(error.response.data)
-            });
-        });
-    }*/
+    }
 }
 
 const getters = {

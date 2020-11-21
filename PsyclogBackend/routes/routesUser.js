@@ -17,6 +17,7 @@ const {
    deleteUser,
    updateUser, 
    finishPatient,
+   verifyPsychologist,
    retrievePsychologists,
    retrieveRegisteredPsychologists, 
    retrieveUnverifiedPsychologists,
@@ -27,16 +28,17 @@ const {
 // routes
 // =====================
 routerUser.use(middlewareAuth)
-routerUser.get('/registered-psychologists', middlewareRestrict(Constants.ROLE_USER), retrieveRegisteredPsychologists)
-routerUser.post('/finish', middlewareRestrict(Constants.ROLE_PSYCHOLOGIST, Constants.ROLE_ADMIN), finishPatient)
-routerUser.get('/psychologists', middlewareRestrict(Constants.ROLE_ADMIN, Constants.ROLE_USER), retrievePsychologists)
-routerUser.get('/psychologists/unverified', middlewareRestrict(Constants.ROLE_ADMIN), retrieveUnverifiedPsychologists)
 routerUser.get('/', middlewareRestrict(Constants.ROLE_ADMIN), retrieveUsers)
 routerUser.delete('/', middlewareRestrict(Constants.ROLE_ADMIN), deleteUser)
+routerUser.post('/psychologists/verify', middlewareRestrict(Constants.ROLE_ADMIN), verifyPsychologist)
+routerUser.patch('/', middlewareRestrict(Constants.ROLE_ADMIN), updateUser)
+routerUser.post('/finish', middlewareRestrict(Constants.ROLE_PSYCHOLOGIST, Constants.ROLE_ADMIN), finishPatient)
+routerUser.get('/psychologists', middlewareRestrict(Constants.ROLE_ADMIN, Constants.ROLE_USER), retrievePsychologists)
+routerUser.get('/registered-psychologists', middlewareRestrict(Constants.ROLE_USER), retrieveRegisteredPsychologists)
+routerUser.get('/psychologists/unverified', middlewareRestrict(Constants.ROLE_ADMIN), retrieveUnverifiedPsychologists)
 
 routerUser.get('/registered-patients', middlewareRestrict(Constants.ROLE_PSYCHOLOGIST), retrievePatients)
-routerUser.route('/:userId')
-          .get(middlewareRestrict(Constants.ROLE_ADMIN), retrieveUser)
-          .patch(middlewareRestrict(Constants.ROLE_ADMIN), updateUser)
+routerUser.route('/:userId').get(middlewareRestrict(Constants.ROLE_ADMIN), retrieveUser)
+          
 
 module.exports = routerUser

@@ -16,7 +16,7 @@ const User = require('../model/user')
  */ 
 const updateUser = catchAsync(async (req, res, next) => {  
    // retrieving corresponding user
-   const id = req.params.userId
+   const id = req.body.userId
    const user = await User.findById(id)
 
    if (!user) {
@@ -29,7 +29,7 @@ const updateUser = catchAsync(async (req, res, next) => {
 
    res.status(200).json({
       status: 200,
-      data: { user } 
+      data: { message: "User successfully updated." } 
    })
 })
 
@@ -118,8 +118,6 @@ const retrieveRegisteredPsychologists = catchAsync(async (req, res, next) => {
                            .populate('registeredPsychologists')
                            .select('registeredPsychologists')
 
-   console.log(registeredPsychologists)
-
    res.status(200).json({
       status: 200, 
       data: { registeredPsychologists } 
@@ -196,12 +194,26 @@ const finishPatient = catchAsync(async (req, res) => {
 })
 
 
+const verifyPsychologist = catchAsync(async (req, res) => {   
+   const psychologistId = req.body.psychologistId
+   await User.findByIdAndUpdate(psychologistId, { isPsychologistVerified: true })
+
+   res.status(204).json({
+      status: 204,
+      data: {
+         message: 'Psychologist successfully verified'
+      }
+   })
+})
+
+
 module.exports = {
    retrieveUsers,
    retrieveUser,
    deleteUser,
    updateUser,
    finishPatient,
+   verifyPsychologist,
    retrievePsychologists,
    retrieveRegisteredPsychologists,
    retrieveUnverifiedPsychologists,

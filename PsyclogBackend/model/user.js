@@ -39,6 +39,14 @@ const UserSchema = new Schema({
       required:  [true, 'You should have a surname.'],
       trim: true
    }, 
+   phone: {
+      type: String,
+      required: [
+         function() { return (this.role === Constants.ROLE_USER) || 
+                             (this.role === Constants.ROLE_PSYCHOLOGIST) },
+         'Phone number is required.'
+      ]
+   },
    profileImage: {
       type: String
    },
@@ -206,6 +214,7 @@ UserSchema.statics.filterBody = body => {
       'password', 
       'surname', 
       'email',      
+      'phone',
       'role',
       'name']
 
@@ -217,6 +226,7 @@ UserSchema.statics.filterBody = body => {
       'username', 
       'password', 
       'surname', 
+      'phone',
       'email',      
       'role',
       'name', 
@@ -298,6 +308,7 @@ UserSchema.pre('save', async function(next) {
       this.calendar = undefined
       this.patients = undefined
       this.wallet = undefined
+      this.phone = undefined
       this.cv = undefined
    }
 

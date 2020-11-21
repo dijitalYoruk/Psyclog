@@ -37,6 +37,11 @@
               </v-col>
 
               <v-col class="col-md-2">
+                <div class="caption text--secondary">Phone</div>
+                <div class="text-subtitle-2">{{ user.phone }}</div>
+              </v-col>
+
+              <v-col class="col-md-2">
                 <div class="caption text--secondary">Verified</div>
                 <div>
                   <v-btn class="elevation-0" color="success" fab x-small>

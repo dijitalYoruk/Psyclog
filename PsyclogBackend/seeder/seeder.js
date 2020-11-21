@@ -38,6 +38,7 @@ const seedUsersData = async () => {
 
    const patients = []
    const psychologists = [] 
+   const phone = '+905428580909'
    const password = '0123456789'
    const passwordConfirm = '0123456789'
 
@@ -68,9 +69,9 @@ const seedUsersData = async () => {
             transcript, cv, 
             appointmentPrice,
             biography, patients, 
+            isActiveForClientRequest,
             profileImage, clientRequests, 
-            isPsychologistVerified, 
-            isActiveForClientRequest
+            isPsychologistVerified, phone
          }
          
 
@@ -108,7 +109,7 @@ const seedUsersData = async () => {
             role, password, 
             registeredPsychologists,
             banTerminationDate,
-            passwordConfirm 
+            passwordConfirm, phone
          }
          
 

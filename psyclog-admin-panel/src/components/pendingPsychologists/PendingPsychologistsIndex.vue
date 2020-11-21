@@ -37,6 +37,20 @@
               </v-col>
 
               <v-col class="col-md-2">
+                <div class="caption text--secondary">Phone</div>
+                <div class="text-subtitle-2">{{ user.phone }}</div>
+              </v-col>
+
+              <v-col class="col-md-2">
+                <div class="caption text--secondary">Verified</div>
+                <div>
+                  <v-btn class="elevation-0" color="success" fab x-small>
+                    <v-icon small> mdi-swap-horizontal-bold </v-icon>
+                  </v-btn>
+                </div>
+              </v-col>
+
+              <v-col class="col-md-2">
                 <div class="caption text--secondary">Download CV/Transcript</div>
                 <div>
                   <v-btn class="elevation-0" :href="user.cv" color="primary" x-small>
@@ -49,10 +63,13 @@
               </v-col>
 
               <v-col class="col-md-2">
-                <div class="caption text--secondary">Operations</div>
+                <div class="caption text--secondary">Accept/Deny</div>
                 <div>
+                  <v-btn @click="verifyPsychologist(user)" x-small class="elevation-0 mx-1" color="success" dark fab>
+                    <v-icon>mdi-check-bold</v-icon>
+                  </v-btn>
                   <v-btn @click="deleteUser(user)" x-small class="elevation-0 mx-1" color="error" dark fab>
-                    <v-icon> mdi-delete</v-icon>
+                    <v-icon>mdi-close-thick</v-icon>
                   </v-btn>
                 </div>
               </v-col>
@@ -93,9 +110,6 @@ export default {
     changeSearchColor(color) {
       this.searchColor = color;
     },
-    getRemainingBanDays(banDate) {
-      if (banDate == undefined) return 0;
-    },
     retrieveAllUsersBySearch() {
       this.page = 1
       this.retrieveAllUsers()
@@ -123,6 +137,19 @@ export default {
         this.page--
       }
       this.retrieveAllUsers()
+    }, 
+    verifyPsychologist(user) {
+      this.$store.dispatch("updateUser", {
+        userId: user._id,
+        isPsychologistVerified: true
+      })
+      .then(response => {
+        this.$toast.success(response.message);
+        this.refreshUsers()
+      }) 
+      .catch(error => {
+        this.$toast.error(error)
+      })
     }
   },
   computed: {
