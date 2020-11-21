@@ -71,10 +71,36 @@ const retrieveUsers = catchAsync(async (req, res, next) => {
 const retrievePsychologists = catchAsync(async (req, res, next) => {
    // getting params.
    const page = req.query.page
+   const search = req.query.search
    const role = Constants.ROLE_PSYCHOLOGIST
 
    // paginating users.
-   const psychologists = await User.paginate({ role, isPsychologistVerified: true }, { page, limit:10 })
+   const psychologists = await User.paginate({ role, isPsychologistVerified: true, $or: [
+      { username: { $regex: new RegExp(search.toLowerCase(), "i") } },
+      { email: { $regex: new RegExp(search.toLowerCase(), "i") } },
+   ]},  { page, limit:10 })
+   res.status(200).json({
+      status: 200, 
+      data: { psychologists } 
+   })
+})
+
+
+/**
+ * Retrieves psychologists for the users.
+ */
+const retrieveUnverifiedPsychologists = catchAsync(async (req, res, next) => {
+   // getting params.
+   const page = req.query.page
+   const search = req.query.search
+   const role = Constants.ROLE_PSYCHOLOGIST
+
+   // paginating users.
+   const psychologists = await User.paginate({ role, isPsychologistVerified: false,  $or: [
+      { username: { $regex: new RegExp(search.toLowerCase(), "i") } },
+      { email: { $regex: new RegExp(search.toLowerCase(), "i") } },
+   ]}, { page, limit:10 })
+   
    res.status(200).json({
       status: 200, 
       data: { psychologists } 
@@ -158,5 +184,6 @@ module.exports = {
    updateUser,
    finishPatient,
    retrievePsychologists,
-   retrieveRegisteredPsychologists
+   retrieveRegisteredPsychologists,
+   retrieveUnverifiedPsychologists
 }

@@ -45,6 +45,27 @@ const actions = {
             }
         });
     },
+    retrieveAllUnverifiedPsychologists({ commit, rootState }, payload) {
+        axios.get(URL.RETRIEVE_UNVERIFIED_PSYCHOLOGISTS, {
+            headers: {
+                'Authorization': `Bearer ${rootState.auth.accessToken}`,
+            },
+            params: {
+                page: payload.page, 
+                search: payload.search
+            }
+        })
+        .then(response => {
+            commit('retrieveAllUsers', response.data.data.psychologists);
+        })
+        .catch(error => {
+            if (error.response) {
+                this.$toast.error(error.response.data.message);
+            } else {
+                this.$toast.error(this.$t('alert_error_server'));
+            }
+        });
+    },
     deleteUser({ rootState }, payload) {
         return new Promise((resolve, reject) => {
             axios.delete(URL.DELETE_USER, {

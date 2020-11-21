@@ -54,11 +54,11 @@ const seedUsersData = async () => {
          const profileImage = faker.image.imageUrl()
          const role = Constants.ROLE_PSYCHOLOGIST
          const isActiveForClientRequest = true
-         const isPsychologistVerified = true
-         const transcript = 'transcript'
+         const isPsychologistVerified = Math.random() < 0.5
+         const transcript = 'http://localhost:8080/sampleTranscript.pdf'
          const clientRequests = []
          const patients = []
-         const cv = 'cv'
+         const cv = 'http://localhost:8080/sampleCv.pdf'
          
          const data = { 
             username, name, 
