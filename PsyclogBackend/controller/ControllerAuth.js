@@ -54,28 +54,27 @@ const signUpPatient = catchAsync(async (req, res, next) => {
  * sign up the the psychologist.
  */
 const signUpPsychologist = catchAsync(async (req, res, next) => { 
-   // TODO In this place, the cv and transcript 
-   // will be obtained as files in pdf format. 
-   // These will be stored in an S3 bucket in future.
-
    // parsing the body 
    req.body.role = constants.ROLE_PSYCHOLOGIST
    const data = User.filterBody(req.body)
+   const user = new User(data)
+   await user.uploadCvAndTranscript(req.files, user._id)
 
    // create calendar for the psychologist
-   const calendar = new Calendar({ role: data.role})
-   data.calendar = calendar._id
+   const calendar = new Calendar({ role: data.role, user: user._id })
 
-   // create wallet for the user
-   const wallet = new Wallet({})
-   data.wallet = wallet._id
+   // create wallet for the psychologist
+   const wallet = new Wallet({ owner: user._id })
+
+   user.calendar = calendar._id
+   user.wallet = wallet._id
  
    // creating the psychologist.
-   const user = await User.create(data)
-   calendar.user = user
-   wallet.owner = user
+ //  calendar.user = user
+//   wallet.owner = user
    await calendar.save()
    await wallet.save()
+   await user.save()
 
    // sending response
    res.status(200).json({

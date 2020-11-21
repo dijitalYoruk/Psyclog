@@ -383,6 +383,16 @@ UserSchema.methods.updateProfileImage = async function(data) {
    this.profileImage = url
 }
 
+// update cv and transcript for psychologists
+UserSchema.methods.uploadCvAndTranscript = async function(cvAndTranscript, userId) {
+   const { fileCV, filenameCV } = cvAndTranscript.cv
+   const { fileTranscript, filenameTranscript } = cvAndTranscript.transcript
+   const urlCV = await s3.uploadFile(`${userId}`, fileCV, filenameCV)
+   const urlTranscript = await s3.uploadFile(`${userId}`, fileTranscript, filenameTranscript)
+   this.transcript = urlTranscript
+   this.cv = urlCV
+}
+
 // Pagination and export.
 UserSchema.plugin(mongoosePaginate)
 const User = mongoose.model('User', UserSchema)

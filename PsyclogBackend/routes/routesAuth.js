@@ -4,7 +4,7 @@
 const express = require('express')
 const routerAuth = express.Router()
 const middlewareAuth = require('../middleware/middlewareAuth')
-const { uploadProfileImage } = require('../utils/FileUpload')
+const { uploadProfileImage, uploadCVAndTranscript } = require('../utils/FileUpload')
 
 
 // =====================
@@ -25,7 +25,7 @@ const {
 // =====================
 // routes
 // =====================
-routerAuth.post('/signUp/psychologist', signUpPsychologist)
+routerAuth.post('/signUp/psychologist', uploadCVAndTranscript, signUpPsychologist)
 routerAuth.post('/forgotPassword', forgotPassword)
 routerAuth.patch('/reset-password', resetPassword)
 routerAuth.get('/reset-password/:token', getResetPassword)
