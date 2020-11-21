@@ -192,7 +192,7 @@ export default {
 
 <style>
 .custom-border {
-  border-left: solid 5px indigo;
+  border-left: solid 5px #3F51B5;
   border-radius: 1%;
 }
 </style>

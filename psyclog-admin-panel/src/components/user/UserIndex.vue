@@ -1,8 +1,8 @@
 <template>
   <div>
     <v-tabs>
-      <v-tab>Patients</v-tab>
-      <v-tab>Psycologists</v-tab>
+      <v-tab :to='{ name: "user.index.patients"}'>Patients</v-tab>
+      <v-tab :to='{ name: "user.index.psychologists"}'>Psycologists</v-tab>
     </v-tabs>
     <v-divider></v-divider>
     <v-row>

@@ -70,7 +70,6 @@ const routes = [
     component: User,
     children: [{
         path: "",
-        name: "user.index",
         component: UserIndex,
         children: [
           {
