@@ -1,28 +1,28 @@
 import 'dart:convert';
 
 import 'package:flutter/widgets.dart';
-import 'package:psyclog_app/service/WebServerService.dart';
+import 'package:psyclog_app/service/ClientServerService.dart';
 import 'package:psyclog_app/service/util/ServiceErrorHandling.dart';
-import 'package:psyclog_app/src/models/Client.dart';
+import 'package:psyclog_app/src/models/Patient.dart';
 import 'package:psyclog_app/src/models/Therapist.dart';
 import 'package:psyclog_app/src/models/controller/UserModelController.dart';
 import 'package:psyclog_app/views/util/ViewErrorHandling.dart';
 import 'package:psyclog_app/views/util/ViewConstants.dart';
 
-class SearchTherapistListViewModel extends ChangeNotifier {
-  WebServerService _serverService;
+class ClientSearchListViewModel extends ChangeNotifier {
+  ClientServerService _serverService;
 
   List<Therapist> _currentTherapistList;
 
   // TODO will check if the the therapist is registered before
-  List<dynamic> _registeredTherapistList;
+  List<dynamic> _registeredTherapistsIDList;
 
   List<String> _pendingTherapistList;
 
   int _currentPage;
   int _totalPage;
 
-  SearchTherapistListViewModel() {
+  ClientSearchListViewModel() {
     _currentPage = 1;
     _totalPage = 1;
     _currentTherapistList = List<Therapist>();
@@ -41,26 +41,23 @@ class SearchTherapistListViewModel extends ChangeNotifier {
   }
 
   initializeService() async {
-    _serverService = await WebServerService.getWebServerService();
+    _serverService = await ClientServerService.getClientServerService();
 
     try {
-      var response =
-          await _serverService.getRegisteredTherapistsByPage(_currentPage);
+      var response = await _serverService.getTherapistsByPage(_currentPage);
 
       if (response != null) {
         var decodedBody = jsonDecode(response.body);
 
         _totalPage = decodedBody["data"]["psychologists"]["totalPages"];
 
-        _registeredTherapistList = (_serverService.currentUser as Client)
-            .clientRegisteredPsychologists;
+        _registeredTherapistsIDList = (_serverService.currentClient as Patient).clientRegisteredPsychologists;
 
-        _currentTherapistList =
-            await getTherapistsByPageFromService(_currentPage);
+        _currentTherapistList = await getTherapistsByPageFromService(_currentPage);
 
         await refreshPendingList();
 
-        print("Registered Therapists: " + _registeredTherapistList.toString());
+        print("Registered Therapists: " + _registeredTherapistsIDList.toString());
         print("Pending Therapists: " + _pendingTherapistList.toString());
       }
     } catch (error) {
@@ -71,13 +68,21 @@ class SearchTherapistListViewModel extends ChangeNotifier {
   }
 
   Future<void> refreshPendingList() async {
-    _pendingTherapistList = await _serverService.getPendingTherapistsList();
+    _pendingTherapistList = await _serverService.getPendingTherapistsIDList();
 
     notifyListeners();
   }
 
-  bool checkPendingStatus(String therapistID) {
+  bool checkAppliedStatus(String therapistID) {
     if (_pendingTherapistList.contains(therapistID)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  bool checkRegisteredStatus(String therapistID) {
+    if (_registeredTherapistsIDList.contains(therapistID)) {
       return true;
     } else {
       return false;
@@ -88,18 +93,17 @@ class SearchTherapistListViewModel extends ChangeNotifier {
     List<Therapist> _therapistList;
 
     try {
-      var response = await _serverService.getRegisteredTherapistsByPage(page);
+      var response = await _serverService.getTherapistsByPage(page);
 
       if (response != null) {
         var decodedBody = jsonDecode(response.body);
 
-        int numberOfTherapist =
-            decodedBody["data"]["psychologists"]["docs"].length;
+        int numberOfTherapist = decodedBody["data"]["psychologists"]["docs"].length;
 
         _therapistList = List<Therapist>.generate(
             numberOfTherapist,
-            (index) => UserModelController.createTherapistFromJSONForList(
-                decodedBody["data"]["psychologists"]["docs"][index]));
+            (index) =>
+                UserModelController.createTherapistFromJSONForList(decodedBody["data"]["psychologists"]["docs"][index]));
 
         return _therapistList;
       }
@@ -113,14 +117,10 @@ class SearchTherapistListViewModel extends ChangeNotifier {
   Future handleItemCreated(int index) async {
     if (_serverService != null) {
       var itemPosition = index + 1;
-      var requestMoreData =
-          itemPosition % ViewConstants.therapistsPerPage == 0 &&
-              itemPosition != 0;
+      var requestMoreData = itemPosition % ViewConstants.therapistsPerPage == 0 && itemPosition != 0;
       var pageToRequest = 1 + (itemPosition ~/ ViewConstants.therapistsPerPage);
 
-      if (requestMoreData &&
-          pageToRequest > _currentPage &&
-          _currentPage < _totalPage) {
+      if (requestMoreData && pageToRequest > _currentPage && _currentPage < _totalPage) {
         print('handleItemCreated | pageToRequest: $pageToRequest');
         _currentPage = pageToRequest;
 
@@ -129,8 +129,7 @@ class SearchTherapistListViewModel extends ChangeNotifier {
 
         // Adding new therapists to the list
 
-        List<Therapist> _newTherapists =
-            await getTherapistsByPageFromService(_currentPage);
+        List<Therapist> _newTherapists = await getTherapistsByPageFromService(_currentPage);
 
         try {
           _currentTherapistList.addAll(_newTherapists);

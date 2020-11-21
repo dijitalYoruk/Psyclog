@@ -71,9 +71,11 @@ const retrieveClientRequests = catchAsync(async (req, res, next) => {
 
 const acceptClientRequest = catchAsync(async (req, res, next) => {
    // retrieve corresponding data
+
    const { requestId } = req.body
    const psychologist = req.currentUser
    const clientRequest = await ClientRequest.findById(requestId)
+
    const patient = clientRequest.patient
 
    if (!clientRequest) { 

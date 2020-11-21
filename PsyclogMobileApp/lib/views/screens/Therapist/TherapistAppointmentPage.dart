@@ -37,11 +37,9 @@ class _TherapistAppointmentPageState extends State<TherapistAppointmentPage> {
         child: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment(5, 5),
-                colors: [ViewConstants.myWhite, ViewConstants.myBlue]),
+                begin: Alignment.topLeft, end: Alignment(5, 5), colors: [ViewConstants.myWhite, ViewConstants.myBlue]),
           ),
-          child:         CustomScrollView(
+          child: CustomScrollView(
             physics: const BouncingScrollPhysics(),
             slivers: [
               SliverAppBar(
@@ -67,10 +65,7 @@ class _TherapistAppointmentPageState extends State<TherapistAppointmentPage> {
                               ),
                               child: Text("Appointments",
                                   textAlign: TextAlign.left,
-                                  style: TextStyle(
-                                      fontSize: 30,
-                                      color: ViewConstants.myBlack,
-                                      fontWeight: FontWeight.bold)),
+                                  style: TextStyle(fontSize: 30, color: ViewConstants.myBlack, fontWeight: FontWeight.bold)),
                             ),
                             Padding(
                               padding: EdgeInsets.only(
@@ -80,14 +75,12 @@ class _TherapistAppointmentPageState extends State<TherapistAppointmentPage> {
                               child: CircleAvatar(
                                 child: InkWell(
                                   onTap: () {
-                                    Navigator.pushNamed(context,
-                                        ViewConstants.therapistProfileRoute);
+                                    Navigator.pushNamed(context, ViewConstants.therapistProfileRoute);
                                   },
                                 ),
-                                maxRadius:
-                                MediaQuery.of(context).size.height * 0.025,
-                                backgroundImage: NetworkImage(
-                                    "https://instagram.fayt2-1.fna.fbcdn.net/v/t51.2885-19/s150x150/117315051_369085030753678_5319131320934149030_n.jpg?_nc_ht=instagram.fayt2-1.fna.fbcdn.net&_nc_ohc=tRNmhh4X0KcAX_7h_fq&oh=0cb73887d5990eb9ca7a32d9689561d9&oe=5F932D22"),
+                                maxRadius: MediaQuery.of(context).size.height * 0.025,
+                                backgroundImage:
+                                    NetworkImage("https://avatarfiles.alphacoders.com/715/thumb-1920-71560.jpg"),
                               ),
                             )
                           ],
@@ -134,14 +127,12 @@ class _TherapistAppointmentPageState extends State<TherapistAppointmentPage> {
                 child: Consumer<TherapistAppointmentListViewModel>(
                   builder: (context, model, child) => SliverList(
                     delegate: SliverChildBuilderDelegate(
-                          (context, index) {
-                        Color _backgroundColor = _cardBackgroundColors
-                            .elementAt(index % _cardBackgroundColors.length);
+                      (context, index) {
+                        Color _backgroundColor = _cardBackgroundColors.elementAt(index % _cardBackgroundColors.length);
 
                         return Card(
                           shadowColor: Colors.transparent,
-                          margin:
-                          EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                          margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                           color: _backgroundColor.withOpacity(0.50),
                           child: Container(
                             height: MediaQuery.of(context).size.height * 0.18,
@@ -162,9 +153,7 @@ class _TherapistAppointmentPageState extends State<TherapistAppointmentPage> {
                 ),
               )
             ],
-          )
-          ,
+          ),
         ));
   }
-
 }

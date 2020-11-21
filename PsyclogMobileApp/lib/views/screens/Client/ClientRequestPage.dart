@@ -9,8 +9,7 @@ class ClientRequestPage extends StatelessWidget {
   final Therapist therapist;
   final bool currentUserApplied;
 
-  const ClientRequestPage({Key key, this.therapist, this.currentUserApplied})
-      : super(key: key);
+  const ClientRequestPage({Key key, this.therapist, this.currentUserApplied}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -53,9 +52,7 @@ class ClientRequestPage extends StatelessWidget {
                                 width: constraints.maxWidth,
                                 child: AutoSizeText(
                                   "Dr. " + therapist.getFullName(),
-                                  style: TextStyle(
-                                      color: ViewConstants.myBlack,
-                                      fontWeight: FontWeight.w500),
+                                  style: TextStyle(color: ViewConstants.myBlack, fontWeight: FontWeight.w500),
                                   maxLines: 2,
                                   presetFontSizes: [35, 32, 29, 26, 23],
                                 ),
@@ -63,15 +60,12 @@ class ClientRequestPage extends StatelessWidget {
                             }),
                             Padding(
                               padding: const EdgeInsets.only(top: 5),
-                              child: LayoutBuilder(
-                                  builder: (context, constraints) {
+                              child: LayoutBuilder(builder: (context, constraints) {
                                 return SizedBox(
                                   width: constraints.maxWidth * 0.95,
                                   child: AutoSizeText(
                                     "Family and Marriage Therapist",
-                                    style: TextStyle(
-                                        color: ViewConstants.myBlack,
-                                        fontWeight: FontWeight.w500),
+                                    style: TextStyle(color: ViewConstants.myBlack, fontWeight: FontWeight.w500),
                                     maxLines: 1,
                                     presetFontSizes: [16, 13, 11, 9, 7],
                                   ),
@@ -80,16 +74,12 @@ class ClientRequestPage extends StatelessWidget {
                             ),
                             Padding(
                               padding: const EdgeInsets.only(top: 5),
-                              child: LayoutBuilder(
-                                  builder: (context, constraints) {
+                              child: LayoutBuilder(builder: (context, constraints) {
                                 return SizedBox(
                                   width: constraints.maxWidth * 0.80,
                                   child: AutoSizeText(
-                                    Random().nextInt(20).toString() +
-                                        " years experience",
-                                    style: TextStyle(
-                                        color: ViewConstants.myBlack,
-                                        fontWeight: FontWeight.w300),
+                                    Random().nextInt(20).toString() + " years experience",
+                                    style: TextStyle(color: ViewConstants.myBlack, fontWeight: FontWeight.w300),
                                     maxLines: 1,
                                     presetFontSizes: [15, 13, 11, 9, 7],
                                   ),
@@ -99,21 +89,17 @@ class ClientRequestPage extends StatelessWidget {
                             Expanded(
                               child: Padding(
                                 padding: const EdgeInsets.only(top: 5),
-                                child: LayoutBuilder(
-                                    builder: (context, constraints) {
+                                child: LayoutBuilder(builder: (context, constraints) {
                                   return Container(
                                     width: constraints.maxWidth,
                                     height: constraints.maxHeight,
                                     child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceAround,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.end,
+                                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                      crossAxisAlignment: CrossAxisAlignment.end,
                                       children: [
                                         Container(
                                           decoration: BoxDecoration(
-                                            color: ViewConstants.myYellow
-                                                .withOpacity(0.75),
+                                            color: ViewConstants.myYellow.withOpacity(0.75),
                                             shape: BoxShape.circle,
                                           ),
                                           child: IconButton(
@@ -123,8 +109,7 @@ class ClientRequestPage extends StatelessWidget {
                                         ),
                                         Container(
                                           decoration: BoxDecoration(
-                                            color: ViewConstants.myBlue
-                                                .withOpacity(0.75),
+                                            color: ViewConstants.myBlue.withOpacity(0.75),
                                             shape: BoxShape.circle,
                                           ),
                                           child: IconButton(
@@ -134,8 +119,7 @@ class ClientRequestPage extends StatelessWidget {
                                         ),
                                         Container(
                                           decoration: BoxDecoration(
-                                            color: ViewConstants.myLightBlack
-                                                .withOpacity(0.75),
+                                            color: ViewConstants.myLightBlack.withOpacity(0.75),
                                             shape: BoxShape.circle,
                                           ),
                                           child: IconButton(
@@ -170,9 +154,7 @@ class ClientRequestPage extends StatelessWidget {
                             width: constraints.maxWidth * 0.15,
                             child: AutoSizeText(
                               "About",
-                              style: TextStyle(
-                                  color: ViewConstants.myBlack,
-                                  fontWeight: FontWeight.w600),
+                              style: TextStyle(color: ViewConstants.myBlack, fontWeight: FontWeight.w600),
                               maxLines: 1,
                               presetFontSizes: [26, 24, 22, 20, 18],
                             ),
@@ -191,10 +173,7 @@ class ClientRequestPage extends StatelessWidget {
                               "Quisque cursus ultrices odio, eleifend consequat ante mattis id. "
                               "Suspendisse consectetur sollicitudin tortor ac efficitur. "
                               "Proin ac varius tortor, a scelerisque arcu. ",
-                              style: TextStyle(
-                                  color:
-                                      ViewConstants.myBlack.withOpacity(0.50),
-                                  fontWeight: FontWeight.w300),
+                              style: TextStyle(color: ViewConstants.myBlack.withOpacity(0.50), fontWeight: FontWeight.w300),
                               presetFontSizes: [18, 16, 14, 12, 10],
                               maxLines: 6,
                             ),
@@ -207,49 +186,34 @@ class ClientRequestPage extends StatelessWidget {
                           return Container(
                             width: constraints.maxWidth,
                             child: Row(
-                              mainAxisAlignment:
-                                  MainAxisAlignment.spaceAround,
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Expanded(
                                   child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
                                       Padding(
-                                        padding:
-                                            const EdgeInsets.only(top: 20),
+                                        padding: const EdgeInsets.only(top: 20),
                                         child: SizedBox(
                                           width: constraints.maxWidth * 0.20,
                                           child: AutoSizeText(
                                             "Patients",
-                                            style: TextStyle(
-                                                color: ViewConstants.myBlack,
-                                                fontWeight: FontWeight.w600),
+                                            style: TextStyle(color: ViewConstants.myBlack, fontWeight: FontWeight.w600),
                                             maxLines: 1,
-                                            presetFontSizes: [
-                                              26,
-                                              24,
-                                              22,
-                                              20,
-                                              18
-                                            ],
+                                            presetFontSizes: [26, 24, 22, 20, 18],
                                           ),
                                         ),
                                       ),
                                       Padding(
-                                        padding:
-                                            const EdgeInsets.only(top: 5),
+                                        padding: const EdgeInsets.only(top: 5),
                                         child: SizedBox(
                                           width: constraints.maxWidth,
                                           child: AutoSizeText(
                                             "97",
                                             style: TextStyle(
-                                                color: ViewConstants.myBlack
-                                                    .withOpacity(0.50),
-                                                fontWeight: FontWeight.w300),
+                                                color: ViewConstants.myBlack.withOpacity(0.50), fontWeight: FontWeight.w300),
                                             maxLines: 1,
                                             presetFontSizes: [20, 19, 17],
                                           ),
@@ -260,43 +224,29 @@ class ClientRequestPage extends StatelessWidget {
                                 ),
                                 Expanded(
                                   child: Column(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Padding(
-                                        padding:
-                                            const EdgeInsets.only(top: 20),
+                                        padding: const EdgeInsets.only(top: 20),
                                         child: SizedBox(
                                           width: constraints.maxWidth * 0.20,
                                           child: AutoSizeText(
                                             "Sessions",
-                                            style: TextStyle(
-                                                color: ViewConstants.myBlack,
-                                                fontWeight: FontWeight.w600),
+                                            style: TextStyle(color: ViewConstants.myBlack, fontWeight: FontWeight.w600),
                                             maxLines: 1,
-                                            presetFontSizes: [
-                                              26,
-                                              24,
-                                              22,
-                                              20,
-                                              18
-                                            ],
+                                            presetFontSizes: [26, 24, 22, 20, 18],
                                           ),
                                         ),
                                       ),
                                       Padding(
-                                        padding:
-                                            const EdgeInsets.only(top: 5),
+                                        padding: const EdgeInsets.only(top: 5),
                                         child: SizedBox(
                                           width: constraints.maxWidth,
                                           child: AutoSizeText(
                                             "282",
                                             style: TextStyle(
-                                                color: ViewConstants.myBlack
-                                                    .withOpacity(0.50),
-                                                fontWeight: FontWeight.w300),
+                                                color: ViewConstants.myBlack.withOpacity(0.50), fontWeight: FontWeight.w300),
                                             maxLines: 1,
                                             presetFontSizes: [20, 19, 17],
                                           ),

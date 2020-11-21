@@ -113,9 +113,12 @@ const retrieveUnverifiedPsychologists = catchAsync(async (req, res, next) => {
  */
 const retrieveRegisteredPsychologists = catchAsync(async (req, res, next) => {
    // getting params.
-   const registeredPsychologists = User.findById(req.currentUser._id)
+
+   const registeredPsychologists = await User.findById(req.currentUser._id)
                            .populate('registeredPsychologists')
                            .select('registeredPsychologists')
+
+   console.log(registeredPsychologists)
 
    res.status(200).json({
       status: 200, 
@@ -123,7 +126,23 @@ const retrieveRegisteredPsychologists = catchAsync(async (req, res, next) => {
    })
 })
 
+/**
+ * Retrieves patients for the therapists.
+ */
+const retrievePatients = catchAsync(async (req, res, next) => {
+   // getting params.
 
+   const registeredPatients = await User.findById(req.currentUser._id)
+                           .populate('patients')
+                           .select('patients')
+
+   console.log(registeredPatients)
+
+   res.status(200).json({
+      status: 200, 
+      data: { registeredPatients } 
+   })
+})
 
 /**
  * Retrieves specific user from db
@@ -185,5 +204,6 @@ module.exports = {
    finishPatient,
    retrievePsychologists,
    retrieveRegisteredPsychologists,
-   retrieveUnverifiedPsychologists
+   retrieveUnverifiedPsychologists,
+   retrievePatients
 }

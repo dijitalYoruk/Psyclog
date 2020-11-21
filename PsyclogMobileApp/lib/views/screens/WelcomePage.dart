@@ -9,30 +9,20 @@ class WelcomePage extends StatefulWidget {
   _WelcomePageState createState() => _WelcomePageState();
 }
 
-class _WelcomePageState extends State<WelcomePage>
-    with SingleTickerProviderStateMixin {
+class _WelcomePageState extends State<WelcomePage> with SingleTickerProviderStateMixin {
   TabController _tabController;
   Timer _tabTimer;
 
   final List<Widget> tabInformation = [
     new Text("Share experiences. Help others.",
-        style: TextStyle(
-            fontSize: 45,
-            color: ViewConstants.myBlack,
-            fontWeight: FontWeight.bold)),
+        style: TextStyle(fontSize: 45, color: ViewConstants.myBlack, fontWeight: FontWeight.bold)),
     new Text(
       "Speak, listen and connect!",
-      style: TextStyle(
-          fontSize: 45,
-          color: ViewConstants.myBlack,
-          fontWeight: FontWeight.bold),
+      style: TextStyle(fontSize: 45, color: ViewConstants.myBlack, fontWeight: FontWeight.bold),
     ),
     new Text(
       "Safe Environment. Safe Talk.",
-      style: TextStyle(
-          fontSize: 45,
-          color: ViewConstants.myBlack,
-          fontWeight: FontWeight.bold),
+      style: TextStyle(fontSize: 45, color: ViewConstants.myBlack, fontWeight: FontWeight.bold),
     ),
   ];
 
@@ -100,8 +90,7 @@ class _WelcomePageState extends State<WelcomePage>
                               height: constraints.maxHeight / 3,
                               child: Material(
                                 elevation: 5.0,
-                                borderRadius:
-                                BorderRadius.circular(10.0),
+                                borderRadius: BorderRadius.circular(10.0),
                                 color: ViewConstants.myBlack,
                                 child: MaterialButton(
                                   padding: EdgeInsets.zero,
@@ -113,16 +102,13 @@ class _WelcomePageState extends State<WelcomePage>
                                   child: Text("Log in",
                                       textAlign: TextAlign.center,
                                       style: ViewConstants.fieldStyle.copyWith(
-                                          fontSize: 18,
-                                          color: ViewConstants.myWhite,
-                                          fontWeight: FontWeight.bold)),
+                                          fontSize: 18, color: ViewConstants.myWhite, fontWeight: FontWeight.bold)),
                                 ),
                               ),
                             ),
                             InkWell(
                               onTap: () {
-                                Navigator.pushNamed(
-                                    context, ViewConstants.registerRoute);
+                                Navigator.pushNamed(context, ViewConstants.registerRoute);
                               },
                               child: Padding(
                                 padding: const EdgeInsets.only(bottom: 20.0),
@@ -134,14 +120,10 @@ class _WelcomePageState extends State<WelcomePage>
                                     children: [
                                       Text("You don't have an account?",
                                           style: TextStyle(
-                                              fontSize: 12,
-                                              color: ViewConstants.myBlack,
-                                              fontWeight: FontWeight.w400)),
+                                              fontSize: 12, color: ViewConstants.myBlack, fontWeight: FontWeight.w400)),
                                       Text("\t\tSign up here",
                                           style: TextStyle(
-                                              fontSize: 12,
-                                              color: ViewConstants.myBlack,
-                                              fontWeight: FontWeight.w900)),
+                                              fontSize: 12, color: ViewConstants.myBlack, fontWeight: FontWeight.w900)),
                                     ],
                                   ),
                                 ),

@@ -21,9 +21,12 @@ class ViewConstants {
   static const String clientProfileRoute = '/userProfile';
   static const String therapistProfileRoute = '/therapistProfile';
   static const String clientSessionRoute = '/clientSessions';
+  static const String clientPendingRequestRoute = '/clientPendingRequests';
+  static const String therapistPendingRequestRoute = '/therapistPendingRequests';
 
   //Constraints for Widgets
   static const int therapistsPerPage = 10;
+  static const int clientsPerPage = 10;
   static const String allTherapists = "All";
   static const String preferredTherapists = "Preferred";
   static const String latestTherapists = "Latest";
@@ -49,18 +52,16 @@ class ViewConstants {
   static Color myLightGrey = HexColor('#eaeaea');
   static Color myGreyBlue = HexColor('CAE7FF');
   static Color darkGreyBlue = HexColor('040307');
+  static Color myGreen = HexColor('17b978');
 
-  static TextStyle fieldStyle = TextStyle(
-      fontFamily: 'Montserrat', fontSize: 15.0, color: HexColor("#ffffff"));
-  static TextStyle hintStyle =
-      TextStyle(color: ViewConstants.myBlack, fontSize: 13);
+  static TextStyle fieldStyle = TextStyle(fontFamily: 'Montserrat', fontSize: 15.0, color: HexColor("#ffffff"));
+  static TextStyle hintStyle = TextStyle(color: ViewConstants.myBlack, fontSize: 13);
   static HexColor fieldBackgroundColor = ViewConstants.myWhite;
   static OutlineInputBorder fieldBorderStyle = new OutlineInputBorder(
     borderRadius: const BorderRadius.all(
       const Radius.circular(20.0),
     ),
-    borderSide: BorderSide(
-        color: Colors.transparent, width: 0, style: BorderStyle.none),
+    borderSide: BorderSide(color: Colors.transparent, width: 0, style: BorderStyle.none),
   );
 
   static ThemeData lightTheme = ThemeData(

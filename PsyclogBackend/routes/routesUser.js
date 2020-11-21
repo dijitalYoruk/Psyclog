@@ -19,7 +19,8 @@ const {
    finishPatient,
    retrievePsychologists,
    retrieveRegisteredPsychologists, 
-   retrieveUnverifiedPsychologists } = require('../controller/ControllerUser')
+   retrieveUnverifiedPsychologists,
+   retrievePatients } = require('../controller/ControllerUser')
 
 
 // =====================
@@ -33,6 +34,7 @@ routerUser.get('/psychologists/unverified', middlewareRestrict(Constants.ROLE_AD
 routerUser.get('/', middlewareRestrict(Constants.ROLE_ADMIN), retrieveUsers)
 routerUser.delete('/', middlewareRestrict(Constants.ROLE_ADMIN), deleteUser)
 
+routerUser.get('/registered-patients', middlewareRestrict(Constants.ROLE_PSYCHOLOGIST), retrievePatients)
 routerUser.route('/:userId')
           .get(middlewareRestrict(Constants.ROLE_ADMIN), retrieveUser)
           .patch(middlewareRestrict(Constants.ROLE_ADMIN), updateUser)

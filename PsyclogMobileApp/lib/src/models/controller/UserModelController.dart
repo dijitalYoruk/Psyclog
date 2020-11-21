@@ -1,4 +1,4 @@
-import 'package:psyclog_app/src/models/Client.dart';
+import 'package:psyclog_app/src/models/Patient.dart';
 import 'package:psyclog_app/src/models/Therapist.dart';
 import 'package:psyclog_app/src/models/User.dart';
 
@@ -7,30 +7,27 @@ class UserModelController {
     try {
       var user = User.fromJson(decodedBody);
       return user;
-    }
-    catch (e) {
+    } catch (e) {
       print(e);
       throw Exception("");
     }
   }
 
-  static Client createClientFromJSON(dynamic decodedBody) {
+  static Patient createClientFromJSON(dynamic decodedBody) {
     try {
-      var client = Client.fromJson(decodedBody);
+      var client = Patient.fromJson(decodedBody);
       return client;
-    }
-    catch (e) {
+    } catch (e) {
       print(e);
       throw Exception("");
     }
   }
 
-  static Client createClientFromJSONForToken(dynamic decodedBody) {
+  static Patient createClientFromJSONForToken(dynamic decodedBody) {
     try {
-      var client = Client.fromJsonForToken(decodedBody);
+      var client = Patient.fromJsonForToken(decodedBody);
       return client;
-    }
-    catch (e) {
+    } catch (e) {
       print(e);
       throw Exception("");
     }
@@ -40,8 +37,7 @@ class UserModelController {
     try {
       var therapist = Therapist.fromJson(decodedBody);
       return therapist;
-    }
-    catch (e) {
+    } catch (e) {
       print(e);
       throw Exception("");
     }
@@ -51,8 +47,17 @@ class UserModelController {
     try {
       var therapist = Therapist.fromJsonForList(decodedBody);
       return therapist;
+    } catch (e) {
+      print(e);
+      throw Exception("");
     }
-    catch (e) {
+  }
+
+  static Patient createClientFromJSONForList(dynamic decodedBody) {
+    try {
+      var client = Patient.fromJsonForList(decodedBody);
+      return client;
+    } catch (e) {
       print(e);
       throw Exception("");
     }
@@ -60,10 +65,9 @@ class UserModelController {
 
   static Therapist createTherapistFromJSONForToken(dynamic decodedBody) {
     try {
-      var therapist = Therapist.fromJsonForList(decodedBody);
+      var therapist = Therapist.fromJsonForToken(decodedBody);
       return therapist;
-    }
-    catch (e) {
+    } catch (e) {
       print(e);
       throw Exception("");
     }

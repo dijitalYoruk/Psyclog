@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:psyclog_app/service/WebServerService.dart';
+import 'package:psyclog_app/service/ClientServerService.dart';
 
 class ClientAppointmentListViewModel extends ChangeNotifier {
-
-  WebServerService _serverService;
-
-
+  ClientServerService _serverService;
 }

@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_inner_drawer/inner_drawer.dart';
+import 'package:psyclog_app/service/ClientServerService.dart';
 import 'package:psyclog_app/service/WebServerService.dart';
+import 'package:psyclog_app/src/models/Patient.dart';
 import 'package:psyclog_app/views/util/ViewConstants.dart';
 
 class InnerDrawerWithScreen extends StatefulWidget {
   final Widget scaffoldArea;
 
-  const InnerDrawerWithScreen({Key key, @required this.scaffoldArea})
-      : super(key: key);
+  const InnerDrawerWithScreen({Key key, @required this.scaffoldArea}) : super(key: key);
 
   @override
   _InnerDrawerWithScreenState createState() => _InnerDrawerWithScreenState();
 }
 
 class _InnerDrawerWithScreenState extends State<InnerDrawerWithScreen> {
-
   WebServerService _webServerService;
 
   @override
@@ -31,7 +31,6 @@ class _InnerDrawerWithScreenState extends State<InnerDrawerWithScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     return InnerDrawer(
         onTapClose: true, // default false
         swipe: true, // default true
@@ -54,8 +53,6 @@ class _InnerDrawerWithScreenState extends State<InnerDrawerWithScreen> {
           ),
         ), // default  Theme.of(context).backgroundColor
         //when a pointer that is in contact with the screen and moves to the right or left
-        innerDrawerCallback: (a) =>
-            print(a), // return  true (open) or false (close)
         leftChild: Material(
             color: Colors.transparent,
             child: SafeArea(
@@ -74,18 +71,16 @@ class _InnerDrawerWithScreenState extends State<InnerDrawerWithScreen> {
                         leading: Icon(Icons.home),
                         onTap: () {
                           Navigator.pushNamedAndRemoveUntil(
-                              context,
-                              ViewConstants.homeRoute,
-                              ((Route<dynamic> route) => false));
+                              context, ViewConstants.homeRoute, ((Route<dynamic> route) => false));
                         },
                       ),
                       ListTile(
                         title: Text("Profile"),
                         leading: Icon(Icons.person),
                         onTap: () {
-                          Navigator.pushReplacementNamed(
-                              context,
-                              ViewConstants.clientProfileRoute);
+                          if (_webServerService.currentUser is Patient) {
+                            Navigator.pushReplacementNamed(context, ViewConstants.clientProfileRoute);
+                          }
                         },
                       ),
                       ListTile(
@@ -93,9 +88,7 @@ class _InnerDrawerWithScreenState extends State<InnerDrawerWithScreen> {
                         leading: Icon(Icons.monetization_on),
                         onTap: () {
                           Navigator.pushNamedAndRemoveUntil(
-                              context,
-                              ViewConstants.walletRoute,
-                              ((Route<dynamic> route) => false));
+                              context, ViewConstants.walletRoute, ((Route<dynamic> route) => false));
                         },
                       ),
                       ListTile(
@@ -103,9 +96,7 @@ class _InnerDrawerWithScreenState extends State<InnerDrawerWithScreen> {
                         leading: Icon(Icons.calendar_today),
                         onTap: () {
                           Navigator.pushNamedAndRemoveUntil(
-                              context,
-                              ViewConstants.sessionRoute,
-                              ((Route<dynamic> route) => false));
+                              context, ViewConstants.sessionRoute, ((Route<dynamic> route) => false));
                         },
                       ),
                       Expanded(
@@ -115,13 +106,10 @@ class _InnerDrawerWithScreenState extends State<InnerDrawerWithScreen> {
                             title: Text("Log Out"),
                             leading: Icon(Icons.arrow_back_ios),
                             onTap: () {
-                              WebServerService.getWebServerService()
-                                  .then((value) {
+                              ClientServerService.getClientServerService().then((value) {
                                 value.clearAllInfo();
                                 Navigator.pushNamedAndRemoveUntil(
-                                    context,
-                                    ViewConstants.welcomeRoute,
-                                    (Route<dynamic> route) => false);
+                                    context, ViewConstants.welcomeRoute, (Route<dynamic> route) => false);
                               });
                             },
                           ),

@@ -12,8 +12,7 @@ class ClientSearchPage extends StatefulWidget {
 class _ClientSearchPageState extends State<ClientSearchPage> {
   TextEditingController _searchController;
 
-  static GlobalKey<EditableTextState> _formKey =
-      new GlobalKey<EditableTextState>();
+  static GlobalKey<EditableTextState> _formKey = new GlobalKey<EditableTextState>();
 
   @override
   void initState() {
@@ -73,10 +72,7 @@ class _ClientSearchPageState extends State<ClientSearchPage> {
                 ),
                 child: Text("Find your\nConsultation",
                     textAlign: TextAlign.left,
-                    style: TextStyle(
-                        fontSize: 30,
-                        color: ViewConstants.myBlack,
-                        fontWeight: FontWeight.bold)),
+                    style: TextStyle(fontSize: 30, color: ViewConstants.myBlack, fontWeight: FontWeight.bold)),
               ),
               Container(
                 decoration: BoxDecoration(
@@ -101,10 +97,7 @@ class _ClientSearchPageState extends State<ClientSearchPage> {
                           decoration: InputDecoration(
                             border: InputBorder.none,
                             hintText: 'Search',
-                            hintStyle: TextStyle(
-                                fontSize: 18,
-                                color: ViewConstants.myWhite,
-                                fontWeight: FontWeight.w500),
+                            hintStyle: TextStyle(fontSize: 18, color: ViewConstants.myWhite, fontWeight: FontWeight.w500),
                           ),
                         ),
                       ),
@@ -123,17 +116,13 @@ class _ClientSearchPageState extends State<ClientSearchPage> {
                     Container(
                       child: Text("Browse Therapists",
                           textAlign: TextAlign.left,
-                          style: TextStyle(
-                              fontSize: 20,
-                              color: ViewConstants.myBlack,
-                              fontWeight: FontWeight.bold)),
+                          style: TextStyle(fontSize: 20, color: ViewConstants.myBlack, fontWeight: FontWeight.bold)),
                     ),
                   ],
                 ),
               ),
               Container(
-                padding:
-                    EdgeInsets.only(left: 15, right: 20, top: 10, bottom: 10),
+                padding: EdgeInsets.only(left: 15, right: 20, top: 10, bottom: 10),
                 height: MediaQuery.of(context).size.height * 0.35,
                 child: Theme(
                   data: ThemeData(
@@ -143,19 +132,15 @@ class _ClientSearchPageState extends State<ClientSearchPage> {
                     scrollDirection: Axis.horizontal,
                     children: [
                       Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 5, horizontal: 5),
+                        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
                         child: InkWell(
                           onTap: () {
-                            Navigator.pushNamed(
-                                context, ViewConstants.allTherapistsRoute,
+                            Navigator.pushNamed(context, ViewConstants.allTherapistsRoute,
                                 arguments: ViewConstants.allTherapists);
                           },
                           child: DecoratedBox(
                             decoration: BoxDecoration(
-                              borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(10),
-                                  topRight: Radius.circular(10)),
+                              borderRadius: BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
                               gradient: LinearGradient(
                                 begin: Alignment(-1, -1),
                                 end: Alignment(1, -0.5),
@@ -173,20 +158,16 @@ class _ClientSearchPageState extends State<ClientSearchPage> {
                                   Align(
                                     alignment: Alignment.topLeft,
                                     child: Padding(
-                                      padding: const EdgeInsets.only(
-                                          left: 10, top: 10, bottom: 40),
+                                      padding: const EdgeInsets.only(left: 10, top: 10, bottom: 40),
                                       child: Text(ViewConstants.allTherapists,
                                           textAlign: TextAlign.left,
                                           style: TextStyle(
-                                              fontSize: 16,
-                                              color: ViewConstants.myWhite,
-                                              fontWeight: FontWeight.bold)),
+                                              fontSize: 16, color: ViewConstants.myWhite, fontWeight: FontWeight.bold)),
                                     ),
                                   ),
                                   Expanded(
                                     child: Container(
-                                      width:
-                                          MediaQuery.of(context).size.width / 3,
+                                      width: MediaQuery.of(context).size.width / 3,
                                       child: Image.asset(
                                         "assets/therapists_pictures/william_james.png",
                                         fit: BoxFit.fill,
@@ -200,19 +181,15 @@ class _ClientSearchPageState extends State<ClientSearchPage> {
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 5, horizontal: 5),
+                        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
                         child: InkWell(
                           onTap: () {
-                            Navigator.pushNamed(
-                                context, ViewConstants.allTherapistsRoute,
+                            Navigator.pushNamed(context, ViewConstants.allTherapistsRoute,
                                 arguments: ViewConstants.preferredTherapists);
                           },
                           child: DecoratedBox(
                             decoration: BoxDecoration(
-                              borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(10),
-                                  topRight: Radius.circular(10)),
+                              borderRadius: BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
                               gradient: LinearGradient(
                                 begin: Alignment(-1, -1),
                                 end: Alignment(1, -0.5),
@@ -229,21 +206,16 @@ class _ClientSearchPageState extends State<ClientSearchPage> {
                                   Align(
                                     alignment: Alignment.topLeft,
                                     child: Padding(
-                                      padding: const EdgeInsets.only(
-                                          left: 10, top: 10, bottom: 40),
-                                      child: Text(
-                                          ViewConstants.preferredTherapists,
+                                      padding: const EdgeInsets.only(left: 10, top: 10, bottom: 40),
+                                      child: Text(ViewConstants.preferredTherapists,
                                           textAlign: TextAlign.left,
                                           style: TextStyle(
-                                              fontSize: 16,
-                                              color: ViewConstants.myWhite,
-                                              fontWeight: FontWeight.bold)),
+                                              fontSize: 16, color: ViewConstants.myWhite, fontWeight: FontWeight.bold)),
                                     ),
                                   ),
                                   Expanded(
                                     child: Container(
-                                      width:
-                                          MediaQuery.of(context).size.width / 3,
+                                      width: MediaQuery.of(context).size.width / 3,
                                       child: Image.asset(
                                         "assets/therapists_pictures/sigmund_freud.png",
                                         fit: BoxFit.fill,
@@ -257,19 +229,15 @@ class _ClientSearchPageState extends State<ClientSearchPage> {
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 5, horizontal: 5),
+                        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
                         child: InkWell(
                           onTap: () {
-                            Navigator.pushNamed(
-                                context, ViewConstants.allTherapistsRoute,
+                            Navigator.pushNamed(context, ViewConstants.allTherapistsRoute,
                                 arguments: ViewConstants.latestTherapists);
                           },
                           child: DecoratedBox(
                             decoration: BoxDecoration(
-                              borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(10),
-                                  topRight: Radius.circular(10)),
+                              borderRadius: BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
                               gradient: LinearGradient(
                                 begin: Alignment(-1, -1),
                                 end: Alignment(1, -0.5),
@@ -286,21 +254,16 @@ class _ClientSearchPageState extends State<ClientSearchPage> {
                                   Align(
                                     alignment: Alignment.topLeft,
                                     child: Padding(
-                                      padding: const EdgeInsets.only(
-                                          left: 10, top: 10, bottom: 40),
-                                      child: Text(
-                                          ViewConstants.latestTherapists,
+                                      padding: const EdgeInsets.only(left: 10, top: 10, bottom: 40),
+                                      child: Text(ViewConstants.latestTherapists,
                                           textAlign: TextAlign.left,
                                           style: TextStyle(
-                                              fontSize: 16,
-                                              color: ViewConstants.myWhite,
-                                              fontWeight: FontWeight.bold)),
+                                              fontSize: 16, color: ViewConstants.myWhite, fontWeight: FontWeight.bold)),
                                     ),
                                   ),
                                   Expanded(
                                     child: Container(
-                                      width:
-                                          MediaQuery.of(context).size.width / 3,
+                                      width: MediaQuery.of(context).size.width / 3,
                                       child: Image.asset(
                                         "assets/therapists_pictures/erik_erikson.png",
                                         fit: BoxFit.fill,
@@ -314,12 +277,10 @@ class _ClientSearchPageState extends State<ClientSearchPage> {
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 5, horizontal: 5),
+                        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
                         child: InkWell(
                           onTap: () {
-                            Navigator.pushNamed(
-                                context, ViewConstants.allTherapistsRoute,
+                            Navigator.pushNamed(context, ViewConstants.allTherapistsRoute,
                                 arguments: ViewConstants.seniorTherapists);
                           },
                           child: DecoratedBox(
@@ -342,21 +303,16 @@ class _ClientSearchPageState extends State<ClientSearchPage> {
                                   Align(
                                     alignment: Alignment.topLeft,
                                     child: Padding(
-                                      padding: const EdgeInsets.only(
-                                          left: 10, top: 10, bottom: 40),
-                                      child: Text(
-                                          ViewConstants.seniorTherapists,
+                                      padding: const EdgeInsets.only(left: 10, top: 10, bottom: 40),
+                                      child: Text(ViewConstants.seniorTherapists,
                                           textAlign: TextAlign.left,
                                           style: TextStyle(
-                                              fontSize: 16,
-                                              color: ViewConstants.myWhite,
-                                              fontWeight: FontWeight.bold)),
+                                              fontSize: 16, color: ViewConstants.myWhite, fontWeight: FontWeight.bold)),
                                     ),
                                   ),
                                   Expanded(
                                     child: Container(
-                                      width:
-                                          MediaQuery.of(context).size.width / 3,
+                                      width: MediaQuery.of(context).size.width / 3,
                                       child: Image.asset(
                                         "assets/therapists_pictures/melanie_klein.png",
                                         fit: BoxFit.fill,
@@ -381,14 +337,10 @@ class _ClientSearchPageState extends State<ClientSearchPage> {
                 ),
                 child: Text("Today's News",
                     textAlign: TextAlign.left,
-                    style: TextStyle(
-                        fontSize: 20,
-                        color: ViewConstants.myBlack,
-                        fontWeight: FontWeight.bold)),
+                    style: TextStyle(fontSize: 20, color: ViewConstants.myBlack, fontWeight: FontWeight.bold)),
               ),
               Container(
-                padding:
-                    EdgeInsets.only(left: 15, right: 20, top: 20, bottom: 20),
+                padding: EdgeInsets.only(left: 15, right: 20, top: 20, bottom: 20),
                 height: MediaQuery.of(context).size.height / 3,
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
@@ -404,8 +356,7 @@ class _ClientSearchPageState extends State<ClientSearchPage> {
                     scrollDirection: Axis.horizontal,
                     children: [
                       Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 5, horizontal: 5),
+                        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
                         child: InkWell(
                           onTap: () {},
                           child: Container(
@@ -416,8 +367,7 @@ class _ClientSearchPageState extends State<ClientSearchPage> {
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 5, horizontal: 5),
+                        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
                         child: InkWell(
                           onTap: () {},
                           child: Container(
@@ -428,8 +378,7 @@ class _ClientSearchPageState extends State<ClientSearchPage> {
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 5, horizontal: 5),
+                        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
                         child: InkWell(
                           onTap: () {},
                           child: Container(
@@ -451,10 +400,7 @@ class _ClientSearchPageState extends State<ClientSearchPage> {
                 ),
                 child: Text("News Categories",
                     textAlign: TextAlign.left,
-                    style: TextStyle(
-                        fontSize: 20,
-                        color: ViewConstants.myBlack,
-                        fontWeight: FontWeight.bold)),
+                    style: TextStyle(fontSize: 20, color: ViewConstants.myBlack, fontWeight: FontWeight.bold)),
               ),
               Container(
                 margin: EdgeInsets.only(bottom: 50, left: 15, right: 20),
@@ -490,9 +436,7 @@ class _ClientSearchPageState extends State<ClientSearchPage> {
                                   child: Text("Family",
                                       textAlign: TextAlign.left,
                                       style: TextStyle(
-                                          fontSize: 20,
-                                          color: ViewConstants.myWhite,
-                                          fontWeight: FontWeight.bold)),
+                                          fontSize: 20, color: ViewConstants.myWhite, fontWeight: FontWeight.bold)),
                                 )
                               ],
                             ),
@@ -517,16 +461,13 @@ class _ClientSearchPageState extends State<ClientSearchPage> {
                                   fit: BoxFit.fill,
                                 ),
                                 Container(
-                                  color: ViewConstants.myLightBlue
-                                      .withOpacity(0.25),
+                                  color: ViewConstants.myLightBlue.withOpacity(0.25),
                                 ),
                                 Center(
                                   child: Text("Parenting",
                                       textAlign: TextAlign.left,
                                       style: TextStyle(
-                                          fontSize: 20,
-                                          color: ViewConstants.myWhite,
-                                          fontWeight: FontWeight.bold)),
+                                          fontSize: 20, color: ViewConstants.myWhite, fontWeight: FontWeight.bold)),
                                 )
                               ],
                             ),
@@ -551,16 +492,13 @@ class _ClientSearchPageState extends State<ClientSearchPage> {
                                   fit: BoxFit.fill,
                                 ),
                                 Container(
-                                  color:
-                                      ViewConstants.myYellow.withOpacity(0.25),
+                                  color: ViewConstants.myYellow.withOpacity(0.25),
                                 ),
                                 Center(
                                   child: Text("Relationship",
                                       textAlign: TextAlign.left,
                                       style: TextStyle(
-                                          fontSize: 20,
-                                          color: ViewConstants.myWhite,
-                                          fontWeight: FontWeight.bold)),
+                                          fontSize: 20, color: ViewConstants.myWhite, fontWeight: FontWeight.bold)),
                                 )
                               ],
                             ),
@@ -585,16 +523,13 @@ class _ClientSearchPageState extends State<ClientSearchPage> {
                                   fit: BoxFit.fill,
                                 ),
                                 Container(
-                                  color: ViewConstants.myLightBlue
-                                      .withOpacity(0.25),
+                                  color: ViewConstants.myLightBlue.withOpacity(0.25),
                                 ),
                                 Center(
                                   child: Text("Happiness",
                                       textAlign: TextAlign.left,
                                       style: TextStyle(
-                                          fontSize: 20,
-                                          color: ViewConstants.myWhite,
-                                          fontWeight: FontWeight.bold)),
+                                          fontSize: 20, color: ViewConstants.myWhite, fontWeight: FontWeight.bold)),
                                 )
                               ],
                             ),
@@ -619,16 +554,13 @@ class _ClientSearchPageState extends State<ClientSearchPage> {
                                   fit: BoxFit.fill,
                                 ),
                                 Container(
-                                  color: ViewConstants.myLightBlue
-                                      .withOpacity(0.25),
+                                  color: ViewConstants.myLightBlue.withOpacity(0.25),
                                 ),
                                 Center(
                                   child: Text("Personality",
                                       textAlign: TextAlign.left,
                                       style: TextStyle(
-                                          fontSize: 20,
-                                          color: ViewConstants.myWhite,
-                                          fontWeight: FontWeight.bold)),
+                                          fontSize: 20, color: ViewConstants.myWhite, fontWeight: FontWeight.bold)),
                                 )
                               ],
                             ),
