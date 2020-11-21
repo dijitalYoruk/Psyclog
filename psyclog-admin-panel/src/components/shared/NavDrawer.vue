@@ -64,6 +64,6 @@ export default {
 
 <style scoped>
 .border {
-   border-right: 2px rgb(99, 97, 97);
+   border-right: 2px rgb(68, 67, 67);
 }
 </style>

@@ -3,15 +3,15 @@
     <v-card class="elevation-1" outlined>
       <div class="px-4 custom-border">
         <v-row>
-          <v-col class="col-md-4 mt-auto">
+          <v-col class="col-md-4 col-sm-5 col-12 mt-auto">
             <h2 class="font-weight-bold">Support Messages</h2>
           </v-col>
 
-          <v-col class="col-md-2">
+          <v-col class="col-md-2 col-sm-2 col-12">
             <v-switch hide-details v-model="isHandled" inset label="Handled"></v-switch>
           </v-col>
 
-          <v-col class="col-md-6 mt-auto">
+          <v-col class="col-md-6 col-md-5 col-12 mt-auto">
             <v-select
               class="mt-3 pr-5"
               hide-details
@@ -32,29 +32,29 @@
             :key="message._id"
           >
             <v-row class="px-2 elevation-0">
-              <v-col class="col-md-2">
+              <v-col class="col-lg-2 col-md-4 col-sm-6 col-12">
                 <div class="caption text--secondary">Author</div>
                 <div class="text-subtitle-2">{{ message.author.username }}</div>
               </v-col>
 
-              <v-col class="col-md-2">
+              <v-col class="col-lg-2 col-md-4 col-sm-6 col-12">
                 <div class="caption text--secondary">Email</div>
                 <div class="text-subtitle-2">{{ message.author.email }}</div>
               </v-col>
 
-              <v-col class="col-md-2">
+              <v-col class="col-lg-2 col-md-4 col-sm-6 col-12">
                 <div class="caption text--secondary">Phone</div>
                 <div class="text-subtitle-2">{{ message.author.phone }}</div>
               </v-col>
 
-              <v-col class="col-md-2">
+              <v-col class="col-lg-2 col-md-4 col-sm-6 col-12">
                 <div class="caption text--secondary">Date</div>
                 <div class="text-subtitle-2">
                   {{ showDate(message.createdAt) }}
                 </div>
               </v-col>
 
-              <v-col class="col-md-2">
+              <v-col class="col-lg-2 col-md-4 col-sm-6 col-12">
                 <div class="caption text--secondary">Message</div>
 
                 <div>
@@ -71,7 +71,7 @@
                 </div>
               </v-col>
 
-              <v-col class="col-md-2">
+              <v-col class="col-lg-2 col-md-4 col-sm-6 col-12">
                 <div class="caption text--secondary">Operations</div>
                 <div>
                   <v-btn

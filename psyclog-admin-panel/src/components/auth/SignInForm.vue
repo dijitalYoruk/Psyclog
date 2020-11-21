@@ -2,8 +2,6 @@
   <form class="mx-2">
     <div>
       <div class="font-weight-bold headline">{{ $t('login') }}</div>
-      {{ usernameOrEmail }}
-      {{ password }}
       <v-text-field
         @blur="$v.usernameOrEmail.$touch()"
         :error-messages="usernameOrEmailErrors"
@@ -73,7 +71,7 @@ export default {
           password: this.password,
         })
    
-        this.$router.push({ name: "home"})
+        this.$router.push({ name: "user.index.patients"})
         this.$toast.success(this.$t('alert_success_auth'))
       } catch (exception) {
         this.$toast.error(exception)

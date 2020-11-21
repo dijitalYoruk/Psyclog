@@ -26,22 +26,22 @@
         <div>
           <div class="custom-border" v-for="user of users" :key="user._id">
             <v-row class="px-2 elevation-0">
-              <v-col class="col-md-2">
+              <v-col class="col-lg-2 col-md-4 col-sm-6 col-12">
                 <div class="caption text--secondary">Username</div>
                 <div class="text-subtitle-2">{{ user.username }}</div>
               </v-col>
 
-              <v-col class="col-md-2">
+              <v-col class="col-lg-2 col-md-4 col-sm-6 col-12">
                 <div class="caption text--secondary">Email</div>
                 <div class="text-subtitle-2">{{ user.email }}</div>
               </v-col>
 
-              <v-col class="col-md-2">
+              <v-col class="col-lg-2 col-md-4 col-sm-6 col-12">
                 <div class="caption text--secondary">Phone</div>
                 <div class="text-subtitle-2">{{ user.phone }}</div>
               </v-col>
 
-              <v-col class="col-md-2">
+              <v-col class="col-lg-2 col-md-4 col-sm-6 col-12">
                 <div class="caption text--secondary">Verified</div>
                 <div>
                   <v-btn class="elevation-0" color="success" fab x-small>
@@ -50,12 +50,12 @@
                 </div>
               </v-col>
 
-              <v-col class="col-md-2">
+              <v-col class="col-lg-2 col-md-4 col-sm-6 col-12">
                 <div class="caption text--secondary">Ban</div>
                 {{ showDate(user.banTerminationDate) }}
               </v-col>
 
-              <v-col class="col-md-2">
+              <v-col class="col-lg-2 col-md-4 col-sm-6 col-12">
                 <div class="caption text--secondary">Operations</div>
                 <div>
                   <v-btn @click="deleteUser(user)" x-small class="elevation-0 mx-1" color="error" dark fab>
