@@ -78,6 +78,8 @@ const retrievePsychologists = catchAsync(async (req, res, next) => {
    const psychologists = await User.paginate({ role, isPsychologistVerified: true, $or: [
       { username: { $regex: new RegExp(search.toLowerCase(), "i") } },
       { email: { $regex: new RegExp(search.toLowerCase(), "i") } },
+      { name: { $regex: new RegExp(search.toLowerCase(), "i") } },
+      { surname: { $regex: new RegExp(search.toLowerCase(), "i") } },
    ]},  { page, limit:10 })
    res.status(200).json({
       status: 200, 
@@ -118,8 +120,6 @@ const retrieveRegisteredPsychologists = catchAsync(async (req, res, next) => {
                            .populate('registeredPsychologists')
                            .select('registeredPsychologists')
 
-   console.log(registeredPsychologists)
-
    res.status(200).json({
       status: 200, 
       data: { registeredPsychologists } 
@@ -135,8 +135,6 @@ const retrievePatients = catchAsync(async (req, res, next) => {
    const registeredPatients = await User.findById(req.currentUser._id)
                            .populate('patients')
                            .select('patients')
-
-   console.log(registeredPatients)
 
    res.status(200).json({
       status: 200, 

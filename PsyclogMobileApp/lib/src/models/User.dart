@@ -7,6 +7,7 @@ class User {
   final String _role;
   final String _createdAt;
   final String _updatedAt;
+  final String _profileImageURL;
 
   get userFirstName => _firstName;
   get userSurname => _lastName;
@@ -16,6 +17,7 @@ class User {
   get userUpdateDate => _updatedAt;
   get userID => _id;
   get userUsername => _username;
+  get profileImageURL => _profileImageURL;
 
   User.fromJson(Map<String, dynamic> json)
       : _id = json['data']['user']['_id'] as String,
@@ -23,6 +25,7 @@ class User {
         _lastName = json['data']['user']['surname'] as String,
         _email = json['data']['user']['email'] as String,
         _role = json['data']['user']['role'] as String,
+        _profileImageURL = json['data']['user']['profileImage'] as String,
         _createdAt = json['data']['user']['createdAt'] as String,
         _updatedAt = json['data']['user']['updatedAt'] as String,
         _username = json['data']['user']['username'] as String;
@@ -33,6 +36,7 @@ class User {
         _lastName = json['surname'] as String,
         _email = json['email'] as String,
         _role = json['role'] as String,
+        _profileImageURL = json['profileImage'] as String,
         _createdAt = json['createdAt'] as String,
         _updatedAt = json['updatedAt'] as String,
         _username = json['username'] as String;
@@ -43,6 +47,7 @@ class User {
         _lastName = json["data"]["profile"]['surname'] as String,
         _email = json["data"]["profile"]['email'] as String,
         _role = json["data"]["profile"]['role'] as String,
+        _profileImageURL = json['data']['profile']['profileImage'] as String,
         _createdAt = json["data"]["profile"]['createdAt'] as String,
         _updatedAt = json["data"]["profile"]['updatedAt'] as String,
         _username = json["data"]["profile"]['username'] as String;

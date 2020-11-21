@@ -38,8 +38,8 @@ const seedUsersData = async () => {
 
    const patients = []
    const psychologists = [] 
-   const password = '0123456789'
-   const passwordConfirm = '0123456789'
+   const password = '0000000000'
+   const passwordConfirm = '0000000000'
 
    for (let i = 0; i < 100; i++) {
 
@@ -139,7 +139,7 @@ const seedUsersData = async () => {
 
       for (let j = i; j < i + 5; j++) {
          if (i % 2 == 0) {
-            psychologist.patients.push(patients[i]._id)
+            psychologist.patients.push(patients[j]._id)
             patients[j].registeredPsychologists.push(psychologist)
             patients[j].passwordConfirm = passwordConfirm
             patients[j].password = password

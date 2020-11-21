@@ -153,6 +153,29 @@ class _ClientTherapistsListPageState extends State<ClientTherapistsListPage> {
                                   } else if (_currentIndexedTherapist.isActive) {
                                     double containerHeight = MediaQuery.of(context).size.height / 8 + 20;
 
+                                    Widget profileImage;
+
+                                    if (_currentIndexedTherapist.profileImageURL != null) {
+                                      try {
+                                        profileImage = Image.network(
+                                            _currentIndexedTherapist.profileImageURL + "/people/" + (index % 10).toString(),
+                                            fit: BoxFit.fill);
+                                      } catch (e) {
+                                        print(e);
+                                        profileImage = Icon(
+                                          Icons.person,
+                                          color: ViewConstants.myLightBlue,
+                                          size: 25,
+                                        );
+                                      }
+                                    } else {
+                                      profileImage = Icon(
+                                        Icons.person,
+                                        color: ViewConstants.myLightBlue,
+                                        size: 25,
+                                      );
+                                    }
+
                                     return Card(
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(10),
@@ -174,7 +197,7 @@ class _ClientTherapistsListPageState extends State<ClientTherapistsListPage> {
                                               child: ClipRRect(
                                                 borderRadius: BorderRadius.circular(10),
                                                 clipBehavior: Clip.hardEdge,
-                                                child: Image.network("https://i.pravatar.cc?img=$index", fit: BoxFit.fill),
+                                                child: profileImage,
                                               ),
                                             ),
                                             Expanded(

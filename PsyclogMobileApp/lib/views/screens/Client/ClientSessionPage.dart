@@ -4,8 +4,11 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:psyclog_app/service/WebServerService.dart';
+import 'package:psyclog_app/src/models/Patient.dart';
 import 'package:psyclog_app/src/models/Therapist.dart';
 import 'package:psyclog_app/view_models/client/ClientRegisteredListViewModel.dart';
+import 'package:psyclog_app/views/controllers/RouteArguments.dart';
 import 'package:psyclog_app/views/util/ViewConstants.dart';
 
 class ClientSessionPage extends StatefulWidget {
@@ -15,6 +18,7 @@ class ClientSessionPage extends StatefulWidget {
 
 class _ClientSessionPageState extends State<ClientSessionPage> {
   ClientRegisteredListViewModel _clientRegisteredListViewModel;
+  WebServerService _webServerService;
 
   @override
   void initState() {
@@ -22,6 +26,28 @@ class _ClientSessionPageState extends State<ClientSessionPage> {
     super.initState();
 
     _clientRegisteredListViewModel = ClientRegisteredListViewModel();
+  }
+
+  Future<Widget> getProfileImage() async {
+    Widget profileImage;
+
+    _webServerService = await WebServerService.getWebServerService();
+
+    //_webServerService.checkUserByCurrentToken();
+
+    Patient patient = _webServerService.currentUser;
+
+    if (patient != null && patient.profileImageURL != null) {
+      try {
+        profileImage = Image.network(patient.profileImageURL, fit: BoxFit.fill);
+        return profileImage;
+      } catch (e) {
+        print(e);
+        return Icon(Icons.person);
+      }
+    } else {
+      return Icon(Icons.person);
+    }
   }
 
   @override
@@ -63,20 +89,46 @@ class _ClientSessionPageState extends State<ClientSessionPage> {
                                   textAlign: TextAlign.left,
                                   style: TextStyle(fontSize: 30, color: ViewConstants.myBlack, fontWeight: FontWeight.bold)),
                             ),
-                            Padding(
-                              padding: EdgeInsets.only(
-                                left: 20,
-                                right: 20,
-                              ),
-                              child: CircleAvatar(
-                                child: InkWell(
-                                  onTap: () {
-                                    Navigator.pushNamed(context, ViewConstants.clientProfileRoute);
+                            Flexible(
+                              child: Padding(
+                                padding: EdgeInsets.only(
+                                  left: 20,
+                                  right: 20,
+                                ),
+                                child: FutureBuilder(
+                                  future: getProfileImage(),
+                                  initialData: InkWell(
+                                    onTap: () {
+                                      Navigator.pushNamed(context, ViewConstants.clientProfileRoute);
+                                    },
+                                    child: Icon(
+                                      Icons.person,
+                                      color: ViewConstants.myGrey,
+                                    ),
+                                  ),
+                                  builder: (BuildContext context, AsyncSnapshot<Widget> snapshot) {
+                                    if (snapshot.data is Image) {
+                                      return InkWell(
+                                        onTap: () {
+                                          Navigator.pushNamed(context, ViewConstants.clientProfileRoute);
+                                        },
+                                        child: CircleAvatar(
+                                          backgroundImage: (snapshot.data as Image).image,
+                                        ),
+                                      );
+                                    } else {
+                                      return InkWell(
+                                        onTap: () {
+                                          Navigator.pushNamed(context, ViewConstants.clientProfileRoute);
+                                        },
+                                        child: Icon(
+                                          Icons.person,
+                                          color: ViewConstants.myGrey,
+                                        ),
+                                      );
+                                    }
                                   },
                                 ),
-                                maxRadius: MediaQuery.of(context).size.height * 0.025,
-                                backgroundImage:
-                                    NetworkImage("https://avatarfiles.alphacoders.com/715/thumb-1920-71560.jpg"),
                               ),
                             ),
                           ],
@@ -158,12 +210,10 @@ class _ClientSessionPageState extends State<ClientSessionPage> {
 
                         if (index == listLength) {
                           return Card(
-                            elevation: 2,
-                            shadowColor: ViewConstants.myLightBlue,
-                            color: ViewConstants.myLightBlue,
+                            color: ViewConstants.myLightBlue.withOpacity(0.5),
                             margin: EdgeInsets.only(left: index.isEven ? 20 : 10, right: index.isEven ? 10 : 20, bottom: 20),
                             child: FlatButton(
-                              splashColor: ViewConstants.myYellow,
+                              splashColor: ViewConstants.myBlack,
                               onPressed: () {
                                 // TODO Send to Psychologist Search List
                               },
@@ -176,6 +226,28 @@ class _ClientSessionPageState extends State<ClientSessionPage> {
                         } else {
                           Therapist therapist = model.getTherapistByIndex(index);
 
+                          Widget profileImage;
+
+                          if (therapist.profileImageURL != "") {
+                            try {
+                              profileImage = Image.network(therapist.profileImageURL + "/people/" + (index % 10).toString(),
+                                  fit: BoxFit.fill);
+                            } catch (e) {
+                              print(e);
+                              profileImage = Icon(
+                                Icons.person,
+                                color: ViewConstants.myLightBlue,
+                                size: 75,
+                              );
+                            }
+                          } else {
+                            profileImage = Icon(
+                              Icons.person,
+                              color: ViewConstants.myLightBlue,
+                              size: 75,
+                            );
+                          }
+
                           return Card(
                             clipBehavior: Clip.hardEdge,
                             elevation: 2,
@@ -186,37 +258,59 @@ class _ClientSessionPageState extends State<ClientSessionPage> {
                               child: Stack(
                                 fit: StackFit.expand,
                                 children: [
-                                  Image.network("https://i.pravatar.cc?img=$index", fit: BoxFit.fill),
-                                  Container(
-                                    decoration: BoxDecoration(
-                                        gradient: LinearGradient(
-                                            begin: Alignment.topCenter,
-                                            end: Alignment.bottomCenter,
-                                            colors: [
-                                          ViewConstants.myLightBlue.withOpacity(0.3),
-                                          ViewConstants.myBlack.withOpacity(0.6),
-                                          ViewConstants.myBlack
-                                        ])),
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.only(bottom: 8.0),
-                                          child: Text("Dr. " + therapist.getFullName(),
-                                              style: GoogleFonts.lato(fontSize: 20, color: ViewConstants.myWhite)),
+                                  profileImage,
+                                  LayoutBuilder(
+                                    builder: (BuildContext context, BoxConstraints constraints) {
+                                      return Container(
+                                        decoration: BoxDecoration(
+                                            gradient: LinearGradient(
+                                                begin: Alignment.topCenter,
+                                                end: Alignment.bottomCenter,
+                                                colors: [
+                                              ViewConstants.myLightBlue.withOpacity(0.3),
+                                              ViewConstants.myBlack.withOpacity(0.6),
+                                              ViewConstants.myBlack
+                                            ])),
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.end,
+                                          children: [
+                                            Padding(
+                                              padding: const EdgeInsets.only(bottom: 8.0),
+                                              child: Text("Dr. " + therapist.getFullName(),
+                                                  textAlign: TextAlign.center,
+                                                  style: GoogleFonts.lato(fontSize: 16, color: ViewConstants.myWhite)),
+                                            ),
+                                            Padding(
+                                              padding: const EdgeInsets.only(bottom: 8.0),
+                                              child: Text("Family and Marriage",
+                                                  style: GoogleFonts.lato(fontSize: 13, color: ViewConstants.myYellow)),
+                                            ),
+                                            Padding(
+                                              padding: const EdgeInsets.only(bottom: 8.0),
+                                              child: Text("Price per Hour: " + therapist.appointmentPrice.toString() + " \$",
+                                                  style: GoogleFonts.lato(
+                                                      fontSize: 13, color: ViewConstants.myLightBlueTransparent)),
+                                            ),
+                                            FlatButton(
+                                              onPressed: () {
+                                                Navigator.pushNamed(
+                                                  context,
+                                                  ViewConstants.clientCreateAppointmentRoute,
+                                                  arguments: CreateAppointmentScreenArguments(therapist)
+                                                );
+                                              },
+                                              child: Text("Get Appointment",
+                                                  style: GoogleFonts.lato(fontSize: 14, color: ViewConstants.myWhite)),
+                                              minWidth: constraints.minWidth,
+                                              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                              color: ViewConstants.myLightBlue.withOpacity(0.5),
+                                              splashColor: ViewConstants.myYellow,
+                                              shape: RoundedRectangleBorder(),
+                                            )
+                                          ],
                                         ),
-                                        Padding(
-                                          padding: const EdgeInsets.only(bottom: 8.0),
-                                          child: Text("Family and Marriage",
-                                              style: GoogleFonts.lato(fontSize: 13, color: ViewConstants.myYellow)),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.only(bottom: 8.0),
-                                          child: Text("Price per Hour: " + therapist.appointmentPrice.toString() + " \$",
-                                              style: GoogleFonts.lato(fontSize: 13, color: ViewConstants.myLightBlueTransparent)),
-                                        )
-                                      ],
-                                    ),
+                                      );
+                                    },
                                   )
                                 ],
                               ),

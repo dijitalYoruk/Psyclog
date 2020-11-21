@@ -1,11 +1,13 @@
+import 'dart:io';
 import 'dart:ui';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:psyclog_app/service/WebServerService.dart';
 import 'package:psyclog_app/src/models/Patient.dart';
+import 'package:psyclog_app/src/models/Therapist.dart';
 import 'package:psyclog_app/view_models/therapist/TherapistRegisteredListViewModel.dart';
-import 'package:psyclog_app/view_models/therapist/TherapistPendingListViewModel.dart';
 import 'package:psyclog_app/views/util/ViewConstants.dart';
 
 class TherapistSessionPage extends StatefulWidget {
@@ -15,12 +17,35 @@ class TherapistSessionPage extends StatefulWidget {
 
 class _TherapistSessionPageState extends State<TherapistSessionPage> {
   TherapistRegisteredListViewModel _therapistRegisteredListViewModel;
+  WebServerService _webServerService;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     _therapistRegisteredListViewModel = TherapistRegisteredListViewModel();
+  }
+
+  Future<Widget> getProfileImage() async {
+    Widget profileImage;
+
+    _webServerService = await WebServerService.getWebServerService();
+
+    //_webServerService.checkUserByCurrentToken();
+
+    Therapist therapist = _webServerService.currentUser;
+
+    if (therapist != null && therapist.profileImageURL != "") {
+      try {
+        profileImage = Image.network(therapist.profileImageURL, fit: BoxFit.fill);
+        return profileImage;
+      } catch (e) {
+        print(e);
+        return Icon(Icons.person);
+      }
+    } else {
+      return Icon(Icons.person);
+    }
   }
 
   @override
@@ -62,20 +87,36 @@ class _TherapistSessionPageState extends State<TherapistSessionPage> {
                                   textAlign: TextAlign.left,
                                   style: TextStyle(fontSize: 30, color: ViewConstants.myBlack, fontWeight: FontWeight.bold)),
                             ),
-                            Padding(
-                              padding: EdgeInsets.only(
-                                left: 20,
-                                right: 20,
-                              ),
-                              child: CircleAvatar(
-                                child: InkWell(
-                                  onTap: () {
-                                    Navigator.pushNamed(context, ViewConstants.therapistProfileRoute);
+                            Flexible(
+                              child: Padding(
+                                padding: EdgeInsets.only(
+                                  left: 20,
+                                  right: 20,
+                                ),
+                                child: FutureBuilder(
+                                  future: getProfileImage(),
+                                  initialData: Icon(
+                                    Icons.person,
+                                    color: ViewConstants.myGrey,
+                                  ),
+                                  builder: (BuildContext context, AsyncSnapshot<Widget> snapshot) {
+                                    if (snapshot.data is Image) {
+                                      return InkWell(
+                                        onTap: () {
+                                          Navigator.pushNamed(context, ViewConstants.therapistProfileRoute);
+                                        },
+                                        child: CircleAvatar(
+                                          backgroundImage: (snapshot.data as Image).image,
+                                        ),
+                                      );
+                                    } else {
+                                      return Icon(
+                                        Icons.person,
+                                        color: ViewConstants.myGrey,
+                                      );
+                                    }
                                   },
                                 ),
-                                maxRadius: MediaQuery.of(context).size.height * 0.025,
-                                backgroundImage:
-                                    NetworkImage("https://avatarfiles.alphacoders.com/715/thumb-1920-71560.jpg"),
                               ),
                             ),
                           ],
@@ -96,7 +137,8 @@ class _TherapistSessionPageState extends State<TherapistSessionPage> {
                                 children: [
                                   Text(
                                     "Pending Requests",
-                                    style: GoogleFonts.lato(fontSize: 14, color: ViewConstants.myWhite, fontWeight: FontWeight.bold),
+                                    style: GoogleFonts.lato(
+                                        fontSize: 14, color: ViewConstants.myWhite, fontWeight: FontWeight.bold),
                                   ),
                                   Icon(Icons.arrow_forward)
                                 ],
@@ -148,37 +190,59 @@ class _TherapistSessionPageState extends State<TherapistSessionPage> {
                     ),
                     delegate: SliverChildBuilderDelegate(
                       (BuildContext context, int index) {
-
                         Patient patient = model.getPatientByIndex(index);
 
+                        Widget profileImage;
+
+                        if (patient.profileImageURL != null) {
+                          try {
+                            profileImage = Image.network(
+                                patient.profileImageURL + "/people/" + (index % 10).toString(),
+                                fit: BoxFit.fill);
+                          } catch (e) {
+                            print(e);
+                            profileImage = Icon(
+                              Icons.person,
+                              color: ViewConstants.myLightBlue,
+                              size: 75,
+                            );
+                          }
+                        } else {
+                          profileImage = Icon(
+                            Icons.person,
+                            color: ViewConstants.myLightBlue,
+                            size: 75,
+                          );
+                        }
+
                         return Card(
-                          clipBehavior: Clip.hardEdge,
-                          elevation: 2,
-                          shadowColor: ViewConstants.myLightBlue,
-                          color: ViewConstants.myWhite,
-                          margin: EdgeInsets.only(left: index.isEven ? 20 : 10, right: index.isEven ? 10 : 20, bottom: 20),
+                            clipBehavior: Clip.hardEdge,
+                            elevation: 2,
+                            shadowColor: ViewConstants.myLightBlue,
+                            color: ViewConstants.myWhite,
+                            margin: EdgeInsets.only(left: index.isEven ? 20 : 10, right: index.isEven ? 10 : 20, bottom: 20),
                             child: Container(
                               child: Stack(
                                 fit: StackFit.expand,
                                 children: [
-                                  Image.network("https://i.pravatar.cc?img=$index", fit: BoxFit.fill),
+                                  profileImage,
                                   Container(
                                     decoration: BoxDecoration(
                                         gradient: LinearGradient(
                                             begin: Alignment.topCenter,
                                             end: Alignment.bottomCenter,
                                             colors: [
-                                              ViewConstants.myLightBlue.withOpacity(0.3),
-                                              ViewConstants.myBlack.withOpacity(0.6),
-                                              ViewConstants.myBlack
-                                            ])),
+                                          ViewConstants.myLightBlue.withOpacity(0.3),
+                                          ViewConstants.myBlack.withOpacity(0.6),
+                                          ViewConstants.myBlack
+                                        ])),
                                     child: Column(
                                       mainAxisAlignment: MainAxisAlignment.end,
                                       children: [
                                         Padding(
                                           padding: const EdgeInsets.only(bottom: 5.0),
                                           child: Text(patient.getFullName(),
-                                              style: GoogleFonts.lato(fontSize: 18, color: ViewConstants.myWhite)),
+                                              style: GoogleFonts.lato(fontSize: 16, color: ViewConstants.myWhite)),
                                         ),
                                         Padding(
                                           padding: const EdgeInsets.only(bottom: 3.0),
@@ -195,8 +259,7 @@ class _TherapistSessionPageState extends State<TherapistSessionPage> {
                                   )
                                 ],
                               ),
-                            )
-                        );
+                            ));
                       },
                       childCount: model.getClientListLength(),
                     ),

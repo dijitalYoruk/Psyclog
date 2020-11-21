@@ -51,7 +51,7 @@ class ClientServerService extends WebServerService {
         // Waiting for Therapist List
         try {
           var response = await http.get(
-            '$_serverAddress/$_currentAPI/user/psychologists?page=' + page.toString(),
+            '$_serverAddress/$_currentAPI/user/psychologists?search&page=' + page.toString(),
             headers: {'Authorization': "Bearer " + currentUserToken},
           );
 

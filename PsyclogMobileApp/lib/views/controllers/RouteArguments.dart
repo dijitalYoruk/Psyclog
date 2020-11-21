@@ -6,3 +6,9 @@ class TherapistRequestScreenArguments {
 
   TherapistRequestScreenArguments(this.therapist, this.currentUserApplied);
 }
+
+class CreateAppointmentScreenArguments {
+  final Therapist therapist;
+
+  CreateAppointmentScreenArguments(this.therapist);
+}

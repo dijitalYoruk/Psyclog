@@ -38,7 +38,6 @@ dependencies:
   auto_size_text: ^2.1.0
   custom_navigation_bar: ^0.2.7
   supercharged: ^1.7.0
-  carousel_slider: ^2.2.1
   http: ^0.12.2
   keyboard_visibility: ^0.5.6
   provider: ^4.3.2+1
