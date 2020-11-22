@@ -85,6 +85,11 @@ const seedUsersData = async () => {
          // create calendar for the psychologist
          const calendar = new Calendar({ role: data.role})
          data.calendar = calendar._id
+         data.calendar.blockedIntervalsMonday = [7,8,9]
+         data.calendar.blockedIntervalsTuesday = [6,9]
+         data.calendar.blockedIntervalsWednesday = [8,9]
+         data.calendar.blockedIntervalsThursday = [9, 10, 11]
+         data.calendar.blockedIntervalsFriday = [10,11]
 
          // create wallet for the user
          const wallet = new Wallet({})
