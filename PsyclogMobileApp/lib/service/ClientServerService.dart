@@ -17,7 +17,7 @@ class ClientServerService extends WebServerService {
   static FlutterSecureStorage _secureStorage;
   static String _currentAPI;
 
-  get currentClient => super.currentUser;
+  get currentPatient => super.currentUser;
 
   static Future<ClientServerService> getClientServerService() async {
     // TODO USER Restrictions
@@ -213,13 +213,12 @@ class ClientServerService extends WebServerService {
     }
   }
 
-  Future<void> getDateStatus(String therapistID, int day, int month, int year) async {
+  Future<List<CalendarInterval>> getDateStatus(String therapistID, int day, int month, int year) async {
     // TODO USER Restrictions
     final String currentUserToken = await getToken();
 
     if (currentUserToken != null) {
-
-      final message = jsonEncode({"psychologistId": therapistID, "day": day, "month" : month, "year" : year});
+      final message = jsonEncode({"psychologistId": therapistID, "day": day, "month": month, "year": year});
 
       try {
         var response = await http.post('$_serverAddress/$_currentAPI/appointment/date-status',
@@ -230,11 +229,53 @@ class ClientServerService extends WebServerService {
         if (response.statusCode == ServiceConstants.STATUS_SUCCESS_CODE) {
           dynamic _decodedBody = jsonDecode(response.body);
 
+          List<int> blockedIntervals =
+              List.generate(_decodedBody["data"]["blocked"].length, (index) => _decodedBody["data"]["blocked"][index]);
+          List<int> reservedIntervals =
+              List.generate(_decodedBody["data"]["reserved"].length, (index) => _decodedBody["data"]["reserved"][index]);
+
+          List<CalendarInterval> appropriateIntervals =
+              CalendarConstants.getAppropriateIntervals(reservedIntervals, blockedIntervals);
+
+          return appropriateIntervals;
         } else {
           throw ServiceErrorHandling.couldNotCreateRequestError;
         }
       } catch (e) {
-        return ServiceErrorHandling.serverNotRespondingError;
+        return null;
+      }
+    } else {
+      throw ServiceErrorHandling.noTokenError;
+    }
+  }
+
+  Future<bool> createAppointment(List<int> chosenIntervals, DateTime chosenDate, String therapistID) async {
+    final String currentUserToken = await getToken();
+
+    if (currentUserToken != null) {
+      final message = jsonEncode({
+        "psychologistId": therapistID,
+        "day": chosenDate.day,
+        "month": chosenDate.month,
+        "year": chosenDate.year,
+        "intervals": chosenIntervals
+      });
+
+      try {
+        var response = await http.post('$_serverAddress/$_currentAPI/appointment',
+            headers: {'Authorization': "Bearer " + currentUserToken, 'Content-Type': 'application/json'}, body: message);
+
+        print(response.body);
+
+        if (response.statusCode == ServiceConstants.STATUS_SUCCESS_CODE) {
+
+          return true;
+        } else {
+          throw ServiceErrorHandling.couldNotCreateRequestError;
+        }
+      } catch (e) {
+        print(e);
+        throw ServiceErrorHandling.serverNotRespondingError;
       }
     } else {
       throw ServiceErrorHandling.noTokenError;

@@ -53,7 +53,7 @@ class ClientSearchListViewModel extends ChangeNotifier {
 
         _totalPage = decodedBody["data"]["psychologists"]["totalPages"];
 
-        _registeredTherapistsIDList = (_serverService.currentClient as Patient).clientRegisteredPsychologists;
+        _registeredTherapistsIDList = (_serverService.currentPatient as Patient).clientRegisteredPsychologists;
 
         _currentTherapistList = await getTherapistsByPageFromService(_currentPage);
 

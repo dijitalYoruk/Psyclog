@@ -66,14 +66,12 @@ class TherapistServerService extends WebServerService {
   }
 
   Future<List<Patient>> getRegisteredPatients() async {
-
     final String currentUserToken = await getToken();
 
     if (currentUserToken != null) {
       List<Patient> _registeredPatientsList = List<Patient>();
 
       try {
-
         var response = await http.get('$_serverAddress/$_currentAPI/user/registered-patients',
             headers: {'Authorization': "Bearer " + currentUserToken});
 
@@ -84,16 +82,13 @@ class TherapistServerService extends WebServerService {
 
           _registeredPatientsList = List<Patient>.generate(
               numberOfPatients,
-                  (index) => UserModelController.createClientFromJSONForList(
+              (index) => UserModelController.createClientFromJSONForList(
                   _decodedBody['data']['registeredPatients']['patients'][index]));
 
           return _registeredPatientsList;
         } else {
           throw ServiceErrorHandling.couldNotCreateRequestError;
         }
-
-        return _registeredPatientsList;
-
       } catch (e) {
         print(e);
         throw ServiceErrorHandling.serverNotRespondingError;

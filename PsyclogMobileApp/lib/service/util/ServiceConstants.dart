@@ -45,5 +45,5 @@ class CalendarInterval {
   final String endTime;
   final String startTime;
 
-  CalendarInterval(this.interval, this.endTime, this.startTime);
+  CalendarInterval(this.interval, this.startTime, this.endTime);
 }

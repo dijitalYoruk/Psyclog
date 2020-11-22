@@ -52,9 +52,14 @@ class _ClientSessionPageState extends State<ClientSessionPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BackdropFilter(
-        filter: new ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
-        child: Container(
+    return Stack(
+      children: [
+        ClipRect(
+          child: BackdropFilter(
+            filter: new ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+          ),
+        ),
+        Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
                 begin: Alignment.topLeft,
@@ -293,11 +298,8 @@ class _ClientSessionPageState extends State<ClientSessionPage> {
                                             ),
                                             FlatButton(
                                               onPressed: () {
-                                                Navigator.pushNamed(
-                                                  context,
-                                                  ViewConstants.clientCreateAppointmentRoute,
-                                                  arguments: CreateAppointmentScreenArguments(therapist)
-                                                );
+                                                Navigator.pushNamed(context, ViewConstants.clientCreateAppointmentRoute,
+                                                    arguments: CreateAppointmentScreenArguments(therapist));
                                               },
                                               child: Text("Get Appointment",
                                                   style: GoogleFonts.lato(fontSize: 14, color: ViewConstants.myWhite)),
@@ -325,6 +327,8 @@ class _ClientSessionPageState extends State<ClientSessionPage> {
               ),
             ],
           ),
-        ));
+        )
+      ],
+    );
   }
 }
