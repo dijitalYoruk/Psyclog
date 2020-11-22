@@ -4,6 +4,7 @@ import 'package:psyclog_app/views/screens/Client/ClientProfilePage.dart';
 import 'package:psyclog_app/views/screens/Shared/HomePage.dart';
 import 'package:psyclog_app/views/screens/Shared/LoginPage.dart';
 import 'package:psyclog_app/views/screens/Shared/RegisterPage.dart';
+import 'package:psyclog_app/views/screens/Client/ClientCreateAppointmentPage.dart';
 import 'package:psyclog_app/views/screens/SessionTherapistPage.dart';
 import 'package:psyclog_app/views/screens/SplashPage.dart';
 import 'package:psyclog_app/views/screens/Therapist/TherapistPendingRequestPage.dart';
@@ -300,6 +301,32 @@ class RouteController {
 
             return SlideTransition(
               position: offsetAnimation,
+              child: child,
+            );
+          },
+        );
+        break;
+      case ViewConstants.clientCreateAppointmentRoute:
+
+        final CreateAppointmentScreenArguments _args = settings.arguments;
+
+        return PageRouteBuilder(
+          settings: settings,
+          pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
+            return ClientCreateAppointmentPage(_args.therapist);
+          },
+          transitionDuration: Duration(milliseconds: 800),
+          transitionsBuilder:
+              (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
+            var curve = Curves.linearToEaseOut;
+
+            var curvedAnimation = CurvedAnimation(
+              parent: animation,
+              curve: curve,
+            );
+
+            return FadeTransition(
+              opacity: curvedAnimation,
               child: child,
             );
           },

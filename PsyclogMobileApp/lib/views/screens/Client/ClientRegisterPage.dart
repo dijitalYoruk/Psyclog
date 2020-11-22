@@ -90,8 +90,7 @@ class _ClientRegisterPageState extends State<ClientRegisterPage> with SingleTick
     final String firstName = _firstNameController.text;
     final String lastName = _lastNameController.text;
 
-    final Response result =
-        await _serverService.attemptUserSignUp(username, password, passwordCheck, email, firstName, lastName);
+    final Response result = await _serverService.attemptUserSignUp(username, password, passwordCheck, email, firstName, lastName);
 
     if (result.statusCode == 200) {
       print("User is created");

@@ -49,6 +49,8 @@ class ClientSearchListViewModel extends ChangeNotifier {
       if (response != null) {
         var decodedBody = jsonDecode(response.body);
 
+        print(decodedBody);
+
         _totalPage = decodedBody["data"]["psychologists"]["totalPages"];
 
         _registeredTherapistsIDList = (_serverService.currentClient as Patient).clientRegisteredPsychologists;

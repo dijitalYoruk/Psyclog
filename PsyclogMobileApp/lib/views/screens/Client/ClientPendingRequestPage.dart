@@ -96,6 +96,28 @@ class _ClientPendingRequestPageState extends State<ClientPendingRequestPage> {
                           if (_request == null) {
                             return CircularProgressIndicator();
                           } else {
+
+                            Widget profileImage;
+
+                            if (therapist.profileImageURL != "") {
+                              try {
+                                profileImage = Image.network(
+                                    therapist.profileImageURL + "/people/" + (index % 10).toString(),
+                                    fit: BoxFit.fill);
+                              } catch (e) {
+                                print(e);
+                                profileImage = Icon(
+                                  Icons.person,
+                                  color: ViewConstants.myLightBlue,
+                                );
+                              }
+                            } else {
+                              profileImage = Icon(
+                                Icons.person,
+                                color: ViewConstants.myLightBlue,
+                              );
+                            }
+
                             return Dismissible(
                               key: UniqueKey(),
                               confirmDismiss: (direction) => checkDismissibleAction(index),
@@ -138,7 +160,7 @@ class _ClientPendingRequestPageState extends State<ClientPendingRequestPage> {
                                           child: ClipRRect(
                                             borderRadius: BorderRadius.circular(10),
                                             clipBehavior: Clip.hardEdge,
-                                            child: Image.network("https://i.pravatar.cc?img=$index", fit: BoxFit.fill),
+                                            child: profileImage,
                                           ),
                                         ),
                                         Expanded(
@@ -171,46 +193,28 @@ class _ClientPendingRequestPageState extends State<ClientPendingRequestPage> {
                                                         therapist.appointmentPrice.toString() +
                                                         " \$ per Hour",
                                                     style: GoogleFonts.lato(
-                                                    fontSize: 12,
-                                                    color: ViewConstants.myBlack,
-                                                    fontWeight: FontWeight.w500),
-                                                ),
+                                                        fontSize: 12,
+                                                        color: ViewConstants.myBlack,
+                                                        fontWeight: FontWeight.w500),
+                                                  ),
                                                 ),
                                                 Expanded(
                                                   child: Row(
                                                     crossAxisAlignment: CrossAxisAlignment.end,
                                                     children: [
-                                                      FlatButton(
-                                                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                                        onPressed: () {},
-                                                        padding: EdgeInsets.zero,
-                                                        child: Text(
-                                                          "CV",
-                                                          style: GoogleFonts.lato(),
-                                                        ),
-                                                        color: ViewConstants.myGrey,
-                                                        splashColor: ViewConstants.myLightBlue,
-                                                        shape: RoundedRectangleBorder(
-                                                          borderRadius: BorderRadius.only(bottomLeft: Radius.circular(5)),
-                                                        ),
-                                                      ),
                                                       Expanded(
-                                                        child: Padding(
-                                                          padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                                                          child: FlatButton(
-                                                            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                                            padding: EdgeInsets.zero,
-                                                            onPressed: () {},
-                                                            child: Text(
-                                                              "Biography",
-                                                              style: GoogleFonts.lato(),
-                                                            ),
-                                                            color: ViewConstants.myPink,
-                                                            splashColor: ViewConstants.myBlack,
-                                                            shape: RoundedRectangleBorder(
-                                                              borderRadius:
-                                                                  BorderRadius.only(bottomRight: Radius.circular(5)),
-                                                            ),
+                                                        child: FlatButton(
+                                                          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                                          padding: EdgeInsets.zero,
+                                                          onPressed: () {},
+                                                          child: Text(
+                                                            "Biography",
+                                                            style: GoogleFonts.lato(),
+                                                          ),
+                                                          color: ViewConstants.myPink,
+                                                          splashColor: ViewConstants.myBlack,
+                                                          shape: RoundedRectangleBorder(
+                                                            borderRadius: BorderRadius.only(bottomRight: Radius.circular(5)),
                                                           ),
                                                         ),
                                                       ),
