@@ -82,7 +82,7 @@ class _LoginPageState extends State<LoginPage> {
           behavior: SnackBarBehavior.floating,
           content: Padding(
             padding: const EdgeInsets.all(10.0),
-            child: Text("Server is not responding. Try again later."),
+            child: Text(result),
           ));
       Scaffold.of(context).showSnackBar(snackBar);
     }
@@ -135,9 +135,9 @@ class _LoginPageState extends State<LoginPage> {
                                       padding: EdgeInsets.zero,
                                       minWidth: constraints.maxWidth * 0.75,
                                       height: constraints.maxHeight / 3,
-                                      onPressed: () {
+                                      onPressed: () async {
                                         primaryFocus.unfocus(disposition: disposition);
-                                        _login(context);
+                                        await _login(context);
                                       },
                                       child: Text("Log in",
                                           textAlign: TextAlign.center,

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_calendar_carousel/classes/event.dart';
 import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:psyclog_app/service/ClientServerService.dart';
 import 'package:psyclog_app/src/models/Therapist.dart';
 import 'package:psyclog_app/views/util/ViewConstants.dart';
 
@@ -21,6 +22,7 @@ class _ClientCreateAppointmentPageState extends State<ClientCreateAppointmentPag
   DateTime _currentDate;
   CalendarCarousel _calendarCarousel;
   PageController _pageViewController;
+  ClientServerService _clientServerService;
 
   @override
   void initState() {
@@ -28,6 +30,16 @@ class _ClientCreateAppointmentPageState extends State<ClientCreateAppointmentPag
     super.initState();
     _currentDate = DateTime.now();
     _pageViewController = PageController(initialPage: 0);
+    _clientServerService = ClientServerService();
+  }
+
+  Future<bool> getDateStatus() async {
+    if (_currentDate != null) {
+      await _clientServerService.getDateStatus(
+          widget.therapist.userID, _currentDate.day, _currentDate.month, _currentDate.year);
+      return true;
+    } else
+      return false;
   }
 
   String dateParser(DateTime dateTime) {
@@ -81,8 +93,7 @@ class _ClientCreateAppointmentPageState extends State<ClientCreateAppointmentPag
         this.setState(() => _currentDate = date);
       },
       weekFormat: false,
-      onDayLongPressed: (DateTime date) {
-      },
+      onDayLongPressed: (DateTime date) {},
       headerTextStyle: GoogleFonts.lato(fontSize: 24, color: ViewConstants.myBlack, fontWeight: FontWeight.bold),
       daysTextStyle: GoogleFonts.lato(fontSize: 13, color: ViewConstants.myBlack, fontWeight: FontWeight.bold),
       weekdayTextStyle: GoogleFonts.lato(fontSize: 13, color: ViewConstants.myGrey, fontWeight: FontWeight.bold),
@@ -199,6 +210,9 @@ class _ClientCreateAppointmentPageState extends State<ClientCreateAppointmentPag
                                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                                   onPressed: () async {
+
+                                    await getDateStatus();
+
                                     _pageViewController.animateToPage(_pageViewController.page.toInt() + 1,
                                         duration: Duration(milliseconds: 666), curve: Curves.decelerate);
                                   },

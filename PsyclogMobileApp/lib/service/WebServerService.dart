@@ -55,7 +55,7 @@ class WebServerService {
           return ServiceErrorHandling.userInformationError;
         }
       } else {
-        return ServiceErrorHandling.unsuccessfulStatusCode;
+        return jsonDecode(response.body)["message"];
       }
     } catch (error) {
       print(error);
@@ -89,6 +89,9 @@ class WebServerService {
     final String currentUserToken = await getToken();
 
     if (currentUserToken != null) {
+
+      print("User Token: " + currentUserToken);
+
       try {
         var response = await http.get(
           '$_serverAddress/$_currentAPI/auth/profile',

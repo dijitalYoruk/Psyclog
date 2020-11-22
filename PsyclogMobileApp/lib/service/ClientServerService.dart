@@ -212,4 +212,32 @@ class ClientServerService extends WebServerService {
       throw ServiceErrorHandling.noTokenError;
     }
   }
+
+  Future<void> getDateStatus(String therapistID, int day, int month, int year) async {
+    // TODO USER Restrictions
+    final String currentUserToken = await getToken();
+
+    if (currentUserToken != null) {
+
+      final message = jsonEncode({"psychologistId": therapistID, "day": day, "month" : month, "year" : year});
+
+      try {
+        var response = await http.post('$_serverAddress/$_currentAPI/appointment/date-status',
+            headers: {'Authorization': "Bearer " + currentUserToken, 'Content-Type': 'application/json'}, body: message);
+
+        print(response.body);
+
+        if (response.statusCode == ServiceConstants.STATUS_SUCCESS_CODE) {
+          dynamic _decodedBody = jsonDecode(response.body);
+
+        } else {
+          throw ServiceErrorHandling.couldNotCreateRequestError;
+        }
+      } catch (e) {
+        return ServiceErrorHandling.serverNotRespondingError;
+      }
+    } else {
+      throw ServiceErrorHandling.noTokenError;
+    }
+  }
 }
