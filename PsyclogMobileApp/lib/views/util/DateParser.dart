@@ -43,4 +43,13 @@ class DateParser {
 
     return result + " " + dateTime.year.toString();
   }
+
+  static DateTime jsonToDateTime(String jsonDateText) {
+    List<String> jsonDateSubText = jsonDateText.split("-");
+
+    DateTime _dateTime = DateTime(
+        (int.parse(jsonDateSubText[0])), (int.parse(jsonDateSubText[1])), (int.parse(jsonDateSubText[2].substring(0, 2))));
+
+    return _dateTime;
+  }
 }

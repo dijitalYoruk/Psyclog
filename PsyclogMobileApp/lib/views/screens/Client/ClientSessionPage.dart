@@ -94,80 +94,76 @@ class _ClientSessionPageState extends State<ClientSessionPage> {
                                   textAlign: TextAlign.left,
                                   style: TextStyle(fontSize: 30, color: ViewConstants.myBlack, fontWeight: FontWeight.bold)),
                             ),
-                            Flexible(
-                              child: Padding(
-                                padding: EdgeInsets.only(
-                                  left: 20,
-                                  right: 20,
-                                ),
-                                child: FutureBuilder(
-                                  future: getProfileImage(),
-                                  initialData: InkWell(
-                                    onTap: () {
-                                      Navigator.pushNamed(context, ViewConstants.clientProfileRoute);
-                                    },
-                                    child: Icon(
-                                      Icons.person,
-                                      color: ViewConstants.myGrey,
-                                    ),
-                                  ),
-                                  builder: (BuildContext context, AsyncSnapshot<Widget> snapshot) {
-                                    if (snapshot.data is Image) {
-                                      return InkWell(
-                                        onTap: () {
-                                          Navigator.pushNamed(context, ViewConstants.clientProfileRoute);
-                                        },
-                                        child: CircleAvatar(
-                                          backgroundImage: (snapshot.data as Image).image,
-                                        ),
-                                      );
-                                    } else {
-                                      return InkWell(
-                                        onTap: () {
-                                          Navigator.pushNamed(context, ViewConstants.clientProfileRoute);
-                                        },
-                                        child: Icon(
-                                          Icons.person,
-                                          color: ViewConstants.myGrey,
-                                        ),
-                                      );
-                                    }
+                            Padding(
+                              padding: EdgeInsets.only(
+                                left: 20,
+                                right: 20,
+                              ),
+                              child: FutureBuilder(
+                                future: getProfileImage(),
+                                initialData: InkWell(
+                                  onTap: () {
+                                    Navigator.pushNamed(context, ViewConstants.clientProfileRoute);
                                   },
+                                  child: Icon(
+                                    Icons.person,
+                                    color: ViewConstants.myGrey,
+                                  ),
                                 ),
+                                builder: (BuildContext context, AsyncSnapshot<Widget> snapshot) {
+                                  if (snapshot.data is Image) {
+                                    return InkWell(
+                                      onTap: () {
+                                        Navigator.pushNamed(context, ViewConstants.clientProfileRoute);
+                                      },
+                                      child: CircleAvatar(
+                                        backgroundImage: (snapshot.data as Image).image,
+                                      ),
+                                    );
+                                  } else {
+                                    return InkWell(
+                                      onTap: () {
+                                        Navigator.pushNamed(context, ViewConstants.clientProfileRoute);
+                                      },
+                                      child: Icon(
+                                        Icons.person,
+                                        color: ViewConstants.myGrey,
+                                      ),
+                                    );
+                                  }
+                                },
                               ),
                             ),
                           ],
                         ),
-                        Flexible(
-                          child: Container(
-                            width: MediaQuery.of(context).size.width,
-                            height: MediaQuery.of(context).size.height / 12,
-                            margin: EdgeInsets.only(top: 20, right: 20, left: 20),
-                            child: FlatButton(
-                              color: ViewConstants.myLightBlue.withOpacity(0.75),
-                              splashColor: ViewConstants.myPink,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    "Pending Requests",
-                                    style: TextStyle(
-                                        color: ViewConstants.myWhite,
-                                        fontWeight: FontWeight.w700,
-                                        fontFamily: "OpenSans",
-                                        fontSize: 13),
-                                  ),
-                                  Icon(Icons.arrow_forward)
-                                ],
-                              ),
-                              onPressed: () async {
-                                await Navigator.pushNamed(context, ViewConstants.clientPendingRequestRoute);
-                                _clientRegisteredListViewModel.initializeService();
-                              },
+                        Container(
+                          width: MediaQuery.of(context).size.width,
+                          height: MediaQuery.of(context).size.height / 12,
+                          margin: EdgeInsets.only(top: 20, right: 20, left: 20),
+                          child: FlatButton(
+                            color: ViewConstants.myLightBlue.withOpacity(0.75),
+                            splashColor: ViewConstants.myPink,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
                             ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "Pending Requests",
+                                  style: TextStyle(
+                                      color: ViewConstants.myWhite,
+                                      fontWeight: FontWeight.w700,
+                                      fontFamily: "OpenSans",
+                                      fontSize: 13),
+                                ),
+                                Icon(Icons.arrow_forward)
+                              ],
+                            ),
+                            onPressed: () async {
+                              await Navigator.pushNamed(context, ViewConstants.clientPendingRequestRoute);
+                              _clientRegisteredListViewModel.initializeService();
+                            },
                           ),
                         ),
                       ],
@@ -196,7 +192,7 @@ class _ClientSessionPageState extends State<ClientSessionPage> {
                         minFontSize: 8,
                         maxFontSize: 20,
                         stepGranularity: 1,
-                        style: TextStyle(color: ViewConstants.myGrey, fontFamily: "OpenSans"),
+                        style: GoogleFonts.lato(color: ViewConstants.myGrey),
                       ),
                     ),
                   ),

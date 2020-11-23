@@ -1,5 +1,3 @@
-library services;
-
 import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
@@ -7,9 +5,11 @@ import 'package:http/http.dart';
 import 'package:psyclog_app/service/WebServerService.dart';
 import 'package:psyclog_app/service/util/ServiceConstants.dart';
 import 'package:psyclog_app/service/util/ServiceErrorHandling.dart';
+import 'package:psyclog_app/src/models/PatientSchedule.dart';
 import 'package:psyclog_app/src/models/Therapist.dart';
 import 'package:psyclog_app/src/models/controller/UserModelController.dart';
 import 'middleware/UserRestrict.dart';
+import 'package:psyclog_app/src/models/Appointment.dart';
 
 class ClientServerService extends WebServerService {
   static String _serverAddress;
@@ -268,8 +268,72 @@ class ClientServerService extends WebServerService {
         print(response.body);
 
         if (response.statusCode == ServiceConstants.STATUS_SUCCESS_CODE) {
-
           return true;
+        } else {
+          throw ServiceErrorHandling.couldNotCreateRequestError;
+        }
+      } catch (e) {
+        print(e);
+        throw ServiceErrorHandling.serverNotRespondingError;
+      }
+    } else {
+      throw ServiceErrorHandling.noTokenError;
+    }
+  }
+
+  Future<PatientSchedule> getAppointmentList() async {
+    final String currentUserToken = await getToken();
+
+    if (currentUserToken != null) {
+      List<Appointment> _appointmentList = List<Appointment>();
+      List<DateTime> _dateTimeList = List<DateTime>();
+
+      try {
+        var response = await http.get('$_serverAddress/$_currentAPI/appointment/personal-appointments',
+            headers: {'Authorization': "Bearer " + currentUserToken});
+
+        if (response.statusCode == ServiceConstants.STATUS_SUCCESS_CODE) {
+          dynamic _decodedBody = jsonDecode(response.body);
+
+          int numberOfAppointments = _decodedBody['data']['appointments'].length;
+
+          if (numberOfAppointments != 0) {
+            Appointment _head = Appointment.fromJson(_decodedBody['data']['appointments'][0]);
+
+            _appointmentList.add(_head);
+
+            _dateTimeList.add(_head.getAppointmentDate);
+
+            // Inserting appointments based on their date
+            for (int i = 1; i < numberOfAppointments; i++) {
+              Appointment _curr = Appointment.fromJson(_decodedBody['data']['appointments'][i]);
+
+              if (!_dateTimeList.contains(_curr.getAppointmentDate)) _dateTimeList.add(_curr.getAppointmentDate);
+
+              int index = 0;
+              bool inserted = false;
+
+              for (Appointment _appointment in _appointmentList) {
+                if ((_curr.getAppointmentDate as DateTime).isBefore(_appointment.getAppointmentDate)) {
+                  _appointmentList.insert(index, _curr);
+                  inserted = true;
+                  break;
+                }
+                index++;
+              }
+
+              if (!inserted) _appointmentList.add(_curr);
+            }
+
+            // Sorting all the dates
+            _dateTimeList.sort();
+
+            PatientSchedule _schedule = PatientSchedule(_appointmentList, _dateTimeList);
+
+            return _schedule;
+          } else {
+            return null;
+          }
         } else {
           throw ServiceErrorHandling.couldNotCreateRequestError;
         }

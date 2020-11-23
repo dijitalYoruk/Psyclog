@@ -8,6 +8,12 @@ class ClientRegisteredListViewModel extends ChangeNotifier {
 
   List<Therapist> _registeredTherapistList;
 
+  ClientRegisteredListViewModel() {
+    _registeredTherapistList = List<Therapist>();
+
+    initializeService();
+  }
+
   Therapist getTherapistByIndex(index) {
     return _registeredTherapistList[index];
   }
@@ -17,12 +23,6 @@ class ClientRegisteredListViewModel extends ChangeNotifier {
       return _registeredTherapistList.length;
     else
       return 0;
-  }
-
-  ClientRegisteredListViewModel() {
-    _registeredTherapistList = List<Therapist>();
-
-    initializeService();
   }
 
   initializeService() async {
