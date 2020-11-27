@@ -172,8 +172,14 @@ const UserSchema = new Schema({
          message: 'Passwords do not match.'
       }
    },
+   isAccountVerified: {
+      type: Boolean,
+      default: false
+   },
    passwordResetToken: String,
    passwordResetExpires: Date,
+   verificationToken: String,
+   verificationExpires: Date,
    banTerminationDate: Date
 
 }, {timestamps: true, versionKey: false})
@@ -216,7 +222,10 @@ UserSchema.statics.filterBody = body => {
       'email',      
       'phone',
       'role',
-      'name']
+      'name',
+      'isAccountVerified',
+      'verificationToken',
+      'verificationExpires']
 
    const itemsPsychologist = [
       'appointmentPrice', 
@@ -384,6 +393,21 @@ UserSchema.methods.createPasswordResetToken = function() {
    // setup expiration date of reset token.
    this.passwordResetExpires = Date.now() + 10 * 60 * 1000
    return resetToken
+}
+
+UserSchema.methods.createAccountVerificationToken = function() {
+   // generate verification token 
+   const verifyToken = crypto.randomBytes(32).toString('hex')
+
+   // hash the token
+   this.verificationToken = crypto
+     .createHash('sha256')
+     .update(verifyToken)
+     .digest('hex')
+
+   // setup expiration date of reset token.
+   this.verificationExpires = Date.now() + 10 * 60 * 1000
+   return verifyToken
 }
 
 // update profile photo

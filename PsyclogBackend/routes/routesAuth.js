@@ -19,7 +19,8 @@ const {
    deleteProfile,
    forgotPassword,
    retrieveProfile,
-   signUpPsychologist } = require('../controller/ControllerAuth')
+   signUpPsychologist,
+   verifyUser } = require('../controller/ControllerAuth')
 
 
 // =====================
@@ -31,6 +32,7 @@ routerAuth.patch('/reset-password', resetPassword)
 routerAuth.get('/reset-password/:token', getResetPassword)
 routerAuth.post('/signUp/patient', signUpPatient)
 routerAuth.post('/signIn', signIn)
+routerAuth.get('/verification/:token', verifyUser)
 
 // authentication required
 routerAuth.use(middlewareAuth)

@@ -5,15 +5,14 @@ const htmlToText = require('html-to-text')
 dotenv.config({ path: './config.env' })
 
 const newTransport = async =>{
-   if(process.env.NODE_ENV === 'production'){
-      //sendgrid
+   if(process.env.NODE_ENV === 'development'){
       return nodemailer.createTransport({
-         service:'SendGrid',
+         service: 'Gmail',
          auth: {
-            user:process.env.SENDGRID_USERNAME,
-            pass:process.env.SENDGRID_PASSWORD
+             user: 'psyclogapplication@gmail.com',
+             pass: 'psyclog2020'
          }
-      });
+     });
    }
 
    return nodemailer.createTransport({
@@ -57,6 +56,11 @@ const sendPasswordReset = async (user, resetURL) => {
       await send(user, resetURL,'passwordReset',__('reset_subject'));
 }
 
+const sendAccountVerification = async (user, verificationURL) => { 
+   await send(user, verificationURL,'verification',__('verification_subject'));
+}
+
 module.exports = {
-   sendPasswordReset
+   sendPasswordReset,
+   sendAccountVerification
 }
