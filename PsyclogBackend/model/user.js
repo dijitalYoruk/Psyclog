@@ -145,6 +145,18 @@ const UserSchema = new Schema({
       ]
    },
    // Psychologist specific
+   ratingsQuantity: {
+      type:Number,
+      default:0,
+   },
+
+   ratingsAverage: {
+      type:Number,
+      default:4.5,
+      min:[1,'Rating must be above 1.0'],
+      max:[5,'Rating must be below 5.0']
+   },
+   
    cv: {
       type:String,
       trim: true,
@@ -239,7 +251,9 @@ UserSchema.statics.filterBody = body => {
       'email',      
       'role',
       'name', 
-      'cv'
+      'cv',
+      'ratingsQuantity', 
+      'ratingsAverage'
    ]
 
    let data = {}
@@ -275,7 +289,9 @@ UserSchema.statics.mapData = (user, data, psychologistVerificationEnabled) => {
       'biography',
       'transcript', 
       'appointmentPrice',  
-      'isActiveForClientRequest']
+      'isActiveForClientRequest',
+      'ratingsQuantity', 
+      'ratingsAverage']
 
    // enabling verification
    if (psychologistVerificationEnabled) {
@@ -319,6 +335,8 @@ UserSchema.pre('save', async function(next) {
       this.wallet = undefined
       this.phone = undefined
       this.cv = undefined
+      this.ratingsQuantity = undefined
+      this.ratingsAverage = undefined
    }
 
    // seting irrelevant items for user as undefined.
@@ -330,6 +348,8 @@ UserSchema.pre('save', async function(next) {
       this.biography = undefined
       this.patients = undefined
       this.cv = undefined
+      this.ratingsQuantity = undefined
+      this.ratingsAverage = undefined
    }
 
    // seting irrelevant items for psychologist as undefined.
