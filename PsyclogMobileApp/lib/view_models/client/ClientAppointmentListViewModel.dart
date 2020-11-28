@@ -40,7 +40,7 @@ class ClientAppointmentListViewModel extends ChangeNotifier {
   }
 
   initializeService() async {
-    _serverService = await ClientServerService.getClientServerService();
+    if (_serverService == null) _serverService = await ClientServerService.getClientServerService();
 
     try {
       PatientSchedule _schedule = await _serverService.getAppointmentList();
@@ -55,10 +55,45 @@ class ClientAppointmentListViewModel extends ChangeNotifier {
         notifyListeners();
       } else {
         print("Appointment List is empty.");
+        notifyListeners();
       }
     } catch (error) {
       print(error);
       print(ServiceErrorHandling.serverNotRespondingError);
+    }
+  }
+
+  Future<bool> cancelAppointmentByIndex(int index) async {
+    try {
+      bool isCancelled = await _serverService.cancelAppointment(getAppointmentByIndex(index).getAppointmentID);
+
+      if (isCancelled) {
+        initializeService();
+        return true;
+      } else {
+        return false;
+      }
+    } catch (error) {
+      print(error);
+      print(ServiceErrorHandling.serverNotRespondingError);
+      return false;
+    }
+  }
+
+  Future<bool> terminateAppointmentByIndex(int index) async {
+    try {
+      bool isTerminated = await _serverService.terminateAppointment(getAppointmentByIndex(index).getAppointmentID);
+
+      if (isTerminated) {
+        initializeService();
+        return true;
+      } else {
+        return false;
+      }
+    } catch (error) {
+      print(error);
+      print(ServiceErrorHandling.serverNotRespondingError);
+      return false;
     }
   }
 }

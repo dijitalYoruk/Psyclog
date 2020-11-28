@@ -229,8 +229,8 @@ const cancelAppointment = catchAsync(async (req, res, next) => {
         return next(new ApiError(__('error_unauthorized'), 403))
     }
 
-    res.status(205).json({
-       status: 205,
+    res.status(200).json({
+       status: 200,
        data: { message: __('success_delete', 'Appointment') } 
     })
 })
@@ -289,9 +289,10 @@ const retrievePersonalAppointments = catchAsync(async (req, res, next) => {
     // construct start and end times.
     for (const appointment of appointments) {
         // construct the date object for starting time
-        const endTimeSlot = appointment.intervals.pop()
+        const endTimeSlot = appointment.intervals[appointment.intervals.length - 1]
         const startingTimeSlot = appointment.intervals[0]
         const appointmentDate = appointment.appointmentDate
+
         appointment.end = constructEndDate(appointmentDate, endTimeSlot)
         appointment.start = constructStartDate(appointmentDate, startingTimeSlot)
     }

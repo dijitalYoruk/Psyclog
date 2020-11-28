@@ -199,7 +199,7 @@ class _ClientAppointmentPageState extends State<ClientAppointmentPage> {
                   builder: (context, model, child) {
                     int _dateLength = model.getDateTimeListLength();
 
-                    if (_dateLength != 0) {
+                    if (_dateLength > 0) {
                       List<Widget> _schedule = List<Widget>();
 
                       int _dateIndex = 0;
@@ -261,7 +261,7 @@ class _ClientAppointmentPageState extends State<ClientAppointmentPage> {
 
                             _schedule.add(ValueListenableBuilder(
                               child: Builder(
-                                builder: (BuildContext context) {
+                                builder: (BuildContext builderContext) {
                                   return Container(
                                     child: Expanded(
                                       child: Column(
@@ -354,7 +354,7 @@ class _ClientAppointmentPageState extends State<ClientAppointmentPage> {
                                             ),
                                           ),
                                           Builder(
-                                            builder: (BuildContext context) {
+                                            builder: (BuildContext builderContext) {
                                               int startUnixTime = _currentAppointment.getStartTime;
                                               int endUnixTime = _currentAppointment.getEndTime;
 
@@ -386,7 +386,84 @@ class _ClientAppointmentPageState extends State<ClientAppointmentPage> {
                                                 buttons.add(Expanded(
                                                   child: FlatButton(
                                                     materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                                    onPressed: () {},
+                                                    onPressed: () async {
+                                                      await showDialog(
+                                                          barrierColor: Colors.transparent,
+                                                          context: context,
+                                                          builder: (BuildContext dialogContext) {
+                                                            return AlertDialog(
+                                                              backgroundColor: Colors.transparent,
+                                                              shape: RoundedRectangleBorder(
+                                                                borderRadius: BorderRadius.circular(20),
+                                                              ),
+                                                              contentPadding: EdgeInsets.all(20),
+                                                              content: Column(
+                                                                mainAxisSize: MainAxisSize.min,
+                                                                children: [
+                                                                  Container(
+                                                                    padding: EdgeInsets.all(20),
+                                                                    decoration: BoxDecoration(
+                                                                        gradient: LinearGradient(
+                                                                            begin: Alignment.topLeft,
+                                                                            end: Alignment(4, 4),
+                                                                            colors: [
+                                                                              ViewConstants.myWhite,
+                                                                              ViewConstants.myBlue
+                                                                            ]),
+                                                                        borderRadius: BorderRadius.circular(20)),
+                                                                    child: Column(children: [
+                                                                      Text("Do you want to terminate this appointment?",
+                                                                          style:
+                                                                              GoogleFonts.lato(color: ViewConstants.myGrey)),
+                                                                      Padding(
+                                                                        padding: const EdgeInsets.only(top: 12.0),
+                                                                        child: Row(
+                                                                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                                          children: [
+                                                                            FlatButton(
+                                                                                onPressed: () async {
+                                                                                  bool isTerminated = await model
+                                                                                      .terminateAppointmentByIndex(index);
+
+                                                                                  if (isTerminated) {
+                                                                                    Navigator.pop(context);
+
+                                                                                    final snackBar = SnackBar(
+                                                                                        content: Text(
+                                                                                            'Appointment is cancelled.',
+                                                                                            style: GoogleFonts.lato(
+                                                                                                color:
+                                                                                                    ViewConstants.myGrey)));
+
+                                                                                    Scaffold.of(context)
+                                                                                        .showSnackBar(snackBar);
+                                                                                  }
+                                                                                },
+                                                                                child: Text("Terminate",
+                                                                                    style: GoogleFonts.lato(
+                                                                                        color: ViewConstants.myPink,
+                                                                                        fontWeight: FontWeight.bold,
+                                                                                        fontSize: 14))),
+                                                                            FlatButton(
+                                                                                onPressed: () {
+                                                                                  Navigator.pop(context);
+                                                                                },
+                                                                                child: Text("Return",
+                                                                                    style: GoogleFonts.lato(
+                                                                                        color: ViewConstants.myGrey,
+                                                                                        fontWeight: FontWeight.bold,
+                                                                                        fontSize: 14))),
+                                                                          ],
+                                                                        ),
+                                                                      ),
+                                                                    ]),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                              insetPadding: EdgeInsets.all(20),
+                                                            );
+                                                          });
+                                                    },
                                                     child: AutoSizeText(
                                                       "Terminate",
                                                       style: GoogleFonts.lato(
@@ -401,7 +478,116 @@ class _ClientAppointmentPageState extends State<ClientAppointmentPage> {
                                                 buttons.add(Expanded(
                                                   child: FlatButton(
                                                     materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                                    onPressed: () {},
+                                                    onPressed: () async {
+                                                      String threeDaysMessage;
+
+                                                      if ((_currentAppointment.getAppointmentDate as DateTime)
+                                                              .difference(DateTime.now())
+                                                              .inDays <
+                                                          3) {
+                                                        threeDaysMessage =
+                                                            "Since there are less than three days to the appointment, the money will be transferred to the psychologist. "
+                                                            "Instead of cancelling, you can talk with your consultant and try to set another date.";
+                                                      }
+
+                                                      await showDialog(
+                                                          barrierColor: Colors.transparent,
+                                                          context: context,
+                                                          builder: (BuildContext dialogContext) {
+                                                            return AlertDialog(
+                                                              backgroundColor: Colors.transparent,
+                                                              shape: RoundedRectangleBorder(
+                                                                borderRadius: BorderRadius.circular(20),
+                                                              ),
+                                                              contentPadding: EdgeInsets.all(20),
+                                                              content: Column(
+                                                                mainAxisSize: MainAxisSize.min,
+                                                                children: [
+                                                                  Container(
+                                                                    padding: EdgeInsets.all(20),
+                                                                    decoration: BoxDecoration(
+                                                                        gradient: LinearGradient(
+                                                                            begin: Alignment.topLeft,
+                                                                            end: Alignment(4, 4),
+                                                                            colors: [
+                                                                              ViewConstants.myWhite,
+                                                                              ViewConstants.myBlue
+                                                                            ]),
+                                                                        borderRadius: BorderRadius.circular(20)),
+                                                                    child: Column(children: [
+                                                                      Text("Do you want to cancel this appointment?",
+                                                                          style:
+                                                                              GoogleFonts.lato(color: ViewConstants.myGrey)),
+                                                                      Padding(
+                                                                        padding: const EdgeInsets.only(top: 12.0),
+                                                                        child: Row(
+                                                                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                                          children: [
+                                                                            FlatButton(
+                                                                                shape: RoundedRectangleBorder(side: BorderSide(color: ViewConstants.myPink, width: 2), borderRadius: BorderRadius.circular(10)),
+                                                                                onPressed: () async {
+                                                                                  bool isCancelled = await model
+                                                                                      .cancelAppointmentByIndex(index);
+
+                                                                                  if (isCancelled) {
+                                                                                    Navigator.pop(context);
+
+                                                                                    final snackBar = SnackBar(
+                                                                                        content: Text(
+                                                                                            'Appointment is cancelled.',
+                                                                                            style: GoogleFonts.lato(
+                                                                                                color:
+                                                                                                    ViewConstants.myGrey)));
+
+                                                                                    Scaffold.of(context)
+                                                                                        .showSnackBar(snackBar);
+                                                                                  }
+                                                                                },
+                                                                                child: Text("Cancel",
+                                                                                    style: GoogleFonts.lato(
+                                                                                        color: ViewConstants.myPink,
+                                                                                        fontWeight: FontWeight.bold,
+                                                                                        fontSize: 14))),
+                                                                            FlatButton(
+                                                                                onPressed: () {
+                                                                                  Navigator.pop(context);
+                                                                                },
+                                                                                child: Text("Return",
+                                                                                    style: GoogleFonts.lato(
+                                                                                        color: ViewConstants.myGrey,
+                                                                                        fontWeight: FontWeight.bold,
+                                                                                        fontSize: 14))),
+                                                                          ],
+                                                                        ),
+                                                                      ),
+                                                                      threeDaysMessage != null
+                                                                          ? Row(
+                                                                              children: [
+                                                                                Icon(
+                                                                                  Icons.warning_rounded,
+                                                                                  color: ViewConstants.myPink,
+                                                                                ),
+                                                                                Expanded(
+                                                                                  child: Padding(
+                                                                                    padding: const EdgeInsets.all(10),
+                                                                                    child: Text(threeDaysMessage,
+                                                                                        softWrap: true,
+                                                                                        style: GoogleFonts.lato(
+                                                                                            color: ViewConstants.myPink,
+                                                                                            fontSize: 12)),
+                                                                                  ),
+                                                                                )
+                                                                              ],
+                                                                            )
+                                                                          : Container(),
+                                                                    ]),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                              insetPadding: EdgeInsets.all(20),
+                                                            );
+                                                          });
+                                                    },
                                                     child: AutoSizeText(
                                                       "Cancel",
                                                       style: GoogleFonts.lato(
@@ -486,6 +672,10 @@ class _ClientAppointmentPageState extends State<ClientAppointmentPage> {
                           },
                           childCount: _schedule.length,
                         ),
+                      );
+                    } else if (_dateLength == 0) {
+                      return SliverToBoxAdapter(
+                        child: Container(),
                       );
                     } else {
                       return SliverToBoxAdapter(

@@ -20,7 +20,6 @@ const {
     updateAppointmentTime,
     retrievePersonalAppointments } = require('../controller/ControllerAppointment')
 
-
 // =====================
 // routes
 // =====================

@@ -332,7 +332,7 @@ class ClientServerService extends WebServerService {
 
             return _schedule;
           } else {
-            return null;
+            return PatientSchedule(_appointmentList, _dateTimeList);
           }
         } else {
           throw ServiceErrorHandling.couldNotCreateRequestError;
@@ -340,6 +340,56 @@ class ClientServerService extends WebServerService {
       } catch (e) {
         print(e);
         throw ServiceErrorHandling.serverNotRespondingError;
+      }
+    } else {
+      throw ServiceErrorHandling.noTokenError;
+    }
+  }
+
+  Future<bool> cancelAppointment(String appointmentID) async {
+    final String currentUserToken = await getToken();
+
+    if (currentUserToken != null) {
+      final message = jsonEncode({"appointmentId": appointmentID});
+
+      try {
+        var response = await http.post('$_serverAddress/$_currentAPI/appointment/cancel',
+            headers: {'Authorization': "Bearer " + currentUserToken, 'Content-Type': 'application/json'}, body: message);
+
+        print(response.body);
+
+        if (response.statusCode == ServiceConstants.STATUS_SUCCESS_CODE) {
+          return true;
+        } else {
+          return false;
+        }
+      } catch (e) {
+        return null;
+      }
+    } else {
+      throw ServiceErrorHandling.noTokenError;
+    }
+  }
+
+  Future<bool> terminateAppointment(String appointmentID) async {
+    final String currentUserToken = await getToken();
+
+    if (currentUserToken != null) {
+      final message = jsonEncode({"appointmentId": appointmentID});
+
+      try {
+        var response = await http.post('$_serverAddress/$_currentAPI/appointment/terminate',
+            headers: {'Authorization': "Bearer " + currentUserToken, 'Content-Type': 'application/json'}, body: message);
+
+        print(response.body);
+
+        if (response.statusCode == ServiceConstants.STATUS_SUCCESS_CODE) {
+          return true;
+        } else {
+          return false;
+        }
+      } catch (e) {
+        return null;
       }
     } else {
       throw ServiceErrorHandling.noTokenError;
