@@ -22,8 +22,8 @@ class Appointment {
 
   Appointment.fromJson(Map<String, dynamic> json)
       : _appointmentID = json['_id'] as String,
-        _intervals = json['_intervals'] as List<int>,
-        _therapist = Therapist.fromJsonForAppointment(json),
+        _intervals = List<int>.generate(json['intervals'].length, (index) => json['intervals'][index]),
+        _therapist = Therapist.fromJsonForAppointment(json['psychologist']),
         _patientID = json['patient'] as String,
         _appointmentDate = DateParser.jsonToDateTime(json['appointmentDate']),
         _appointmentPrice = json['price'] as int,

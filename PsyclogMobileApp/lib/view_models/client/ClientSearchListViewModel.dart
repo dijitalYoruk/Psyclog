@@ -13,8 +13,6 @@ class ClientSearchListViewModel extends ChangeNotifier {
   ClientServerService _serverService;
 
   List<Therapist> _currentTherapistList;
-
-  // TODO will check if the the therapist is registered before
   List<dynamic> _registeredTherapistsIDList;
 
   List<String> _pendingTherapistList;

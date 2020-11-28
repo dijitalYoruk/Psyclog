@@ -1,13 +1,17 @@
 import 'dart:ui';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:psyclog_app/service/WebServerService.dart';
+import 'package:psyclog_app/service/util/ServiceConstants.dart';
 import 'package:psyclog_app/src/models/Appointment.dart';
 import 'package:psyclog_app/src/models/Patient.dart';
+import 'package:psyclog_app/src/models/Therapist.dart';
 import 'package:psyclog_app/view_models/client/ClientAppointmentListViewModel.dart';
 import 'package:psyclog_app/views/util/DateParser.dart';
 import 'package:psyclog_app/views/util/ViewConstants.dart';
+import 'package:intl/intl.dart';
 
 class ClientAppointmentPage extends StatefulWidget {
   @override
@@ -216,14 +220,93 @@ class _ClientAppointmentPageState extends State<ClientAppointmentPage> {
                                   color: ViewConstants.myBlue.withOpacity(0.5), fontWeight: FontWeight.bold),
                             )));
 
-                        Appointment _currentAppointment;
-
                         while (_appointmentIndex < _appointmentLength) {
-                          _currentAppointment = model.getAppointmentByIndex(_appointmentIndex);
+                          Appointment _currentAppointment = model.getAppointmentByIndex(_appointmentIndex);
                           if (_currentAppointment.getAppointmentDate == _dateTime) {
                             Color _backgroundColor = _cardBackgroundColors.elementAt(_dateIndex % 5);
 
                             _schedule.add(ValueListenableBuilder(
+                              child: Builder(
+                                builder: (BuildContext context) {
+                                  Therapist _currentTherapist = _currentAppointment.getTherapist;
+
+                                  CalendarInterval startTime = CalendarConstants.getIntervalByIndex(
+                                      (_currentAppointment.getIntervals as List<int>).first);
+                                  CalendarInterval endTime = CalendarConstants.getIntervalByIndex(
+                                      (_currentAppointment.getIntervals as List<int>).last);
+
+                                  Widget profileImage;
+
+                                  if (_currentTherapist.profileImageURL != "") {
+                                    try {
+                                      profileImage = Image.network(
+                                          _currentTherapist.profileImageURL +
+                                              "/people/" +
+                                              (_appointmentIndex % 10).toString(),
+                                          fit: BoxFit.fill);
+                                    } catch (e) {
+                                      print(e);
+                                      profileImage = Icon(
+                                        Icons.person,
+                                        color: ViewConstants.myLightBlue,
+                                        size: 75,
+                                      );
+                                    }
+                                  } else {
+                                    profileImage = Icon(
+                                      Icons.person,
+                                      color: ViewConstants.myLightBlue,
+                                      size: 75,
+                                    );
+                                  }
+
+                                  return Container(
+                                    child: Expanded(
+                                      child: Column(
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Opacity(
+                                                opacity: 0.75,
+                                                child: Padding(
+                                                    padding: const EdgeInsets.all(8.0),
+                                                    child: Builder(
+                                                      builder: (BuildContext context) {
+                                                        if (profileImage is Image) {
+                                                          return CircleAvatar(
+                                                            backgroundImage: profileImage.image,
+                                                          );
+                                                        } else {
+                                                          return profileImage;
+                                                        }
+                                                      },
+                                                    )),
+                                              ),
+                                              AutoSizeText(
+                                                _currentTherapist.getFullName(),
+                                                style: GoogleFonts.lato(
+                                                    color: ViewConstants.myGrey, fontWeight: FontWeight.bold),
+                                              ),
+                                            ],
+                                          ),
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                            children: [
+                                              AutoSizeText(
+                                                startTime.startTime.substring(0, 5) +
+                                                    " - " +
+                                                    endTime.endTime.substring(0, 5),
+                                                style: GoogleFonts.lato(
+                                                    color: ViewConstants.myGrey, fontWeight: FontWeight.bold, fontSize: 15),
+                                              ),
+                                            ],
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
                               builder: (context, value, child) {
                                 double _colorValue;
                                 double _changeLength = 3;
@@ -253,7 +336,13 @@ class _ClientAppointmentPageState extends State<ClientAppointmentPage> {
                                           Container(
                                             width: width / 30,
                                             color: _backgroundColor.withRed(_colorValue.toInt()).withOpacity(0.5),
-                                          )
+                                          ),
+                                          VerticalDivider(
+                                            color: _backgroundColor.withRed(_colorValue.toInt()).withOpacity(0.5),
+                                            thickness: 3,
+                                            width: 10,
+                                          ),
+                                          child,
                                         ],
                                       )),
                                 );

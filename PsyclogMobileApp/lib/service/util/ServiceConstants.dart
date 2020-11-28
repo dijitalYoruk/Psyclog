@@ -3,12 +3,12 @@ class ServiceConstants {
   static const String ROLE_ADMIN = "role_admin";
   static const String ROLE_PSYCHOLOGIST = "role_psychologist";
   static const int STATUS_SUCCESS_CODE = 200;
-  static String serverAddress = "http://192.168.1.35:8080";
+  static String serverAddress = "http://192.168.1.34:8080";
   static String currentAPI = "api/v1";
 }
 
 class CalendarConstants {
-  static List<CalendarInterval> intervals = [
+  static const List<CalendarInterval> intervals = [
     CalendarInterval(0, "10:00:00", "10:45:00"),
     CalendarInterval(1, "11:00:00", "11:45:00"),
     CalendarInterval(2, "12:00:00", "12:45:00"),
@@ -45,5 +45,5 @@ class CalendarInterval {
   final String endTime;
   final String startTime;
 
-  CalendarInterval(this.interval, this.startTime, this.endTime);
+  const CalendarInterval(this.interval, this.startTime, this.endTime);
 }

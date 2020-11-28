@@ -57,9 +57,9 @@ class User {
         _firstName = json['name'] as String,
         _lastName = json['surname'] as String,
         _email = json['email'] as String,
-        _role = null,
+        _username = json['username'] as String,
         _profileImageURL = json['profileImage'] as String,
+        _role = null,
         _createdAt = null,
-        _updatedAt = null,
-        _username = json['username'] as String;
+        _updatedAt = null;
 }
