@@ -221,85 +221,204 @@ class _ClientAppointmentPageState extends State<ClientAppointmentPage> {
                             )));
 
                         while (_appointmentIndex < _appointmentLength) {
-                          Appointment _currentAppointment = model.getAppointmentByIndex(_appointmentIndex);
+                          int index = _appointmentIndex;
+
+                          Appointment _currentAppointment = model.getAppointmentByIndex(index);
                           if (_currentAppointment.getAppointmentDate == _dateTime) {
                             Color _backgroundColor = _cardBackgroundColors.elementAt(_dateIndex % 5);
+
+                            Therapist _currentTherapist = _currentAppointment.getTherapist;
+
+                            List<int> intervals = _currentAppointment.getIntervals;
+
+                            CalendarInterval startTime = CalendarConstants.getIntervalByIndex(intervals.first);
+                            CalendarInterval endTime = CalendarConstants.getIntervalByIndex(intervals.last);
+
+                            int appointmentLength = intervals.length;
+
+                            Widget profileImage;
+
+                            if (_currentTherapist.profileImageURL != "") {
+                              try {
+                                profileImage = Image.network(
+                                    _currentTherapist.profileImageURL + "/people/" + (_appointmentIndex % 10).toString(),
+                                    fit: BoxFit.fill);
+                              } catch (e) {
+                                print(e);
+                                profileImage = Icon(
+                                  Icons.person,
+                                  color: ViewConstants.myLightBlue,
+                                  size: 75,
+                                );
+                              }
+                            } else {
+                              profileImage = Icon(
+                                Icons.person,
+                                color: ViewConstants.myLightBlue,
+                                size: 75,
+                              );
+                            }
 
                             _schedule.add(ValueListenableBuilder(
                               child: Builder(
                                 builder: (BuildContext context) {
-                                  Therapist _currentTherapist = _currentAppointment.getTherapist;
-
-                                  CalendarInterval startTime = CalendarConstants.getIntervalByIndex(
-                                      (_currentAppointment.getIntervals as List<int>).first);
-                                  CalendarInterval endTime = CalendarConstants.getIntervalByIndex(
-                                      (_currentAppointment.getIntervals as List<int>).last);
-
-                                  Widget profileImage;
-
-                                  if (_currentTherapist.profileImageURL != "") {
-                                    try {
-                                      profileImage = Image.network(
-                                          _currentTherapist.profileImageURL +
-                                              "/people/" +
-                                              (_appointmentIndex % 10).toString(),
-                                          fit: BoxFit.fill);
-                                    } catch (e) {
-                                      print(e);
-                                      profileImage = Icon(
-                                        Icons.person,
-                                        color: ViewConstants.myLightBlue,
-                                        size: 75,
-                                      );
-                                    }
-                                  } else {
-                                    profileImage = Icon(
-                                      Icons.person,
-                                      color: ViewConstants.myLightBlue,
-                                      size: 75,
-                                    );
-                                  }
-
                                   return Container(
                                     child: Expanded(
                                       child: Column(
                                         children: [
-                                          Row(
-                                            children: [
-                                              Opacity(
-                                                opacity: 0.75,
-                                                child: Padding(
-                                                    padding: const EdgeInsets.all(8.0),
-                                                    child: Builder(
-                                                      builder: (BuildContext context) {
-                                                        if (profileImage is Image) {
-                                                          return CircleAvatar(
-                                                            backgroundImage: profileImage.image,
-                                                          );
-                                                        } else {
-                                                          return profileImage;
-                                                        }
-                                                      },
-                                                    )),
-                                              ),
-                                              AutoSizeText(
-                                                _currentTherapist.getFullName(),
-                                                style: GoogleFonts.lato(
-                                                    color: ViewConstants.myGrey, fontWeight: FontWeight.bold),
-                                              ),
-                                            ],
+                                          Padding(
+                                            padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              children: [
+                                                AutoSizeText(
+                                                  startTime.startTime.substring(0, 5) +
+                                                      " - " +
+                                                      endTime.endTime.substring(0, 5) +
+                                                      " (~$appointmentLength hour)",
+                                                  style: GoogleFonts.lato(
+                                                      color: ViewConstants.myWhite, fontWeight: FontWeight.bold),
+                                                  maxFontSize: 16,
+                                                ),
+                                              ],
+                                            ),
                                           ),
-                                          Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                            children: [
-                                              AutoSizeText(
-                                                startTime.startTime.substring(0, 5) +
-                                                    " - " +
-                                                    endTime.endTime.substring(0, 5),
-                                                style: GoogleFonts.lato(
-                                                    color: ViewConstants.myGrey, fontWeight: FontWeight.bold, fontSize: 15),
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                            child: Divider(
+                                              color: ViewConstants.myWhite.withOpacity(0.4),
+                                              thickness: 2,
+                                            ),
+                                          ),
+                                          Container(
+                                            child: Expanded(
+                                              child: Padding(
+                                                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                                child: Row(
+                                                  children: [
+                                                    Opacity(
+                                                      opacity: 0.75,
+                                                      child: Builder(
+                                                        builder: (BuildContext context) {
+                                                          if (profileImage is Image) {
+                                                            return CircleAvatar(
+                                                              backgroundImage: profileImage.image,
+                                                            );
+                                                          } else {
+                                                            return profileImage;
+                                                          }
+                                                        },
+                                                      ),
+                                                    ),
+                                                    Column(
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                      children: [
+                                                        Padding(
+                                                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                                                          child: AutoSizeText(
+                                                            _currentTherapist.getFullName(),
+                                                            style: GoogleFonts.lato(
+                                                                color: ViewConstants.myWhite, fontWeight: FontWeight.bold),
+                                                            maxFontSize: 16,
+                                                          ),
+                                                        ),
+                                                        Padding(
+                                                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                                                          child: AutoSizeText(
+                                                            _currentTherapist.userEmail,
+                                                            style: GoogleFonts.lato(
+                                                                color: ViewConstants.myWhite.withOpacity(0.75)),
+                                                            maxFontSize: 13,
+                                                          ),
+                                                        )
+                                                      ],
+                                                    ),
+                                                    Spacer(),
+                                                    IconButton(
+                                                      splashRadius: 25,
+                                                      splashColor: Colors.transparent,
+                                                      icon: Icon(Icons.chat),
+                                                      onPressed: () {},
+                                                    )
+                                                  ],
+                                                ),
                                               ),
-                                            ],
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                            child: Divider(
+                                              color: ViewConstants.myWhite.withOpacity(0.4),
+                                              thickness: 2,
+                                            ),
+                                          ),
+                                          Builder(
+                                            builder: (BuildContext context) {
+                                              int startUnixTime = _currentAppointment.getStartTime;
+                                              int endUnixTime = _currentAppointment.getEndTime;
+
+                                              int currentUnixTime = DateTime.now().toUtc().millisecondsSinceEpoch;
+
+                                              print(index);
+                                              print("Start:" + startUnixTime.toString());
+                                              print("End:" + endUnixTime.toString());
+                                              print("Current:" + currentUnixTime.toString());
+
+                                              List<Widget> buttons = [];
+
+                                              if (currentUnixTime < endUnixTime && currentUnixTime > startUnixTime) {
+                                                buttons.add(Expanded(
+                                                  child: FlatButton(
+                                                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                                    onPressed: () {},
+                                                    child: AutoSizeText(
+                                                      "Join",
+                                                      style: GoogleFonts.lato(
+                                                          color: ViewConstants.myWhite, fontWeight: FontWeight.bold),
+                                                      maxFontSize: 13,
+                                                    ),
+                                                  ),
+                                                ));
+                                              }
+
+                                              if (currentUnixTime > endUnixTime) {
+                                                buttons.add(Expanded(
+                                                  child: FlatButton(
+                                                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                                    onPressed: () {},
+                                                    child: AutoSizeText(
+                                                      "Terminate",
+                                                      style: GoogleFonts.lato(
+                                                          color: ViewConstants.myWhite, fontWeight: FontWeight.bold),
+                                                      maxFontSize: 13,
+                                                    ),
+                                                  ),
+                                                ));
+                                              }
+
+                                              if (currentUnixTime < startUnixTime) {
+                                                buttons.add(Expanded(
+                                                  child: FlatButton(
+                                                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                                    onPressed: () {},
+                                                    child: AutoSizeText(
+                                                      "Cancel",
+                                                      style: GoogleFonts.lato(
+                                                          color: ViewConstants.myWhite, fontWeight: FontWeight.bold),
+                                                      maxFontSize: 13,
+                                                    ),
+                                                  ),
+                                                ));
+                                              }
+
+                                              return Container(
+                                                width: MediaQuery.of(context).size.width,
+                                                child: Row(
+                                                  children: buttons,
+                                                ),
+                                              );
+                                            },
                                           )
                                         ],
                                       ),
@@ -321,6 +440,8 @@ class _ClientAppointmentPageState extends State<ClientAppointmentPage> {
                                 double height = MediaQuery.of(context).size.height;
                                 double width = MediaQuery.of(context).size.width;
 
+                                Color _redAppliedColor = _backgroundColor.withRed(_colorValue.toInt());
+
                                 return Container(
                                   margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                                   height: height * 0.25,
@@ -330,19 +451,20 @@ class _ClientAppointmentPageState extends State<ClientAppointmentPage> {
                                       ),
                                       clipBehavior: Clip.hardEdge,
                                       shadowColor: Colors.transparent,
-                                      color: _backgroundColor.withRed(_colorValue.toInt()).withOpacity(0.3),
+                                      color: _redAppliedColor.withOpacity(0.4),
                                       child: Row(
                                         children: [
                                           Container(
-                                            width: width / 30,
-                                            color: _backgroundColor.withRed(_colorValue.toInt()).withOpacity(0.5),
+                                            width: width / 50,
+                                            color: _redAppliedColor.withOpacity(0.5),
                                           ),
-                                          VerticalDivider(
-                                            color: _backgroundColor.withRed(_colorValue.toInt()).withOpacity(0.5),
-                                            thickness: 3,
-                                            width: 10,
+                                          Expanded(
+                                            child: Column(
+                                              children: [
+                                                child,
+                                              ],
+                                            ),
                                           ),
-                                          child,
                                         ],
                                       )),
                                 );
@@ -367,7 +489,10 @@ class _ClientAppointmentPageState extends State<ClientAppointmentPage> {
                       );
                     } else {
                       return SliverToBoxAdapter(
-                        child: CircularProgressIndicator(),
+                        child: Container(
+                          width: MediaQuery.of(context).size.width / 3,
+                          child: CircularProgressIndicator(),
+                        ),
                       );
                     }
                   },
