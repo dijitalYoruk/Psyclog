@@ -293,9 +293,18 @@ class _ClientSessionPageState extends State<ClientSessionPage> {
                                                       fontSize: 13, color: ViewConstants.myLightBlueTransparent)),
                                             ),
                                             FlatButton(
-                                              onPressed: () {
-                                                Navigator.pushNamed(context, ViewConstants.clientCreateAppointmentRoute,
-                                                    arguments: CreateAppointmentScreenArguments(therapist));
+                                              onPressed: () async {
+                                                bool isCreated = await Navigator.pushNamed(
+                                                    context, ViewConstants.clientCreateAppointmentRoute,
+                                                    arguments: CreateAppointmentScreenArguments(therapist)) as bool;
+
+                                                if (isCreated) {
+                                                  final snackBar = SnackBar(
+                                                      content: Text('Appointment has been created successfully.',
+                                                          style: GoogleFonts.lato(color: ViewConstants.myGrey)));
+
+                                                  Scaffold.of(context).showSnackBar(snackBar);
+                                                }
                                               },
                                               child: Text("Get Appointment",
                                                   style: GoogleFonts.lato(fontSize: 14, color: ViewConstants.myWhite)),

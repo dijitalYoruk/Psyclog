@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:psyclog_app/service/ClientServerService.dart';
 import 'package:psyclog_app/service/util/ServiceErrorHandling.dart';
-import 'package:psyclog_app/src/models/Appointment.dart';
+import 'package:psyclog_app/src/models/ClientAppointment.dart';
 import 'package:psyclog_app/src/models/PatientSchedule.dart';
 
 class ClientAppointmentListViewModel extends ChangeNotifier {
   ClientServerService _serverService;
 
-  List<Appointment> _appointmentList;
+  List<ClientAppointment> _appointmentList;
   List<DateTime> _dateTimeList;
 
   ClientAppointmentListViewModel() {
-    _appointmentList = List<Appointment>();
+    _appointmentList = List<ClientAppointment>();
     _dateTimeList = List<DateTime>();
 
     initializeService();
   }
 
-  Appointment getAppointmentByIndex(int index) {
+  ClientAppointment getAppointmentByIndex(int index) {
     return _appointmentList[index];
   }
 
@@ -45,7 +45,7 @@ class ClientAppointmentListViewModel extends ChangeNotifier {
     try {
       PatientSchedule _schedule = await _serverService.getAppointmentList();
 
-      _appointmentList = _schedule.getAppointmentList as List<Appointment>;
+      _appointmentList = _schedule.getAppointmentList as List<ClientAppointment>;
       _dateTimeList = _schedule.getDateTimeList as List<DateTime>;
 
       print(_dateTimeList);

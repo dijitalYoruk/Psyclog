@@ -68,7 +68,6 @@ class _ClientCreateAppointmentPageState extends State<ClientCreateAppointmentPag
   }
 
   CalendarCarousel<Event> buildCalendar() {
-
     _currentDate = DateTime.now();
 
     return CalendarCarousel<Event>(
@@ -120,6 +119,10 @@ class _ClientCreateAppointmentPageState extends State<ClientCreateAppointmentPag
             iconTheme: IconThemeData(color: ViewConstants.myBlack),
             backgroundColor: Colors.transparent,
             shadowColor: Colors.transparent,
+            leading: IconButton(
+              icon: Icon(Icons.arrow_back),
+              onPressed: () => Navigator.pop(context, false),
+            ),
             title: Text(
               "Appointment Day",
               style: GoogleFonts.lato(fontSize: 20, color: ViewConstants.myBlack, fontWeight: FontWeight.bold),

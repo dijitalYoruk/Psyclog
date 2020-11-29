@@ -9,7 +9,7 @@ import 'package:psyclog_app/src/models/PatientSchedule.dart';
 import 'package:psyclog_app/src/models/Therapist.dart';
 import 'package:psyclog_app/src/models/controller/UserModelController.dart';
 import 'middleware/UserRestrict.dart';
-import 'package:psyclog_app/src/models/Appointment.dart';
+import 'package:psyclog_app/src/models/ClientAppointment.dart';
 
 class ClientServerService extends WebServerService {
   static String _serverAddress;
@@ -285,7 +285,7 @@ class ClientServerService extends WebServerService {
     final String currentUserToken = await getToken();
 
     if (currentUserToken != null) {
-      List<Appointment> _appointmentList = List<Appointment>();
+      List<ClientAppointment> _appointmentList = List<ClientAppointment>();
       List<DateTime> _dateTimeList = List<DateTime>();
 
       try {
@@ -298,7 +298,7 @@ class ClientServerService extends WebServerService {
           int numberOfAppointments = _decodedBody['data']['appointments'].length;
 
           if (numberOfAppointments != 0) {
-            Appointment _head = Appointment.fromJson(_decodedBody['data']['appointments'][0]);
+            ClientAppointment _head = ClientAppointment.fromJson(_decodedBody['data']['appointments'][0]);
 
             _appointmentList.add(_head);
 
@@ -306,14 +306,14 @@ class ClientServerService extends WebServerService {
 
             // Inserting appointments based on their date
             for (int i = 1; i < numberOfAppointments; i++) {
-              Appointment _curr = Appointment.fromJson(_decodedBody['data']['appointments'][i]);
+              ClientAppointment _curr = ClientAppointment.fromJson(_decodedBody['data']['appointments'][i]);
 
               if (!_dateTimeList.contains(_curr.getAppointmentDate)) _dateTimeList.add(_curr.getAppointmentDate);
 
               int index = 0;
               bool inserted = false;
 
-              for (Appointment _appointment in _appointmentList) {
+              for (ClientAppointment _appointment in _appointmentList) {
                 if ((_curr.getAppointmentDate as DateTime).isBefore(_appointment.getAppointmentDate)) {
                   _appointmentList.insert(index, _curr);
                   inserted = true;

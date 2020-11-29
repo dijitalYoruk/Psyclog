@@ -16,6 +16,7 @@ const {
     createAppointment,
     cancelAppointment,
     retrieveDateStatus,
+    retrieveBlockedDays,
     terminateAppointment,
     updateAppointmentTime,
     retrievePersonalAppointments } = require('../controller/ControllerAppointment')
@@ -27,6 +28,7 @@ routerAppointment.use(middlewareAuth)
 
 routerAppointment.post('/', middlewareRestrict(Constants.ROLE_USER), createAppointment)
 routerAppointment.put('/', middlewareRestrict(Constants.ROLE_PSYCHOLOGIST), updateAppointmentTime)
+routerAppointment.post('/blocked-days', middlewareRestrict(Constants.ROLE_PSYCHOLOGIST), retrieveBlockedDays)
 routerAppointment.post('/date-status', middlewareRestrict(Constants.ROLE_USER), retrieveDateStatus)
 routerAppointment.post('/terminate', middlewareRestrict(Constants.ROLE_USER), terminateAppointment)
 routerAppointment.post('/block-intervals', middlewareRestrict(Constants.ROLE_PSYCHOLOGIST), blockIntervals)

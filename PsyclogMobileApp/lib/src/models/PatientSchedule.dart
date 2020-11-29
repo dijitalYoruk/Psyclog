@@ -1,7 +1,7 @@
-import 'package:psyclog_app/src/models/Appointment.dart';
+import 'package:psyclog_app/src/models/ClientAppointment.dart';
 
 class PatientSchedule {
-  final List<Appointment> _appointments;
+  final List<ClientAppointment> _appointments;
   final List<DateTime> _dateTimes;
 
   get getAppointmentList => _appointments;

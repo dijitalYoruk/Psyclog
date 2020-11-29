@@ -5,7 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:psyclog_app/service/WebServerService.dart';
 import 'package:psyclog_app/service/util/ServiceConstants.dart';
-import 'package:psyclog_app/src/models/Appointment.dart';
+import 'package:psyclog_app/src/models/ClientAppointment.dart';
 import 'package:psyclog_app/src/models/Patient.dart';
 import 'package:psyclog_app/src/models/Therapist.dart';
 import 'package:psyclog_app/view_models/client/ClientAppointmentListViewModel.dart';
@@ -223,7 +223,7 @@ class _ClientAppointmentPageState extends State<ClientAppointmentPage> {
                         while (_appointmentIndex < _appointmentLength) {
                           int index = _appointmentIndex;
 
-                          Appointment _currentAppointment = model.getAppointmentByIndex(index);
+                          ClientAppointment _currentAppointment = model.getAppointmentByIndex(index);
                           if (_currentAppointment.getAppointmentDate == _dateTime) {
                             Color _backgroundColor = _cardBackgroundColors.elementAt(_dateIndex % 5);
 
@@ -272,7 +272,8 @@ class _ClientAppointmentPageState extends State<ClientAppointmentPage> {
                                               mainAxisAlignment: MainAxisAlignment.center,
                                               children: [
                                                 AutoSizeText(
-                                                  startTime.startTime.substring(0, 5) +
+                                                  "Time: " +
+                                                      startTime.startTime.substring(0, 5) +
                                                       " - " +
                                                       endTime.endTime.substring(0, 5) +
                                                       " (~$appointmentLength hour)",
@@ -360,11 +361,6 @@ class _ClientAppointmentPageState extends State<ClientAppointmentPage> {
 
                                               int currentUnixTime = DateTime.now().toUtc().millisecondsSinceEpoch;
 
-                                              print(index);
-                                              print("Start:" + startUnixTime.toString());
-                                              print("End:" + endUnixTime.toString());
-                                              print("Current:" + currentUnixTime.toString());
-
                                               List<Widget> buttons = [];
 
                                               if (currentUnixTime < endUnixTime && currentUnixTime > startUnixTime) {
@@ -430,7 +426,7 @@ class _ClientAppointmentPageState extends State<ClientAppointmentPage> {
 
                                                                                     final snackBar = SnackBar(
                                                                                         content: Text(
-                                                                                            'Appointment is cancelled.',
+                                                                                            'Appointment is terminated.',
                                                                                             style: GoogleFonts.lato(
                                                                                                 color:
                                                                                                     ViewConstants.myGrey)));
@@ -504,8 +500,11 @@ class _ClientAppointmentPageState extends State<ClientAppointmentPage> {
                                                                 mainAxisSize: MainAxisSize.min,
                                                                 children: [
                                                                   Container(
-                                                                    padding: EdgeInsets.all(20),
+                                                                    padding: EdgeInsets.all(15),
                                                                     decoration: BoxDecoration(
+                                                                        border: Border.all(
+                                                                            color: ViewConstants.myBlue.withOpacity(0.5),
+                                                                            width: 5),
                                                                         gradient: LinearGradient(
                                                                             begin: Alignment.topLeft,
                                                                             end: Alignment(4, 4),
@@ -524,7 +523,12 @@ class _ClientAppointmentPageState extends State<ClientAppointmentPage> {
                                                                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                                                           children: [
                                                                             FlatButton(
-                                                                                shape: RoundedRectangleBorder(side: BorderSide(color: ViewConstants.myPink, width: 2), borderRadius: BorderRadius.circular(10)),
+                                                                                shape: RoundedRectangleBorder(
+                                                                                    side: BorderSide(
+                                                                                        color: ViewConstants.myBlue
+                                                                                            .withOpacity(0.5),
+                                                                                        width: 2),
+                                                                                    borderRadius: BorderRadius.circular(10)),
                                                                                 onPressed: () async {
                                                                                   bool isCancelled = await model
                                                                                       .cancelAppointmentByIndex(index);
@@ -545,7 +549,7 @@ class _ClientAppointmentPageState extends State<ClientAppointmentPage> {
                                                                                 },
                                                                                 child: Text("Cancel",
                                                                                     style: GoogleFonts.lato(
-                                                                                        color: ViewConstants.myPink,
+                                                                                        color: ViewConstants.myBlue,
                                                                                         fontWeight: FontWeight.bold,
                                                                                         fontSize: 14))),
                                                                             FlatButton(
@@ -631,26 +635,20 @@ class _ClientAppointmentPageState extends State<ClientAppointmentPage> {
                                 return Container(
                                   margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                                   height: height * 0.25,
+                                  decoration: BoxDecoration(
+                                    color: _redAppliedColor,
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
                                   child: Card(
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(10),
                                       ),
                                       clipBehavior: Clip.hardEdge,
                                       shadowColor: Colors.transparent,
-                                      color: _redAppliedColor.withOpacity(0.4),
-                                      child: Row(
+                                      color: ViewConstants.myGrey.withOpacity(0.5),
+                                      child: Column(
                                         children: [
-                                          Container(
-                                            width: width / 50,
-                                            color: _redAppliedColor.withOpacity(0.5),
-                                          ),
-                                          Expanded(
-                                            child: Column(
-                                              children: [
-                                                child,
-                                              ],
-                                            ),
-                                          ),
+                                          child,
                                         ],
                                       )),
                                 );

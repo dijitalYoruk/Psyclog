@@ -7,6 +7,7 @@ import 'package:psyclog_app/views/screens/Shared/RegisterPage.dart';
 import 'package:psyclog_app/views/screens/Client/ClientCreateAppointmentPage.dart';
 import 'package:psyclog_app/views/screens/SessionTherapistPage.dart';
 import 'package:psyclog_app/views/screens/SplashPage.dart';
+import 'package:psyclog_app/views/screens/Therapist/TherapistIntervalsPage.dart';
 import 'package:psyclog_app/views/screens/Therapist/TherapistPendingRequestPage.dart';
 import 'package:psyclog_app/views/screens/Therapist/TherapistProfilePage.dart';
 import 'package:psyclog_app/views/screens/Therapist/TherapistRegisterPage.dart';
@@ -289,6 +290,29 @@ class RouteController {
           transitionDuration: Duration(milliseconds: 800),
           pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
             return TherapistPendingRequestPage();
+          },
+          transitionsBuilder:
+              (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
+            var curve = Curves.decelerate;
+
+            var begin = Offset(1.0, 0.0);
+            var end = Offset.zero;
+            var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+            var offsetAnimation = animation.drive(tween);
+
+            return SlideTransition(
+              position: offsetAnimation,
+              child: child,
+            );
+          },
+        );
+        break;
+      case ViewConstants.therapistIntervalRoute:
+        return PageRouteBuilder(
+          settings: settings,
+          transitionDuration: Duration(milliseconds: 800),
+          pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
+            return TherapistIntervalsPage();
           },
           transitionsBuilder:
               (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {

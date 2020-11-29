@@ -41,6 +41,41 @@ const blockIntervals = catchAsync(async (req, res, next) => {
     })
 })
 
+const retrieveBlockedDays = catchAsync(async (req, res) => {
+    // retrieve data
+    const psychologist = req.currentUser
+
+    // extract blocked intervals.
+    const calendar = await Calendar.findById(psychologist.calendar)
+
+    const days = []
+
+    for(i = 1; i <= 5; i++) {
+        const blocked = calendar.retrieveBlockedTimes(i)
+
+        day = ""
+
+        if (i == 1) {
+          day = "monday"
+        } else if (i == 2) {
+          day = "tuesday"
+        } else if (i == 3) {
+          day = "wednesday"
+        } else if (i == 4) {
+          day = "thursday"
+        } else if (i == 5) {
+          day = "friday"
+        }
+
+        days.push({day , blocked})
+    }
+
+    res.status(200).json({
+        status: 200,
+        data: { days } 
+    })
+})
+
 
 const retrieveDateStatus = catchAsync(async (req, res, next) => {
     // get required data.
@@ -329,5 +364,6 @@ module.exports = {
     blockIntervals,
     cancelAppointment,
     terminateAppointment,
-    retrievePersonalAppointments
+    retrievePersonalAppointments,
+    retrieveBlockedDays
 }
