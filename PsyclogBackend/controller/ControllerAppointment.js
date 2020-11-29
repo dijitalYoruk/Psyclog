@@ -72,10 +72,9 @@ const retrieveBlockedDays = catchAsync(async (req, res) => {
 
     res.status(200).json({
         status: 200,
-        data: { days } 
+        data: { days }
     })
 })
-
 
 const retrieveDateStatus = catchAsync(async (req, res, next) => {
     // get required data.

@@ -37,9 +37,13 @@ class _ClientCreateAppointmentPageState extends State<ClientCreateAppointmentPag
     _currentDate = DateTime.now();
     _chosenDate = _currentDate;
     _pageViewController = PageController(initialPage: 0);
-    _clientServerService = ClientServerService();
+    initializeService();
     _appropriateIntervals = List<CalendarInterval>();
     _chosenIntervals = List<int>();
+  }
+
+  initializeService() async {
+    _clientServerService = await ClientServerService.getClientServerService();
   }
 
   Future<void> _getBalance() async {

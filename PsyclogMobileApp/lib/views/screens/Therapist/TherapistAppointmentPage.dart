@@ -203,8 +203,16 @@ class _TherapistAppointmentPageState extends State<TherapistAppointmentPage> {
                                   Icon(Icons.arrow_forward)
                                 ],
                               ),
-                              onPressed: () {
-                                Navigator.pushNamed(context, ViewConstants.therapistIntervalRoute);
+                              onPressed: () async {
+                                bool isBlocked = await Navigator.pushNamed(context, ViewConstants.therapistIntervalRoute) as bool;
+
+                                if (isBlocked) {
+                                  final snackBar = SnackBar(
+                                      content: Text('Blocked intervals are saved successfully.',
+                                          style: GoogleFonts.lato(color: ViewConstants.myGrey)));
+
+                                  Scaffold.of(context).showSnackBar(snackBar);
+                                }
                               },
                             ),
                           ),
@@ -544,13 +552,13 @@ class _TherapistAppointmentPageState extends State<TherapistAppointmentPage> {
 
                                 double height = MediaQuery.of(context).size.height;
 
-                                Color _redAppliedColor = _backgroundColor.withRed(_colorValue.toInt());
+                                Color _redAppliedColor = _backgroundColor.withBlue(_colorValue.toInt());
 
                                 return Container(
                                   margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                                   height: height * 0.25,
                                   decoration: BoxDecoration(
-                                    color: _redAppliedColor,
+                                    color: _redAppliedColor.withOpacity(0.5),
                                     borderRadius: BorderRadius.circular(10),
                                   ),
                                   child: Card(
@@ -559,7 +567,7 @@ class _TherapistAppointmentPageState extends State<TherapistAppointmentPage> {
                                       ),
                                       clipBehavior: Clip.hardEdge,
                                       shadowColor: Colors.transparent,
-                                      color: ViewConstants.myGrey.withOpacity(0.5),
+                                      color: ViewConstants.myBlue.withOpacity(0.7),
                                       child: Column(
                                         children: [
                                           child,

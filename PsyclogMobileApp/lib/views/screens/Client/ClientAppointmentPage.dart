@@ -11,7 +11,6 @@ import 'package:psyclog_app/src/models/Therapist.dart';
 import 'package:psyclog_app/view_models/client/ClientAppointmentListViewModel.dart';
 import 'package:psyclog_app/views/util/DateParser.dart';
 import 'package:psyclog_app/views/util/ViewConstants.dart';
-import 'package:intl/intl.dart';
 
 class ClientAppointmentPage extends StatefulWidget {
   @override
@@ -628,7 +627,6 @@ class _ClientAppointmentPageState extends State<ClientAppointmentPage> {
                                 }
 
                                 double height = MediaQuery.of(context).size.height;
-                                double width = MediaQuery.of(context).size.width;
 
                                 Color _redAppliedColor = _backgroundColor.withRed(_colorValue.toInt());
 
@@ -636,7 +634,7 @@ class _ClientAppointmentPageState extends State<ClientAppointmentPage> {
                                   margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                                   height: height * 0.25,
                                   decoration: BoxDecoration(
-                                    color: _redAppliedColor,
+                                    color: _redAppliedColor.withOpacity(0.5),
                                     borderRadius: BorderRadius.circular(10),
                                   ),
                                   child: Card(
@@ -645,7 +643,7 @@ class _ClientAppointmentPageState extends State<ClientAppointmentPage> {
                                       ),
                                       clipBehavior: Clip.hardEdge,
                                       shadowColor: Colors.transparent,
-                                      color: ViewConstants.myGrey.withOpacity(0.5),
+                                      color: ViewConstants.myBlue.withOpacity(0.7),
                                       child: Column(
                                         children: [
                                           child,
