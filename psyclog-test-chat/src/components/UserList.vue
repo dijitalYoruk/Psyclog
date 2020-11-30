@@ -101,7 +101,7 @@ export default {
       this.socket.off("chats");
       const role = this.currentUser.role;
       this.contacts = this.chats.map((chat) =>
-        role == "user" ? chat.psychologist : chat.patient
+        role == "role_user" ? chat.psychologist : chat.patient
       );
 
       for (let contact of this.contacts) {

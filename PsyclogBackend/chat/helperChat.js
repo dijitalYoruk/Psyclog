@@ -74,7 +74,7 @@ const activateUser = socket => {
                              .populate('lastMessage')
         } 
         // populate psychologist
-        else if (role === Constants.ROLE_PSYCHOLOGIST) {
+        else if (role == Constants.ROLE_PSYCHOLOGIST) {
            chats = await Chat.find({ psychologist: user })
                              .populate({ path:'patient', options : { select }})
                              .populate('lastMessage')
@@ -83,7 +83,7 @@ const activateUser = socket => {
         // join chats to socket and emit them.
         for (let chat of chats) { socket.join(chat._id) }
         socket.emit('chats', chats)
-     
+        
         // signaling user is active.
         io.emit(user._id, true)
     })
