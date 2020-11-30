@@ -13,8 +13,6 @@ class ClientSearchListViewModel extends ChangeNotifier {
   ClientServerService _serverService;
 
   List<Therapist> _currentTherapistList;
-
-  // TODO will check if the the therapist is registered before
   List<dynamic> _registeredTherapistsIDList;
 
   List<String> _pendingTherapistList;
@@ -53,7 +51,7 @@ class ClientSearchListViewModel extends ChangeNotifier {
 
         _totalPage = decodedBody["data"]["psychologists"]["totalPages"];
 
-        _registeredTherapistsIDList = (_serverService.currentClient as Patient).clientRegisteredPsychologists;
+        _registeredTherapistsIDList = (_serverService.currentPatient as Patient).clientRegisteredPsychologists;
 
         _currentTherapistList = await getTherapistsByPageFromService(_currentPage);
 

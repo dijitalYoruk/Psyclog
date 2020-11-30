@@ -150,8 +150,8 @@ const signIn = catchAsync(async(req, res, next) => {
    // checking whether user exists in db.
    const user = await User.findOne({ 
       $or: [{email: emailOrUsername}, 
-            {username: emailOrUsername}] 
-   }).select('+password')
+            {username: emailOrUsername}]
+   }).populate('wallet').select('+password')
    
    if (!user) {
       return next(new ApiError(__('error_not_found', 'User'), 404)) 

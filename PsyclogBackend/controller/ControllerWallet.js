@@ -29,6 +29,18 @@ const uploadMoney = catchAsync(async (req, res, next) => {
     })
 })
 
+const checkBalance = catchAsync(async (req, res, next) => {
+    const user = req.currentUser
+    const wallet = await Wallet.findById(user.wallet)
+
+    res.status(200).json({
+        status: 200,
+        data: { 
+            balance: wallet.cash
+        }
+    })
+})
+
 const withdrawMoney = catchAsync(async (req, res, next) => {
     // get required data.
     const user = req.currentUser
@@ -58,5 +70,6 @@ const withdrawMoney = catchAsync(async (req, res, next) => {
 
 module.exports = {
     uploadMoney,
-    withdrawMoney
+    withdrawMoney,
+    checkBalance
 }

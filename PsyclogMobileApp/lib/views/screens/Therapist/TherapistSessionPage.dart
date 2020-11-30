@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:ui';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
@@ -196,8 +195,7 @@ class _TherapistSessionPageState extends State<TherapistSessionPage> {
 
                         if (patient.profileImageURL != null) {
                           try {
-                            profileImage = Image.network(
-                                patient.profileImageURL + "/people/" + (index % 10).toString(),
+                            profileImage = Image.network(patient.profileImageURL + "/people/" + (index % 10).toString(),
                                 fit: BoxFit.fill);
                           } catch (e) {
                             print(e);
@@ -254,6 +252,20 @@ class _TherapistSessionPageState extends State<TherapistSessionPage> {
                                           child: Text(patient.userEmail,
                                               style: GoogleFonts.lato(fontSize: 11, color: ViewConstants.myWhite)),
                                         ),
+                                        LayoutBuilder(
+                                          builder: (BuildContext context, BoxConstraints constraints) {
+                                            return FlatButton(
+                                              minWidth: constraints.maxWidth,
+                                              onPressed: () {},
+                                              child: Text("Client Notes",
+                                                  style: GoogleFonts.lato(fontSize: 14, color: ViewConstants.myBlack)),
+                                              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                              color: ViewConstants.myYellow,
+                                              splashColor: ViewConstants.myYellow,
+                                              shape: RoundedRectangleBorder(),
+                                            );
+                                          },
+                                        )
                                       ],
                                     ),
                                   )

@@ -40,8 +40,8 @@ const seedUsersData = async () => {
    const patients = []
    const psychologists = [] 
    const phone = '+905428580909'
-   const password = '0123456789'
-   const passwordConfirm = '0123456789'
+   const password = '0000000000'
+   const passwordConfirm = '0000000000'
 
    const supportMessages = [
       Constants.SUPPORT_COMPLAINT,

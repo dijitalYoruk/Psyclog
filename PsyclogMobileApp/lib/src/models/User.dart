@@ -51,4 +51,15 @@ class User {
         _createdAt = json["data"]["profile"]['createdAt'] as String,
         _updatedAt = json["data"]["profile"]['updatedAt'] as String,
         _username = json["data"]["profile"]['username'] as String;
+
+  User.fromJsonForAppointment(Map<String, dynamic> json)
+      : _id = json['_id'] as String,
+        _firstName = json['name'] as String,
+        _lastName = json['surname'] as String,
+        _email = json['email'] as String,
+        _username = json['username'] as String,
+        _profileImageURL = json['profileImage'] as String,
+        _role = null,
+        _createdAt = null,
+        _updatedAt = null;
 }

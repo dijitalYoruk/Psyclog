@@ -89,7 +89,6 @@ class WebServerService {
     final String currentUserToken = await getToken();
 
     if (currentUserToken != null) {
-
       print("User Token: " + currentUserToken);
 
       try {
@@ -172,6 +171,26 @@ class WebServerService {
       }
     } else {
       return false;
+    }
+  }
+
+  Future<int> getBalance() async {
+    final String currentUserToken = await getToken();
+
+    try {
+      var response = await http.get(
+        '$_serverAddress/$_currentAPI/wallet/checkBalance',
+        headers: {'Authorization': "Bearer " + currentUserToken},
+      );
+
+      if (response.statusCode == ServiceConstants.STATUS_SUCCESS_CODE) {
+        return jsonDecode(response.body)["data"]["balance"];
+      } else {
+        return null;
+      }
+    } catch (error) {
+      print(error);
+      return null;
     }
   }
 

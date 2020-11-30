@@ -11,7 +11,7 @@ const routerWallet = express.Router({ mergeParams: true })
 // =====================
 // methods
 // =====================
-const { uploadMoney, withdrawMoney } = require('../controller/ControllerWallet')
+const { uploadMoney, withdrawMoney, checkBalance } = require('../controller/ControllerWallet')
 
 
 // =====================
@@ -20,4 +20,5 @@ const { uploadMoney, withdrawMoney } = require('../controller/ControllerWallet')
 routerWallet.use(middlewareAuth)
 routerWallet.post('/upload', middlewareRestrict(Constants.ROLE_USER), uploadMoney)
 routerWallet.post('/withdraw', middlewareRestrict(Constants.ROLE_PSYCHOLOGIST, Constants.ROLE_USER), withdrawMoney)
+routerWallet.get('/checkBalance', middlewareRestrict(Constants.ROLE_PSYCHOLOGIST, Constants.ROLE_USER), checkBalance)
 module.exports = routerWallet

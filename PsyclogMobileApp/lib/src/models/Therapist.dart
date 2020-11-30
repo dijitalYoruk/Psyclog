@@ -33,6 +33,13 @@ class Therapist extends User {
         _appointmentPrice = parsedJson['appointmentPrice'] as int,
         super.fromJsonForList(parsedJson);
 
+  Therapist.fromJsonForAppointment(Map<String, dynamic> parsedJson)
+      : _patientIDs = null,
+        _isPsychologistVerified = null,
+        _isActiveForClientRequest = null,
+        _appointmentPrice = null,
+        super.fromJsonForAppointment(parsedJson);
+
   String getFullName() {
     return userFirstName.toString().inCaps + " " + userSurname.toString().inCaps;
   }

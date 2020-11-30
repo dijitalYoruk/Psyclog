@@ -41,6 +41,40 @@ const blockIntervals = catchAsync(async (req, res, next) => {
     })
 })
 
+const retrieveBlockedDays = catchAsync(async (req, res) => {
+    // retrieve data
+    const psychologist = req.currentUser
+
+    // extract blocked intervals.
+    const calendar = await Calendar.findById(psychologist.calendar)
+
+    const days = []
+
+    for(i = 1; i <= 5; i++) {
+        const blocked = calendar.retrieveBlockedTimes(i)
+
+        day = ""
+
+        if (i == 1) {
+          day = "monday"
+        } else if (i == 2) {
+          day = "tuesday"
+        } else if (i == 3) {
+          day = "wednesday"
+        } else if (i == 4) {
+          day = "thursday"
+        } else if (i == 5) {
+          day = "friday"
+        }
+
+        days.push({day , blocked})
+    }
+
+    res.status(200).json({
+        status: 200,
+        data: { days }
+    })
+})
 
 const retrieveDateStatus = catchAsync(async (req, res, next) => {
     // get required data.
@@ -229,8 +263,8 @@ const cancelAppointment = catchAsync(async (req, res, next) => {
         return next(new ApiError(__('error_unauthorized'), 403))
     }
 
-    res.status(205).json({
-       status: 205,
+    res.status(200).json({
+       status: 200,
        data: { message: __('success_delete', 'Appointment') } 
     })
 })
@@ -289,9 +323,10 @@ const retrievePersonalAppointments = catchAsync(async (req, res, next) => {
     // construct start and end times.
     for (const appointment of appointments) {
         // construct the date object for starting time
-        const endTimeSlot = appointment.intervals.pop()
+        const endTimeSlot = appointment.intervals[appointment.intervals.length - 1]
         const startingTimeSlot = appointment.intervals[0]
         const appointmentDate = appointment.appointmentDate
+
         appointment.end = constructEndDate(appointmentDate, endTimeSlot)
         appointment.start = constructStartDate(appointmentDate, startingTimeSlot)
     }
@@ -328,5 +363,6 @@ module.exports = {
     blockIntervals,
     cancelAppointment,
     terminateAppointment,
-    retrievePersonalAppointments
+    retrievePersonalAppointments,
+    retrieveBlockedDays
 }
