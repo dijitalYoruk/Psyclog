@@ -204,7 +204,8 @@ class _TherapistAppointmentPageState extends State<TherapistAppointmentPage> {
                                 ],
                               ),
                               onPressed: () async {
-                                bool isBlocked = await Navigator.pushNamed(context, ViewConstants.therapistIntervalRoute) as bool;
+                                bool isBlocked =
+                                    await Navigator.pushNamed(context, ViewConstants.therapistIntervalRoute) as bool;
 
                                 if (isBlocked) {
                                   final snackBar = SnackBar(
@@ -389,13 +390,12 @@ class _TherapistAppointmentPageState extends State<TherapistAppointmentPage> {
                                           Builder(
                                             builder: (BuildContext builderContext) {
                                               int startUnixTime = _currentAppointment.getStartTime;
-                                              int endUnixTime = _currentAppointment.getEndTime;
 
                                               int currentUnixTime = DateTime.now().toUtc().millisecondsSinceEpoch;
 
                                               List<Widget> buttons = [];
 
-                                              if (currentUnixTime < endUnixTime && currentUnixTime > startUnixTime) {
+                                              if (currentUnixTime > startUnixTime) {
                                                 buttons.add(Expanded(
                                                   child: FlatButton(
                                                     materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -414,9 +414,7 @@ class _TherapistAppointmentPageState extends State<TherapistAppointmentPage> {
                                                 buttons.add(Expanded(
                                                   child: FlatButton(
                                                     materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                                    onPressed: () {
-
-                                                    },
+                                                    onPressed: () {},
                                                     child: AutoSizeText(
                                                       "Update",
                                                       style: GoogleFonts.lato(
@@ -550,29 +548,40 @@ class _TherapistAppointmentPageState extends State<TherapistAppointmentPage> {
                                   _colorValue = 255 - (value / _changeLength) % 255;
                                 }
 
-                                double height = MediaQuery.of(context).size.height;
+                                double height;
+
+                                if(MediaQuery.of(context).size.height > 800) {
+                                  height = MediaQuery.of(context).size.height * 0.8;
+                                } else {
+                                  height = MediaQuery.of(context).size.height;
+                                }
 
                                 Color _redAppliedColor = _backgroundColor.withBlue(_colorValue.toInt());
 
-                                return Container(
+                                return Card(
+                                  elevation: 5,
                                   margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                                  height: height * 0.25,
-                                  decoration: BoxDecoration(
-                                    color: _redAppliedColor.withOpacity(0.5),
+                                  shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10),
                                   ),
-                                  child: Card(
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      clipBehavior: Clip.hardEdge,
-                                      shadowColor: Colors.transparent,
-                                      color: ViewConstants.myBlue.withOpacity(0.7),
-                                      child: Column(
-                                        children: [
-                                          child,
-                                        ],
-                                      )),
+                                  clipBehavior: Clip.hardEdge,
+                                  color: ViewConstants.myBlue.withOpacity(0.5),
+                                  child: Container(
+                                    margin: EdgeInsets.all(5),
+                                    height: height * 0.25,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      gradient: LinearGradient(
+                                          begin: Alignment.topLeft,
+                                          end: Alignment(4, 4),
+                                          colors: [ViewConstants.myBlue, _redAppliedColor.withOpacity(0.75)]),
+                                    ),
+                                    child: Column(
+                                      children: [
+                                        child,
+                                      ],
+                                    ),
+                                  ),
                                 );
                               },
                               valueListenable: _scrollOffset,

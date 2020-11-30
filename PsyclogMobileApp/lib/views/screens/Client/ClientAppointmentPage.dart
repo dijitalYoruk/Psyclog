@@ -162,7 +162,7 @@ class _ClientAppointmentPageState extends State<ClientAppointmentPage> {
                           height: MediaQuery.of(context).size.height / 12,
                           margin: EdgeInsets.only(top: 20, right: 20, left: 20),
                           child: FlatButton(
-                            color: ViewConstants.myBlue.withOpacity(0.75),
+                            color: ViewConstants.myBlue,
                             splashColor: ViewConstants.myYellow,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
@@ -216,7 +216,7 @@ class _ClientAppointmentPageState extends State<ClientAppointmentPage> {
                             child: Text(
                               DateParser.monthToString(_dateTime),
                               style: GoogleFonts.lato(
-                                  color: ViewConstants.myBlue.withOpacity(0.5), fontWeight: FontWeight.bold),
+                                  color: ViewConstants.myBlue.withOpacity(0.7), fontWeight: FontWeight.bold),
                             )));
 
                         while (_appointmentIndex < _appointmentLength) {
@@ -362,7 +362,7 @@ class _ClientAppointmentPageState extends State<ClientAppointmentPage> {
 
                                               List<Widget> buttons = [];
 
-                                              if (currentUnixTime < endUnixTime && currentUnixTime > startUnixTime) {
+                                              if (currentUnixTime > startUnixTime) {
                                                 buttons.add(Expanded(
                                                   child: FlatButton(
                                                     materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -617,7 +617,7 @@ class _ClientAppointmentPageState extends State<ClientAppointmentPage> {
                               ),
                               builder: (context, value, child) {
                                 double _colorValue;
-                                double _changeLength = 3;
+                                double _changeLength = 2;
                                 double _div = value / (255 * _changeLength);
 
                                 if (_div.toInt().isEven) {
@@ -626,29 +626,39 @@ class _ClientAppointmentPageState extends State<ClientAppointmentPage> {
                                   _colorValue = 255 - (value / _changeLength) % 255;
                                 }
 
-                                double height = MediaQuery.of(context).size.height;
+                                double height;
+
+                                if(MediaQuery.of(context).size.height > 800) {
+                                  height = MediaQuery.of(context).size.height * 0.8;
+                                } else {
+                                  height = MediaQuery.of(context).size.height;
+                                }
 
                                 Color _redAppliedColor = _backgroundColor.withRed(_colorValue.toInt());
 
-                                return Container(
+                                return Card(
+                                  elevation: 5,
                                   margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                                  height: height * 0.25,
-                                  decoration: BoxDecoration(
-                                    color: _redAppliedColor.withOpacity(0.5),
+                                  shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10),
                                   ),
-                                  child: Card(
-                                      shape: RoundedRectangleBorder(
+                                  clipBehavior: Clip.hardEdge,
+                                  color: ViewConstants.myBlue.withOpacity(0.5),
+                                  child: Container(
+                                    margin: EdgeInsets.all(5),
+                                    height: height * 0.25,
+                                    decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      clipBehavior: Clip.hardEdge,
-                                      shadowColor: Colors.transparent,
-                                      color: ViewConstants.myBlue.withOpacity(0.7),
-                                      child: Column(
-                                        children: [
-                                          child,
-                                        ],
-                                      )),
+                                        gradient: LinearGradient(
+                                            begin: Alignment.topLeft,
+                                            end: Alignment(5, 5),
+                                            colors: [ViewConstants.myBlue, _redAppliedColor.withOpacity(0.75)])),
+                                    child: Column(
+                                      children: [
+                                        child,
+                                      ],
+                                    ),
+                                  ),
                                 );
                               },
                               valueListenable: _scrollOffset,

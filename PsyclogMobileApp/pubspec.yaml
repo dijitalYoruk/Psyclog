@@ -32,6 +32,8 @@ dependencies:
   timeago: ^2.0.26
   animations: ^1.1.2
   file_picker: ^2.0.3
+  socket_io_client: ^0.9.12
+  provider: ^4.3.2+1
   flutter_secure_storage: ^3.3.3
   flutter_calendar_carousel: ^1.4.12
   flutter_inner_drawer: ^0.5.7+1
@@ -40,7 +42,6 @@ dependencies:
   supercharged: ^1.7.0
   http: ^0.12.2
   keyboard_visibility: ^0.5.6
-  provider: ^4.3.2+1
   wave: ^0.0.8
 
 dev_dependencies:

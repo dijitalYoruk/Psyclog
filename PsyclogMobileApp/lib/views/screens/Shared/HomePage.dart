@@ -4,9 +4,11 @@ import 'package:psyclog_app/service/WebServerService.dart';
 import 'package:psyclog_app/src/models/Patient.dart';
 import 'package:psyclog_app/src/models/Therapist.dart';
 import 'package:psyclog_app/views/screens/Client/ClientAppointmentPage.dart';
+import 'package:psyclog_app/views/screens/Client/ClientMessagePage.dart';
 import 'package:psyclog_app/views/screens/Client/ClientSessionPage.dart';
 import 'package:psyclog_app/views/screens/Client/ClientSearchPage.dart';
 import 'package:psyclog_app/views/screens/Therapist/TherapistAppointmentPage.dart';
+import 'package:psyclog_app/views/screens/Therapist/TherapistMessagePage.dart';
 import 'package:psyclog_app/views/screens/Therapist/TherapistSessionPage.dart';
 import 'package:psyclog_app/views/util/ViewConstants.dart';
 
@@ -75,8 +77,17 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
           }
         },
       ),
-      Container(
-        color: ViewConstants.myWhite,
+      Builder(
+        builder: (BuildContext context) {
+          if (_webServerService.currentUser is Patient) {
+            return ClientMessagePage();
+          } else if (_webServerService.currentUser is Therapist) {
+            return TherapistMessagePage();
+          } else {
+            // TODO change after the debug process to " Container(); "
+            return Container();
+          }
+        },
       ),
     ];
 
