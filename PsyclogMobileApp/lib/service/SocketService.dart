@@ -1,16 +1,30 @@
+import 'package:psyclog_app/service/WebServerService.dart';
 import 'package:psyclog_app/service/util/ServiceConstants.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
-class SocketService {
-  IO.Socket socket;
+class SocketService extends WebServerService {
+  static IO.Socket _socket;
+  static String _serverAddress;
+  static SocketService _socketService;
 
-  createSocketConnection() {
-    socket = IO.io(
-        ServiceConstants.serverAddress,
-        IO.OptionBuilder().setTransports(['websocket']) // for Flutter or Dart VM
-            .build());
+  static Future<SocketService> getSocketService() async {
+    if (_serverAddress == null) {
+      _serverAddress = ServiceConstants.serverAddress;
+    }
+    if (_socket == null) {
+      print("Empty Socket Service for Client Storage Service. Creating a new one.");
+      _socket = IO.io(_serverAddress, IO.OptionBuilder().setTransports(['websocket']).build());
 
-    this.socket.on("connect", (_) => print('Connected'));
-    this.socket.on("disconnect", (_) => print('Disconnected'));
+      _socket.on("connect", (_) => print('Connected'));
+      _socket.on("disconnect", (_) => print('Disconnected'));
+    }
+    if (_socketService == null) {
+      print("Empty Service for Client Server Service. Creating a new one.");
+      _socketService = new SocketService();
+    }
+
+    return _socketService;
   }
+
+  get getSocket => _socket;
 }

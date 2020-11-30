@@ -52,4 +52,20 @@ class DateParser {
 
     return _dateTime;
   }
+
+  static DateTime jsonToDateTimeWithClock(String jsonDateText) {
+    List<String> jsonDateSubText = jsonDateText.split("-");
+
+    List<String> jsonDateClock = jsonDateSubText[2].substring(3, jsonDateSubText[2].length).split(":");
+
+    DateTime _dateTime = DateTime(
+        int.parse(jsonDateSubText[0]),
+        int.parse(jsonDateSubText[1]),
+        int.parse(jsonDateSubText[2].substring(0, 2)),
+        int.parse(jsonDateClock[0]),
+        int.parse(jsonDateClock[1]),
+        int.parse(jsonDateClock[0].substring(0, 1)));
+
+    return _dateTime;
+  }
 }

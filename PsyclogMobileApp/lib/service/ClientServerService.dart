@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import 'package:psyclog_app/service/WebServerService.dart';
@@ -14,7 +13,6 @@ import 'package:psyclog_app/src/models/ClientAppointment.dart';
 class ClientServerService extends WebServerService {
   static String _serverAddress;
   static ClientServerService _clientServerService;
-  static FlutterSecureStorage _secureStorage;
   static String _currentAPI;
 
   get currentPatient => super.currentUser;
@@ -33,13 +31,10 @@ class ClientServerService extends WebServerService {
       print("Empty Service for Client Server Service. Creating a new one.");
       _clientServerService = new ClientServerService();
     }
-    if (_secureStorage == null) {
-      print("Empty Storage for Client Storage Service. Creating a new one.");
-      _secureStorage = new FlutterSecureStorage();
-    }
 
     return _clientServerService;
   }
+
 
   Future<Response> getTherapistsByPage(int page) async {
     if (UserRestrict.restrictAccessByGivenRoles(
