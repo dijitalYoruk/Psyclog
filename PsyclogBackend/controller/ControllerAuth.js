@@ -164,7 +164,7 @@ const signIn = catchAsync(async(req, res, next) => {
    }
    
    // if psychologist, checking whether account has been verified by admin.
-   if (user.role === constants.ROLE_PSYCHOLOGIST && !user.isPsychologistVerified) {
+   if (user.role === constants.ROLE_PSYCHOLOGIST && !user.isAccountVerified) {
       return next(new ApiError(__('error_not_verified'), 403)) 
    } 
 

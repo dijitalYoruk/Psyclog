@@ -23,7 +23,7 @@ const middlewareAuth = catchAsync(async (req, res, next) => {
       return next(new ApiError('The user belonging to this token does no longer exist.', 401))
    }
 
-   if ( currentUser.role === constants.ROLE_USER && (!currentUser.isAccountVerified)) {
+   if ( currentUser.role == constants.ROLE_USER && (!currentUser.isAccountVerified)) {
       return next(new ApiError(__('error_not_verified'), 403)) 
    }
 
