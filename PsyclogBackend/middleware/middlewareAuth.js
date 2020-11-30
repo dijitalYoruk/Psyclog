@@ -2,6 +2,7 @@ const { catchAsync } = require('../utils/ErrorHandling')
 const ApiError = require('../utils/ApiError')
 const User = require('../model/user')
 const Util = require('../utils/util')
+const constants = require('../utils/constants')
 
 const middlewareAuth = catchAsync(async (req, res, next) => {
    // getting the jwt token
@@ -20,6 +21,10 @@ const middlewareAuth = catchAsync(async (req, res, next) => {
    
    if (!currentUser) {
       return next(new ApiError('The user belonging to this token does no longer exist.', 401))
+   }
+
+   if ( currentUser.role == constants.ROLE_USER && (!currentUser.isAccountVerified)) {
+      return next(new ApiError(__('error_not_verified'), 403)) 
    }
 
    // setting founded user as current user.

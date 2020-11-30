@@ -1,8 +1,15 @@
+// =====================
+// imports
+// =====================
 const mongoosePaginate = require('mongoose-paginate-v2')
 const { filterObject } = require('../utils/util')
 const mongoose = require('mongoose')
+const User = require('../model/user')
 const Schema = mongoose.Schema
 
+// =====================
+// Schema
+// =====================
 const ReviewSchema = new Schema({
    title: {
       type: String,
@@ -32,6 +39,9 @@ const ReviewSchema = new Schema({
    }
 }, {timestamps: true, versionKey: false})
 
+// =====================
+// methods
+// =====================
 
 ReviewSchema.statics.mapData = (review, data) => {
    const items = ['title', 'content', 'rating']
@@ -40,6 +50,40 @@ ReviewSchema.statics.mapData = (review, data) => {
       review[key] = data[key]
    })
 }
+
+//Calculates average ratings
+ReviewSchema.statics.calcAverageRatings = async function(psychologist){
+   const psychologistId = psychologist._id
+   const stats = await this.aggregate([
+      {
+         $match: {psychologist: psychologistId}
+      },
+      {
+         $group: {
+            _id:'$psychologist',
+            nRating: { $sum: 1},
+            avgRating: {$avg: '$rating'}
+         }
+      }
+   ])
+
+   if(stats.length>0){
+      psychologist.ratingsQuantity = stats[0].nRating;
+      psychologist.ratingsAverage = stats[0].avgRating;
+      await psychologist.save()
+   }
+   else{
+      psychologist.ratingsQuantity = 0;
+      psychologist.ratingsAverage = 4.5;
+      await psychologist.save()
+   }
+}
+
+//Calls the calcAverageRatings before saving 
+ReviewSchema.post('save',function(){
+   //this points to current review
+   this.constructor.calcAverageRatings(this.psychologist);
+})
 
 
 ReviewSchema.plugin(mongoosePaginate)

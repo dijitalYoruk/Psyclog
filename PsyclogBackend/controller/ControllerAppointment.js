@@ -124,7 +124,8 @@ const createAppointment = catchAsync(async (req, res, next) => {
     }
 
     // validate appointment date
-    const appointmentDate = new Date(`${year}-${month}-${day}`)
+    let appointmentDate = new Date(`${year}-${month}-${day}`)
+    appointmentDate = new Date( appointmentDate.getTime() + Math.abs(appointmentDate.getTimezoneOffset()*60000))
     const dateError = Appointment.validateDate(appointmentDate, true)
     if (dateError) { return next(dateError) }
     
@@ -162,6 +163,8 @@ const createAppointment = catchAsync(async (req, res, next) => {
     // update calendar.
     calendar.appointments.push(appointment)
     await calendar.save()
+
+    console.log(appointment)
 
     res.status(200).json({
         status: 200,

@@ -24,18 +24,17 @@ const filterObject = (obj, ...allowedFields) => {
 
 const getToday = isParsed => {
    let now = new Date()
-   const date = now.toISOString().split('T')[0]
+   let date = now.toISOString().split('T')[0]
    let today = new Date(date) 
+   today = new Date( today.getTime() + Math.abs(today.getTimezoneOffset()*60000))
    if (isParsed) today = Date.parse(today) 
    return today
 }
 
 const constructStartDate = (date, timeSlotIndex) => {
-
    const dateISO = date.toISOString().split('T')[0]
    const timeSlot = Constants.VALID_TIME_INTERVALS[timeSlotIndex]
-   const startTime = new Date(`${dateISO}T${timeSlot.startTime}`)
-
+   let startTime = new Date(`${dateISO}T${timeSlot.startTime}`)
    return Date.parse(startTime)
 }
 
@@ -43,7 +42,6 @@ const constructEndDate = (date, timeSlotIndex) => {
    const dateISO = date.toISOString().split('T')[0]
    const timeSlot = Constants.VALID_TIME_INTERVALS[timeSlotIndex]
    const endTime = new Date(`${dateISO}T${timeSlot.endTime}`)
-
    return Date.parse(endTime)
 }
 

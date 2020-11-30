@@ -145,6 +145,18 @@ const UserSchema = new Schema({
       ]
    },
    // Psychologist specific
+   ratingsQuantity: {
+      type:Number,
+      default:0,
+   },
+
+   ratingsAverage: {
+      type:Number,
+      default:4.5,
+      min:[1,'Rating must be above 1.0'],
+      max:[5,'Rating must be below 5.0']
+   },
+   
    cv: {
       type:String,
       trim: true,
@@ -172,8 +184,14 @@ const UserSchema = new Schema({
          message: 'Passwords do not match.'
       }
    },
+   isAccountVerified: {
+      type: Boolean,
+      default: false
+   },
    passwordResetToken: String,
    passwordResetExpires: Date,
+   verificationToken: String,
+   verificationExpires: Date,
    banTerminationDate: Date
 
 }, {timestamps: true, versionKey: false})
@@ -216,7 +234,10 @@ UserSchema.statics.filterBody = body => {
       'email',      
       'phone',
       'role',
-      'name']
+      'name',
+      'isAccountVerified',
+      'verificationToken',
+      'verificationExpires']
 
    const itemsPsychologist = [
       'appointmentPrice', 
@@ -230,7 +251,9 @@ UserSchema.statics.filterBody = body => {
       'email',      
       'role',
       'name', 
-      'cv'
+      'cv',
+      'ratingsQuantity', 
+      'ratingsAverage'
    ]
 
    let data = {}
@@ -266,7 +289,9 @@ UserSchema.statics.mapData = (user, data, psychologistVerificationEnabled) => {
       'biography',
       'transcript', 
       'appointmentPrice',  
-      'isActiveForClientRequest']
+      'isActiveForClientRequest',
+      'ratingsQuantity', 
+      'ratingsAverage']
 
    // enabling verification
    if (psychologistVerificationEnabled) {
@@ -310,6 +335,8 @@ UserSchema.pre('save', async function(next) {
       this.wallet = undefined
       this.phone = undefined
       this.cv = undefined
+      this.ratingsQuantity = undefined
+      this.ratingsAverage = undefined
    }
 
    // seting irrelevant items for user as undefined.
@@ -321,6 +348,8 @@ UserSchema.pre('save', async function(next) {
       this.biography = undefined
       this.patients = undefined
       this.cv = undefined
+      this.ratingsQuantity = undefined
+      this.ratingsAverage = undefined
    }
 
    // seting irrelevant items for psychologist as undefined.
@@ -384,6 +413,21 @@ UserSchema.methods.createPasswordResetToken = function() {
    // setup expiration date of reset token.
    this.passwordResetExpires = Date.now() + 10 * 60 * 1000
    return resetToken
+}
+
+UserSchema.methods.createAccountVerificationToken = function() {
+   // generate verification token 
+   const verifyToken = crypto.randomBytes(32).toString('hex')
+
+   // hash the token
+   this.verificationToken = crypto
+     .createHash('sha256')
+     .update(verifyToken)
+     .digest('hex')
+
+   // setup expiration date of reset token.
+   this.verificationExpires = Date.now() + 10 * 60 * 1000
+   return verifyToken
 }
 
 // update profile photo

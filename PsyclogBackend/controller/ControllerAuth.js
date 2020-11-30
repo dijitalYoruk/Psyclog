@@ -20,9 +20,24 @@ const crypto = require('crypto')
  */
 const signUpPatient = catchAsync(async (req, res, next) => {
 
+
+   //creating verification token for every user 
+   const verifyToken = crypto.randomBytes(32).toString('hex')
+
+   // hash the token
+      const verificationToken = crypto
+         .createHash('sha256')
+         .update(verifyToken)
+         .digest('hex')
+
+   // setup expiration date of reset token.
+      const verificationExpires = Date.now() + 10 * 60 * 1000
+
    // parsing the body 
    req.body.cash = 0
    req.body.role = constants.ROLE_USER
+   req.body.verificationExpires = verificationExpires;
+   req.body.verificationToken = verificationToken;
    const data = User.filterBody(req.body)
 
    // create calendar for the user
@@ -40,8 +55,9 @@ const signUpPatient = catchAsync(async (req, res, next) => {
    await calendar.save()
    await wallet.save()
 
-   const url=`${req.protocol}://${req.get('host')}/api/v1/auth/profile`;
-   //new Mailer(user,url).sendWelcome();
+   const verificationURL = `${req.protocol}://${req.get('host')}/api/v1/auth/verification/${verificationToken}`;
+   await Mailer.sendAccountVerification(user,verificationURL)
+
 
    res.status(200).json({
       status: 200,
@@ -83,6 +99,39 @@ const signUpPsychologist = catchAsync(async (req, res, next) => {
    })
 })
 
+/**
+ *  verifies the user and removes the verification tokens.
+ */
+const verifyUser = catchAsync(async (req, res, next) => {
+
+   const user = await User.findOne({
+      verificationToken: req.params.token
+   })
+
+   if (!user) {
+      return new ApiError(__('error_jwt_invalid'), 400)
+   }
+
+   if(user.verificationExpires<Date.now()){
+      user.verificationExpires = undefined
+      user.verificationToken = undefined
+      await user.save()
+
+      res.status(200).render('verification_error',{
+      });
+
+   }else{
+      user.isAccountVerified = true
+      user.verificationExpires = undefined
+      user.verificationToken = undefined
+      await user.save()
+
+      res.status(200).render('verification_okey',{
+      });
+
+   }
+
+})
 
 /**
  * sign in the users.
@@ -115,9 +164,14 @@ const signIn = catchAsync(async(req, res, next) => {
    }
    
    // if psychologist, checking whether account has been verified by admin.
-   if (user.role === constants.ROLE_PSYCHOLOGIST && !user.isPsychologistVerified) {
+   if (user.role === constants.ROLE_PSYCHOLOGIST && !user.isAccountVerified) {
       return next(new ApiError(__('error_not_verified'), 403)) 
    } 
+
+   // if user, checking whether account has been verified by e-mail verification.
+   if (user.role === constants.ROLE_USER && (!user.isAccountVerified)) {
+      return next(new ApiError(__('error_not_verified'), 403)) 
+   }
 
    // generating corrsponding JWT token
    const token = User.generateJWT({ id: user._id, role: user.role})
@@ -270,5 +324,6 @@ module.exports = {
    deleteProfile,
    forgotPassword,
    retrieveProfile,
-   signUpPsychologist
+   signUpPsychologist,
+   verifyUser
 }
