@@ -48,7 +48,7 @@ export default {
 
         // determining the contact. 
         const role = this.currentUser.role
-        this.contact = role == 'user' ? this.selectedChat.psychologist :
+        this.contact = role == 'role_user' ? this.selectedChat.psychologist :
                                         this.selectedChat.patient
 
         this.socket.on(this.contact._id, status => {
