@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_inner_drawer/inner_drawer.dart';
 import 'package:psyclog_app/service/ClientServerService.dart';
+import 'package:psyclog_app/service/SocketService.dart';
 import 'package:psyclog_app/service/WebServerService.dart';
 import 'package:psyclog_app/src/models/Patient.dart';
 import 'package:psyclog_app/views/util/ViewConstants.dart';
@@ -108,6 +109,7 @@ class _InnerDrawerWithScreenState extends State<InnerDrawerWithScreen> {
                             onTap: () {
                               ClientServerService.getClientServerService().then((value) {
                                 value.clearAllInfo();
+                                SocketService.disposeService();
                                 Navigator.pushNamedAndRemoveUntil(
                                     context, ViewConstants.welcomeRoute, (Route<dynamic> route) => false);
                               });

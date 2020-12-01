@@ -17,14 +17,14 @@ class ClientMessagePage extends StatefulWidget {
   _ClientMessagePageState createState() => _ClientMessagePageState();
 }
 
-class _ClientMessagePageState extends State<ClientMessagePage> {
+class _ClientMessagePageState extends State<ClientMessagePage> with AutomaticKeepAliveClientMixin {
   ClientMessageListViewModel _clientMessageListViewModel;
   WebServerService _webServerService;
 
   @override
   void initState() {
-    _clientMessageListViewModel = ClientMessageListViewModel();
-
+    _clientMessageListViewModel = ClientMessageListViewModel(context);
+    _clientMessageListViewModel.initializeService();
     // TODO: implement initState
     super.initState();
   }
@@ -66,16 +66,34 @@ class _ClientMessagePageState extends State<ClientMessagePage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Padding(
                             padding: EdgeInsets.only(
                               left: 20,
                             ),
+                            child: Container(
+                              height: 25,
+                              width: 25,
+                              decoration: BoxDecoration(
+                                color: ViewConstants.myBlack,
+                                shape: BoxShape.circle,
+                              ),
+                              child: Center(
+                                child: Text(_clientMessageListViewModel.getNotSeenCount() != 0 ? _clientMessageListViewModel.getNotSeenCount().toString() : "...",
+                                    textAlign: TextAlign.left,
+                                    style: TextStyle(fontSize: 13, color: ViewConstants.myWhite, fontWeight: FontWeight.bold)),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(
+                              left: 10,
+                            ),
                             child: Text("Chats",
                                 textAlign: TextAlign.left,
-                                style: TextStyle(fontSize: 24, color: ViewConstants.myBlack, fontWeight: FontWeight.bold)),
+                                style: TextStyle(fontSize: 20, color: ViewConstants.myBlack, fontWeight: FontWeight.bold)),
                           ),
+                          Spacer(),
                           Padding(
                             padding: EdgeInsets.only(
                               left: 20,
@@ -125,7 +143,7 @@ class _ClientMessagePageState extends State<ClientMessagePage> {
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 10),
                 child: Divider(
-                  color: ViewConstants.myGrey.withOpacity(0.5),
+                  color: ViewConstants.myGrey.withOpacity(0.25),
                   thickness: 0.5,
                 ),
               ),
@@ -153,6 +171,7 @@ class _ClientMessagePageState extends State<ClientMessagePage> {
                                     Duration lastSeenDuration = DateTime.now().difference(contactTime);
 
                                     String lastSeenTime;
+                                    bool isSeen = model.isSeenByIndex(index);
 
                                     if (lastSeenDuration.inDays > 0) {
                                       lastSeenTime = lastSeenDuration.inDays.toString() + " d";
@@ -164,78 +183,100 @@ class _ClientMessagePageState extends State<ClientMessagePage> {
                                       lastSeenTime = "now";
                                     }
 
-                                    return Card(
-                                      margin: EdgeInsets.only(left: 25, top: 15, bottom: 15),
-                                      color: Colors.transparent,
-                                      shadowColor: Colors.transparent,
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        children: [
-                                          Stack(
+                                    Color _backgroundColor, _textColor, _nameColor;
+
+                                    if (!isSeen) {
+                                      _backgroundColor = Colors.transparent;
+                                      _nameColor = ViewConstants.myBlack;
+                                      _textColor = ViewConstants.myGrey.withOpacity(0.75);
+                                    } else {
+                                      _backgroundColor = ViewConstants.myBlack;
+                                      _nameColor = ViewConstants.myWhite;
+                                      _textColor = ViewConstants.myWhite.withOpacity(0.75);
+                                    }
+
+                                    return InkWell(
+                                      onTap: () {
+
+                                      },
+                                      child: Card(
+                                        elevation: 0,
+                                        margin: EdgeInsets.zero,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.zero,
+                                        ),
+                                        color: _backgroundColor,
+                                        shadowColor: Colors.transparent,
+                                        child: Container(
+                                          margin: EdgeInsets.only(left: 25, top: 15, bottom: 15),
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            crossAxisAlignment: CrossAxisAlignment.center,
                                             children: [
-                                              CircleAvatar(
-                                                radius: 25,
-                                                backgroundImage: (Image.network(
-                                                        currentContact.profileImage + "/people/" + (index % 10).toString()))
-                                                    .image,
-                                              ),
-                                              Positioned(
-                                                bottom: 0,
-                                                right: 0,
-                                                child: Container(
-                                                  decoration: BoxDecoration(
-                                                    color: ViewConstants.myWhite,
-                                                    shape: BoxShape.circle,
+                                              Stack(
+                                                children: [
+                                                  CircleAvatar(
+                                                    radius: 24,
+                                                    backgroundImage: (Image.network(
+                                                            currentContact.profileImage + "/people/" + ((index + 2) % 10).toString()))
+                                                        .image,
                                                   ),
-                                                  child: Icon(
-                                                    Icons.circle,
-                                                    size: 18,
-                                                    color:
-                                                        currentContact.isActive ? Colors.green : ViewConstants.myGrey,
+                                                  Positioned(
+                                                    bottom: 0,
+                                                    right: 0,
+                                                    child: Container(
+                                                      decoration: BoxDecoration(
+                                                        color: ViewConstants.myWhite,
+                                                        shape: BoxShape.circle,
+                                                      ),
+                                                      child: Icon(
+                                                        Icons.circle,
+                                                        size: 18,
+                                                        color: currentContact.isActive ? Colors.green : ViewConstants.myGrey,
+                                                      ),
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
+                                              Expanded(
+                                                child: Padding(
+                                                  padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                                                  child: Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      Padding(
+                                                        padding: const EdgeInsets.only(bottom: 10.0),
+                                                        child: AutoSizeText(
+                                                            currentContact.firstName + " (@" + currentContact.username + ")",
+                                                            minFontSize: 15,
+                                                            style: GoogleFonts.lato(
+                                                                color: _nameColor, fontWeight: FontWeight.w600)),
+                                                      ),
+                                                      Container(
+                                                        child: AutoSizeText(currentContact.lastMessage.text,
+                                                            maxFontSize: 14,
+                                                            maxLines: 1,
+                                                            overflow: TextOverflow.clip,
+                                                            style: GoogleFonts.lato(color: _textColor)),
+                                                      ),
+                                                    ],
                                                   ),
                                                 ),
-                                              )
+                                              ),
+                                              Padding(
+                                                  padding: const EdgeInsets.only(right: 25.0),
+                                                  child: Column(
+                                                    children: [
+                                                      Text(lastSeenTime,
+                                                          style: GoogleFonts.lato(
+                                                              fontSize: 12,
+                                                              color: _textColor.withOpacity(0.5),
+                                                              fontWeight: FontWeight.w500)),
+                                                    ],
+                                                  ))
                                             ],
                                           ),
-                                          Expanded(
-                                            child: Padding(
-                                              padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                                              child: Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: [
-                                                  Padding(
-                                                    padding: const EdgeInsets.only(bottom: 10.0),
-                                                    child: AutoSizeText(
-                                                        currentContact.firstName + " (@" + currentContact.username + ")",
-                                                        minFontSize: 15,
-                                                        style: GoogleFonts.lato(
-                                                            color: ViewConstants.myBlack,
-                                                            fontWeight: FontWeight.w600)),
-                                                  ),
-                                                  Container(
-                                                    child: AutoSizeText(currentContact.lastMessage.text,
-                                                        maxFontSize: 14,
-                                                        maxLines: 1,
-                                                        overflow: TextOverflow.ellipsis,
-                                                        style: GoogleFonts.lato(color: ViewConstants.myGrey)),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                          Padding(
-                                              padding: const EdgeInsets.only(right: 25.0),
-                                              child: Column(
-                                                children: [
-                                                  Text(lastSeenTime,
-                                                      style: GoogleFonts.lato(
-                                                          fontSize: 12,
-                                                          color: ViewConstants.myGrey.withOpacity(0.5),
-                                                          fontWeight: FontWeight.w500)),
-                                                ],
-                                              ))
-                                        ],
+                                        ),
                                       ),
                                     );
                                   },
@@ -252,4 +293,8 @@ class _ClientMessagePageState extends State<ClientMessagePage> {
           ),
         ));
   }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }

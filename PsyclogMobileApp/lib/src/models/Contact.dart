@@ -4,12 +4,11 @@ class Contact {
   final String _chatID;
   final String _psychologistID;
   final String _patientID;
-  String username;
-  String firstName;
-  String lastName;
-  String profileImage;
-  String createdAt;
-  String updatedAt;
+  final String username;
+  final String firstName;
+  final String profileImage;
+  final String createdAt;
+  final String updatedAt;
   Message lastMessage;
   bool isActive;
 

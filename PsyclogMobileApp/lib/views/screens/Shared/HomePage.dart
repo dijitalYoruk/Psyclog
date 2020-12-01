@@ -1,6 +1,8 @@
 import 'package:custom_navigation_bar/custom_navigation_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:psyclog_app/service/SocketService.dart';
 import 'package:psyclog_app/service/WebServerService.dart';
+import 'package:psyclog_app/src/models/Message.dart';
 import 'package:psyclog_app/src/models/Patient.dart';
 import 'package:psyclog_app/src/models/Therapist.dart';
 import 'package:psyclog_app/views/screens/Client/ClientAppointmentPage.dart';
@@ -11,6 +13,7 @@ import 'package:psyclog_app/views/screens/Therapist/TherapistAppointmentPage.dar
 import 'package:psyclog_app/views/screens/Therapist/TherapistMessagePage.dart';
 import 'package:psyclog_app/views/screens/Therapist/TherapistSessionPage.dart';
 import 'package:psyclog_app/views/util/ViewConstants.dart';
+import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class HomePage extends StatefulWidget {
   @override
@@ -20,7 +23,6 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
   static List<Widget> _homepageTabs;
   static List<CustomNavigationBarItem> bottomIconButtons;
-
   PageController _pageController;
   WebServerService _webServerService;
   int _currentIndex;

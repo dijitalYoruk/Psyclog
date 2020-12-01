@@ -23,7 +23,20 @@ class SocketService extends WebServerService {
       _socketService = new SocketService();
     }
 
+    if(!_socket.connected) {
+      _socket.connect();
+    }
     return _socketService;
+  }
+
+  static disposeService() {
+    if(_socket != null) {
+      _socket.clearListeners();
+      _socket.disconnect();
+      print("Socket Service is disposed");
+    } else {
+      print("Socket was not alive");
+    }
   }
 
   get getSocket => _socket;
