@@ -1,19 +1,18 @@
 import 'package:custom_navigation_bar/custom_navigation_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:psyclog_app/service/SocketService.dart';
+import 'package:provider/provider.dart';
 import 'package:psyclog_app/service/WebServerService.dart';
-import 'package:psyclog_app/src/models/Message.dart';
 import 'package:psyclog_app/src/models/Patient.dart';
 import 'package:psyclog_app/src/models/Therapist.dart';
+import 'package:psyclog_app/view_models/client/ClientUserMessageListViewModel.dart';
+import 'package:psyclog_app/view_models/therapist/TherapistMessageListViewModel.dart';
 import 'package:psyclog_app/views/screens/Client/ClientAppointmentPage.dart';
 import 'package:psyclog_app/views/screens/Client/ClientMessagePage.dart';
 import 'package:psyclog_app/views/screens/Client/ClientSessionPage.dart';
 import 'package:psyclog_app/views/screens/Client/ClientSearchPage.dart';
 import 'package:psyclog_app/views/screens/Therapist/TherapistAppointmentPage.dart';
-import 'package:psyclog_app/views/screens/Therapist/TherapistMessagePage.dart';
 import 'package:psyclog_app/views/screens/Therapist/TherapistSessionPage.dart';
 import 'package:psyclog_app/views/util/ViewConstants.dart';
-import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class HomePage extends StatefulWidget {
   @override
@@ -23,6 +22,10 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
   static List<Widget> _homepageTabs;
   static List<CustomNavigationBarItem> bottomIconButtons;
+
+  ClientUserMessageListViewModel _clientMessageListViewModel;
+  TherapistMessageListViewModel _therapistMessageListViewModel;
+
   PageController _pageController;
   WebServerService _webServerService;
   int _currentIndex;
@@ -32,11 +35,24 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     _pageController = PageController(initialPage: 2);
     _currentIndex = _pageController.initialPage;
     super.initState();
+    initializeService()..then((value) => setState(() {}));
   }
 
   Future<bool> initializeService() async {
     // Wait for Web Server Service to be created
     _webServerService = await WebServerService.getWebServerService();
+
+    print("here");
+
+    if (_webServerService.currentUser is Patient) {
+      _clientMessageListViewModel = ClientUserMessageListViewModel(context);
+      _clientMessageListViewModel.initializeService();
+      _therapistMessageListViewModel = null;
+    } else if (_webServerService.currentUser is Therapist) {
+      _therapistMessageListViewModel = TherapistMessageListViewModel(context);
+      _therapistMessageListViewModel.initializeService();
+      _clientMessageListViewModel = null;
+    }
 
     // Initialize Homepage Tabs according to User Type
     _homepageTabs = <Widget>[
@@ -82,9 +98,12 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
       Builder(
         builder: (BuildContext context) {
           if (_webServerService.currentUser is Patient) {
-            return ClientMessagePage();
+            return ChangeNotifierProvider.value(
+              value: _clientMessageListViewModel,
+              child: ClientMessagePage(),
+            );
           } else if (_webServerService.currentUser is Therapist) {
-            return TherapistMessagePage();
+            return ChangeNotifierProvider.value(value: _therapistMessageListViewModel, child: ClientMessagePage());
           } else {
             // TODO change after the debug process to " Container(); "
             return Container();
@@ -142,21 +161,13 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
           );
         },
       ),
-      body: FutureBuilder(
-        // Wait for Tabs to be created depending on User Type
-        future: initializeService(),
-        builder: (context, snapshot) {
-          if (snapshot.data == true) {
-            return PageView(
+      body: _homepageTabs != null
+          ? PageView(
               physics: NeverScrollableScrollPhysics(),
               controller: _pageController,
               children: _homepageTabs,
-            );
-          } else {
-            return CircularProgressIndicator();
-          }
-        },
-      ),
+            )
+          : CircularProgressIndicator(),
     );
   }
 }

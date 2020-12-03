@@ -58,7 +58,7 @@ class DateParser {
 
     List<String> jsonDateClock = jsonDateSubText[2].substring(3, jsonDateSubText[2].length).split(":");
 
-    DateTime _dateTime = DateTime(
+    DateTime _dateTime = DateTime.utc(
         int.parse(jsonDateSubText[0]),
         int.parse(jsonDateSubText[1]),
         int.parse(jsonDateSubText[2].substring(0, 2)),

@@ -10,24 +10,24 @@ import 'package:psyclog_app/views/util/DateParser.dart';
 import 'package:psyclog_app/views/util/ViewConstants.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
-class ClientMessageListViewModel extends ChangeNotifier {
+class ClientUserMessageListViewModel extends ChangeNotifier {
   List<Contact> contactList;
-  List chatList;
   BuildContext context;
-
-  // List<Message> messages = List<Message>();
   SocketService _socketService;
   IO.Socket _socket;
 
-  ClientMessageListViewModel(this.context);
+  bool isBarActivated;
+
+  ClientUserMessageListViewModel(this.context);
 
   initializeService() async {
+    isBarActivated = true;
     contactList = List<Contact>();
-    chatList = List<dynamic>();
 
     try {
       _socketService = await SocketService.getSocketService();
       _socket = _socketService.getSocket;
+      _socket.clearListeners();
       await _activateUser();
     } catch (e) {
       print(e);
@@ -45,6 +45,8 @@ class ClientMessageListViewModel extends ChangeNotifier {
         setMessageSeenList();
         setLastMessagePerChat();
       } catch (e) {
+        contactList = [];
+        notifyListeners();
         print(e);
       }
     } else {
@@ -59,7 +61,7 @@ class ClientMessageListViewModel extends ChangeNotifier {
 
   void setChat() {
     _socket.on("chats", (chats) {
-      chatList = chats as List;
+      List chatList = chats as List;
 
       contactList = List<Contact>();
 
@@ -88,13 +90,7 @@ class ClientMessageListViewModel extends ChangeNotifier {
       _socket.off("chats");
 
       // Listening events on userIDs
-      for (Contact contact in contactList) {
-        _socket.on(contact.getPsychologistID, (status) {
-          contact.isActive = status;
-          notifyListeners();
-        });
-      }
-
+      setActiveList();
       sortContactList();
       notifyListeners();
       return;
@@ -132,14 +128,31 @@ class ClientMessageListViewModel extends ChangeNotifier {
     });
   }
 
+  void setActiveList() {
+    for (Contact contact in contactList) {
+      _socket.off(contact.getPsychologistID);
+      _socket.on(contact.getPsychologistID, (status) {
+        contact.isActive = status;
+        notifyListeners();
+      });
+    }
+    notifyListeners();
+  }
+
   void setMessageSeenList() {
     _socket.on("message-seen-list", (lastMessage) {
-      print(lastMessage);
       final chatID = lastMessage["chat"];
 
-      print("message seen list!!!!");
-
-      //contactList.singleWhere((element) => element.getChatID == chatID).lastMessage = lastMessage["message"];
+      contactList.singleWhere((element) => element.getChatID == chatID).lastMessage = Message.message(
+          lastMessage["isSeen"],
+          lastMessage["_id"],
+          lastMessage["message"],
+          lastMessage["author"],
+          lastMessage["contact"],
+          chatID,
+          lastMessage["createdAt"],
+          lastMessage["updatedAt"],
+          null);
       notifyListeners();
     });
     print("Message Seen List socket listener is created");
@@ -166,7 +179,10 @@ class ClientMessageListViewModel extends ChangeNotifier {
   }
 
   void setLastMessagePerChat() {
+    _socket.off("message");
     _socket.on("message", (message) {
+      print(message);
+
       Message newMessage = Message.messageWithOwner(
           message["isSeen"],
           message["_id"],
@@ -179,39 +195,49 @@ class ClientMessageListViewModel extends ChangeNotifier {
           message["updatedAt"],
           null);
 
-      Flushbar(
-        margin: EdgeInsets.all(14),
-        borderRadius: 8,
-        leftBarIndicatorColor: ViewConstants.myLightBlue,
-        icon: Padding(
-          padding: const EdgeInsets.only(left: 10),
-          child: CircleAvatar(
-            radius: 24,
-            backgroundImage: (Image.network(newMessage.messageOwner.profileImage + "/people/1")).image,
+      if (isBarActivated) {
+        Flushbar(
+          margin: EdgeInsets.all(14),
+          borderRadius: 8,
+          leftBarIndicatorColor: ViewConstants.myLightBlue,
+          icon: Padding(
+            padding: const EdgeInsets.only(left: 10),
+            child: CircleAvatar(
+              radius: 24,
+              backgroundImage: (Image.network(newMessage.messageOwner.profileImage + "/people/1")).image,
+            ),
           ),
-        ),
-        title: "",
-        titleText: Padding(
-          padding: const EdgeInsets.only(left: 8.0),
-          child: AutoSizeText(newMessage.messageOwner.name + " (@" + newMessage.messageOwner.username + ")"),
-        ),
-        messageText: Padding(
-          padding: const EdgeInsets.only(left: 8.0),
-          child: AutoSizeText(newMessage.text),
-        ),
-        flushbarStyle: FlushbarStyle.FLOATING,
-        reverseAnimationCurve: Curves.decelerate,
-        forwardAnimationCurve: Curves.decelerate,
-        flushbarPosition: FlushbarPosition.TOP,
-        backgroundColor: ViewConstants.myBlack,
-        duration: Duration(seconds: 3),
-      )..show(context);
+          title: "",
+          titleText: Padding(
+            padding: const EdgeInsets.only(left: 8.0),
+            child: AutoSizeText(newMessage.messageOwner.name + " (@" + newMessage.messageOwner.username + ")"),
+          ),
+          messageText: Padding(
+            padding: const EdgeInsets.only(left: 8.0),
+            child: AutoSizeText(newMessage.text),
+          ),
+          flushbarStyle: FlushbarStyle.FLOATING,
+          reverseAnimationCurve: Curves.decelerate,
+          forwardAnimationCurve: Curves.decelerate,
+          flushbarPosition: FlushbarPosition.TOP,
+          backgroundColor: ViewConstants.myBlack,
+          duration: Duration(seconds: 3),
+        )..show(context);
+      }
 
       contactList.singleWhere((element) => element.getChatID == message["chat"]).lastMessage = newMessage;
       sortContactList();
       notifyListeners();
     });
     print("Last Message socket listener is created.");
+  }
+
+  void deactivateFlushBar() {
+    isBarActivated = false;
+  }
+
+  void activateFlushBar() {
+    isBarActivated = true;
   }
 
   @override

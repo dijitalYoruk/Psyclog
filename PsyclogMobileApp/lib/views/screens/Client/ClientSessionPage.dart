@@ -298,7 +298,7 @@ class _ClientSessionPageState extends State<ClientSessionPage> {
                                                     context, ViewConstants.clientCreateAppointmentRoute,
                                                     arguments: CreateAppointmentScreenArguments(therapist)) as bool;
 
-                                                if (isCreated) {
+                                                if (isCreated != null && isCreated == true) {
                                                   final snackBar = SnackBar(
                                                       content: Text('Appointment has been created successfully.',
                                                           style: GoogleFonts.lato(color: ViewConstants.myGrey)));

@@ -7,7 +7,8 @@ import 'package:provider/provider.dart';
 import 'package:psyclog_app/service/WebServerService.dart';
 import 'package:psyclog_app/src/models/Contact.dart';
 import 'package:psyclog_app/src/models/Patient.dart';
-import 'package:psyclog_app/view_models/client/ClientMessageListViewModel.dart';
+import 'package:psyclog_app/view_models/client/ClientUserMessageListViewModel.dart';
+import 'package:psyclog_app/views/screens/Client/ClientChatPage.dart';
 import 'package:psyclog_app/views/util/DateParser.dart';
 import 'package:psyclog_app/views/util/ViewConstants.dart';
 import 'package:psyclog_app/views/widgets/AwareListItem.dart';
@@ -17,14 +18,12 @@ class ClientMessagePage extends StatefulWidget {
   _ClientMessagePageState createState() => _ClientMessagePageState();
 }
 
-class _ClientMessagePageState extends State<ClientMessagePage> with AutomaticKeepAliveClientMixin {
-  ClientMessageListViewModel _clientMessageListViewModel;
+class _ClientMessagePageState extends State<ClientMessagePage> {
+  ClientUserMessageListViewModel _clientMessageListViewModel;
   WebServerService _webServerService;
 
   @override
   void initState() {
-    _clientMessageListViewModel = ClientMessageListViewModel(context);
-    _clientMessageListViewModel.initializeService();
     // TODO: implement initState
     super.initState();
   }
@@ -53,6 +52,8 @@ class _ClientMessagePageState extends State<ClientMessagePage> with AutomaticKee
 
   @override
   Widget build(BuildContext context) {
+    _clientMessageListViewModel = Provider.of<ClientUserMessageListViewModel>(context);
+
     return BackdropFilter(
         filter: new ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
         child: Container(
@@ -79,9 +80,13 @@ class _ClientMessagePageState extends State<ClientMessagePage> with AutomaticKee
                                 shape: BoxShape.circle,
                               ),
                               child: Center(
-                                child: Text(_clientMessageListViewModel.getNotSeenCount() != 0 ? _clientMessageListViewModel.getNotSeenCount().toString() : "...",
+                                child: Text(
+                                    _clientMessageListViewModel.getNotSeenCount() != 0
+                                        ? _clientMessageListViewModel.getNotSeenCount().toString()
+                                        : "...",
                                     textAlign: TextAlign.left,
-                                    style: TextStyle(fontSize: 13, color: ViewConstants.myWhite, fontWeight: FontWeight.bold)),
+                                    style:
+                                        TextStyle(fontSize: 13, color: ViewConstants.myWhite, fontWeight: FontWeight.bold)),
                               ),
                             ),
                           ),
@@ -151,150 +156,175 @@ class _ClientMessagePageState extends State<ClientMessagePage> with AutomaticKee
                   child: CustomScrollView(
                 physics: BouncingScrollPhysics(),
                 slivers: <Widget>[
-                  ChangeNotifierProvider<ClientMessageListViewModel>(
-                      create: (context) => _clientMessageListViewModel,
-                      child: Consumer<ClientMessageListViewModel>(builder: (context, model, child) {
-                        return SliverList(
-                          delegate: SliverChildBuilderDelegate(
-                            (context, index) {
-                              return AwareListItem(
-                                itemCreated: () {
-                                  print("List Item:" + index.toString());
-                                },
-                                child: Builder(
-                                  builder: (context) {
-                                    Contact currentContact = model.getContactByIndex(index);
+                  Consumer<ClientUserMessageListViewModel>(builder: (context, model, child) {
+                    return SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        (context, index) {
+                          Contact currentContact = model.getContactByIndex(index);
 
-                                    DateTime contactTime =
-                                        DateParser.jsonToDateTimeWithClock(currentContact.lastMessage.createdAt);
+                          if (currentContact != null) {
+                            return AwareListItem(
+                              itemCreated: () {
+                                print("List Item:" + index.toString());
+                              },
+                              child: Builder(
+                                builder: (context) {
+                                  DateTime contactTime =
+                                      DateParser.jsonToDateTimeWithClock(currentContact.lastMessage.createdAt);
 
-                                    Duration lastSeenDuration = DateTime.now().difference(contactTime);
+                                  Duration lastSeenDuration = DateTime.now().difference(contactTime);
 
-                                    String lastSeenTime;
-                                    bool isSeen = model.isSeenByIndex(index);
+                                  String lastSeenTime;
+                                  bool isSeen = model.isSeenByIndex(index);
 
-                                    if (lastSeenDuration.inDays > 0) {
-                                      lastSeenTime = lastSeenDuration.inDays.toString() + " d";
-                                    } else if (lastSeenDuration.inHours > 0) {
-                                      lastSeenTime = lastSeenDuration.inHours.toString() + " h";
-                                    } else if (lastSeenDuration.inMinutes > 0) {
-                                      lastSeenTime = lastSeenDuration.inMinutes.toString() + " m";
-                                    } else if (lastSeenDuration.inSeconds > 0) {
-                                      lastSeenTime = "now";
-                                    }
+                                  if (lastSeenDuration.inDays > 0) {
+                                    lastSeenTime = lastSeenDuration.inDays.toString() + " d";
+                                  } else if (lastSeenDuration.inHours > 0) {
+                                    lastSeenTime = lastSeenDuration.inHours.toString() + " h";
+                                  } else if (lastSeenDuration.inMinutes > 0) {
+                                    lastSeenTime = lastSeenDuration.inMinutes.toString() + " m";
+                                  } else {
+                                    lastSeenTime = "now";
+                                  }
 
-                                    Color _backgroundColor, _textColor, _nameColor;
+                                  Color _backgroundColor, _textColor, _nameColor;
 
-                                    if (!isSeen) {
-                                      _backgroundColor = Colors.transparent;
-                                      _nameColor = ViewConstants.myBlack;
-                                      _textColor = ViewConstants.myGrey.withOpacity(0.75);
-                                    } else {
-                                      _backgroundColor = ViewConstants.myBlack;
-                                      _nameColor = ViewConstants.myWhite;
-                                      _textColor = ViewConstants.myWhite.withOpacity(0.75);
-                                    }
+                                  if (!isSeen) {
+                                    _backgroundColor = Colors.transparent;
+                                    _nameColor = ViewConstants.myBlack;
+                                    _textColor = ViewConstants.myGrey.withOpacity(0.75);
+                                  } else {
+                                    _backgroundColor = ViewConstants.myBlack;
+                                    _nameColor = ViewConstants.myWhite;
+                                    _textColor = ViewConstants.myWhite.withOpacity(0.75);
+                                  }
 
-                                    return InkWell(
-                                      onTap: () {
-
-                                      },
-                                      child: Card(
-                                        elevation: 0,
-                                        margin: EdgeInsets.zero,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.zero,
-                                        ),
-                                        color: _backgroundColor,
-                                        shadowColor: Colors.transparent,
-                                        child: Container(
-                                          margin: EdgeInsets.only(left: 25, top: 15, bottom: 15),
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.start,
-                                            crossAxisAlignment: CrossAxisAlignment.center,
-                                            children: [
-                                              Stack(
-                                                children: [
-                                                  CircleAvatar(
-                                                    radius: 24,
-                                                    backgroundImage: (Image.network(
-                                                            currentContact.profileImage + "/people/" + ((index + 2) % 10).toString()))
-                                                        .image,
-                                                  ),
-                                                  Positioned(
-                                                    bottom: 0,
-                                                    right: 0,
-                                                    child: Container(
-                                                      decoration: BoxDecoration(
-                                                        color: ViewConstants.myWhite,
-                                                        shape: BoxShape.circle,
-                                                      ),
-                                                      child: Icon(
-                                                        Icons.circle,
-                                                        size: 18,
-                                                        color: currentContact.isActive ? Colors.green : ViewConstants.myGrey,
-                                                      ),
+                                  return InkWell(
+                                    onTap: () async {
+                                      _clientMessageListViewModel.deactivateFlushBar();
+                                      await Navigator.push(
+                                          context,
+                                          PageRouteBuilder(
+                                            pageBuilder: (
+                                              BuildContext context,
+                                              Animation<double> animation,
+                                              Animation<double> secondaryAnimation,
+                                            ) =>
+                                                ClientChatPage(currentContact: model.getContactByIndex(index)),
+                                            transitionsBuilder: (
+                                              BuildContext context,
+                                              Animation<double> animation,
+                                              Animation<double> secondaryAnimation,
+                                              Widget child,
+                                            ) =>
+                                                SlideTransition(
+                                              position: Tween<Offset>(
+                                                begin: const Offset(1, 0),
+                                                end: Offset.zero,
+                                              ).animate(animation),
+                                              child: child,
+                                            ),
+                                          ));
+                                      _clientMessageListViewModel.initializeService();
+                                    },
+                                    child: Card(
+                                      elevation: 0,
+                                      margin: EdgeInsets.zero,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.zero,
+                                      ),
+                                      color: _backgroundColor,
+                                      shadowColor: Colors.transparent,
+                                      child: Container(
+                                        margin: EdgeInsets.only(left: 25, top: 15, bottom: 15),
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                          children: [
+                                            Stack(
+                                              children: [
+                                                CircleAvatar(
+                                                  radius: 24,
+                                                  backgroundImage: (Image.network(currentContact.profileImage +
+                                                          "/people/" +
+                                                          ((index + 2) % 10).toString()))
+                                                      .image,
+                                                ),
+                                                Positioned(
+                                                  bottom: 0,
+                                                  right: 0,
+                                                  child: Container(
+                                                    decoration: BoxDecoration(
+                                                      color: ViewConstants.myWhite,
+                                                      shape: BoxShape.circle,
                                                     ),
-                                                  )
-                                                ],
-                                              ),
-                                              Expanded(
-                                                child: Padding(
-                                                  padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                                                  child: Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children: [
-                                                      Padding(
-                                                        padding: const EdgeInsets.only(bottom: 10.0),
-                                                        child: AutoSizeText(
-                                                            currentContact.firstName + " (@" + currentContact.username + ")",
-                                                            minFontSize: 15,
-                                                            style: GoogleFonts.lato(
-                                                                color: _nameColor, fontWeight: FontWeight.w600)),
-                                                      ),
-                                                      Container(
-                                                        child: AutoSizeText(currentContact.lastMessage.text,
-                                                            maxFontSize: 14,
-                                                            maxLines: 1,
-                                                            overflow: TextOverflow.clip,
-                                                            style: GoogleFonts.lato(color: _textColor)),
-                                                      ),
-                                                    ],
+                                                    child: Icon(
+                                                      Icons.circle,
+                                                      size: 18,
+                                                      color: currentContact.isActive ? Colors.green : ViewConstants.myGrey,
+                                                    ),
                                                   ),
+                                                )
+                                              ],
+                                            ),
+                                            Expanded(
+                                              child: Padding(
+                                                padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                                                child: Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    Padding(
+                                                      padding: const EdgeInsets.only(bottom: 10.0),
+                                                      child: AutoSizeText(
+                                                          currentContact.firstName + " (@" + currentContact.username + ")",
+                                                          minFontSize: 15,
+                                                          style: GoogleFonts.lato(
+                                                              color: _nameColor, fontWeight: FontWeight.w600)),
+                                                    ),
+                                                    Container(
+                                                      child: AutoSizeText(currentContact.lastMessage.text,
+                                                          maxFontSize: 14,
+                                                          maxLines: 1,
+                                                          overflow: TextOverflow.clip,
+                                                          style: GoogleFonts.lato(color: _textColor)),
+                                                    ),
+                                                  ],
                                                 ),
                                               ),
-                                              Padding(
-                                                  padding: const EdgeInsets.only(right: 25.0),
-                                                  child: Column(
-                                                    children: [
-                                                      Text(lastSeenTime,
-                                                          style: GoogleFonts.lato(
-                                                              fontSize: 12,
-                                                              color: _textColor.withOpacity(0.5),
-                                                              fontWeight: FontWeight.w500)),
-                                                    ],
-                                                  ))
-                                            ],
-                                          ),
+                                            ),
+                                            Padding(
+                                                padding: const EdgeInsets.only(right: 25.0),
+                                                child: Column(
+                                                  children: [
+                                                    lastSeenTime != null
+                                                        ? Text(lastSeenTime,
+                                                            style: GoogleFonts.lato(
+                                                                fontSize: 12,
+                                                                color: _textColor.withOpacity(0.5),
+                                                                fontWeight: FontWeight.w500))
+                                                        : Container(),
+                                                  ],
+                                                ))
+                                          ],
                                         ),
                                       ),
-                                    );
-                                  },
-                                ),
-                              );
-                            },
-                            childCount: model.getContactListLength(),
-                          ),
-                        );
-                      })),
+                                    ),
+                                  );
+                                },
+                              ),
+                            );
+                          } else {
+                            return Container();
+                          }
+                        },
+                        childCount: model.getContactListLength(),
+                      ),
+                    );
+                  }),
                 ],
               ))
             ],
           ),
         ));
   }
-
-  @override
-  // TODO: implement wantKeepAlive
-  bool get wantKeepAlive => true;
 }
