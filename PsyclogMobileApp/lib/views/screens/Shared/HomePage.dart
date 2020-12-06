@@ -5,12 +5,13 @@ import 'package:psyclog_app/service/WebServerService.dart';
 import 'package:psyclog_app/src/models/Patient.dart';
 import 'package:psyclog_app/src/models/Therapist.dart';
 import 'package:psyclog_app/view_models/client/ClientUserMessageListViewModel.dart';
-import 'package:psyclog_app/view_models/therapist/TherapistMessageListViewModel.dart';
+import 'package:psyclog_app/view_models/therapist/TherapistUserMessageListViewModel.dart';
 import 'package:psyclog_app/views/screens/Client/ClientAppointmentPage.dart';
 import 'package:psyclog_app/views/screens/Client/ClientMessagePage.dart';
 import 'package:psyclog_app/views/screens/Client/ClientSessionPage.dart';
 import 'package:psyclog_app/views/screens/Client/ClientSearchPage.dart';
 import 'package:psyclog_app/views/screens/Therapist/TherapistAppointmentPage.dart';
+import 'package:psyclog_app/views/screens/Therapist/TherapistMessagePage.dart';
 import 'package:psyclog_app/views/screens/Therapist/TherapistSessionPage.dart';
 import 'package:psyclog_app/views/util/ViewConstants.dart';
 
@@ -24,7 +25,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   static List<CustomNavigationBarItem> bottomIconButtons;
 
   ClientUserMessageListViewModel _clientMessageListViewModel;
-  TherapistMessageListViewModel _therapistMessageListViewModel;
+  TherapistUserMessageListViewModel _therapistMessageListViewModel;
 
   PageController _pageController;
   WebServerService _webServerService;
@@ -49,7 +50,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
       _clientMessageListViewModel.initializeService();
       _therapistMessageListViewModel = null;
     } else if (_webServerService.currentUser is Therapist) {
-      _therapistMessageListViewModel = TherapistMessageListViewModel(context);
+      _therapistMessageListViewModel = TherapistUserMessageListViewModel(context);
       _therapistMessageListViewModel.initializeService();
       _clientMessageListViewModel = null;
     }
@@ -103,7 +104,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
               child: ClientMessagePage(),
             );
           } else if (_webServerService.currentUser is Therapist) {
-            return ChangeNotifierProvider.value(value: _therapistMessageListViewModel, child: ClientMessagePage());
+            return ChangeNotifierProvider.value(value: _therapistMessageListViewModel, child: TherapistMessagePage());
           } else {
             // TODO change after the debug process to " Container(); "
             return Container();

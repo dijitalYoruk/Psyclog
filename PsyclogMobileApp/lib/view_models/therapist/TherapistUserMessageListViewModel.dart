@@ -10,20 +10,18 @@ import 'package:psyclog_app/views/util/DateParser.dart';
 import 'package:psyclog_app/views/util/ViewConstants.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
-class TherapistMessageListViewModel extends ChangeNotifier {
+class TherapistUserMessageListViewModel extends ChangeNotifier {
   List<Contact> contactList;
-  List chatList;
   BuildContext context;
-  // List<Message> messages = List<Message>();
   SocketService _socketService;
   IO.Socket _socket;
 
-  TherapistMessageListViewModel(this.context);
+  bool isBarActivated;
+
+  TherapistUserMessageListViewModel(this.context);
 
   initializeService() async {
     contactList = List<Contact>();
-    chatList = List<dynamic>();
-
     try {
       _socketService = await SocketService.getSocketService();
       _socket = _socketService.getSocket;
@@ -58,19 +56,21 @@ class TherapistMessageListViewModel extends ChangeNotifier {
 
   void setChat() {
     _socket.on("chats", (chats) {
-      chatList = chats as List;
+      List chatList = chats as List;
 
       contactList = List<Contact>();
 
       for (var value in chatList) {
+        print(value);
+
         contactList.add(Contact(
             value["_id"],
-            value["psychologist"]["isActive"],
-            value["psychologist"]["_id"],
-            value["psychologist"]["username"],
-            value["psychologist"]["name"],
-            value["psychologist"]["profileImage"],
-            value["patient"],
+            value["patient"]["isActive"],
+            value["psychologist"],
+            value["patient"]["username"],
+            value["patient"]["name"],
+            value["patient"]["profileImage"],
+            value["patient"]["_id"],
             value["createdAt"],
             value["updateAt"],
             Message.message(
@@ -88,7 +88,7 @@ class TherapistMessageListViewModel extends ChangeNotifier {
 
       // Listening events on userIDs
       for (Contact contact in contactList) {
-        _socket.on(contact.getPsychologistID, (status) {
+        _socket.on(contact.getPatientID, (status) {
           contact.isActive = status;
           notifyListeners();
         });
@@ -133,12 +133,18 @@ class TherapistMessageListViewModel extends ChangeNotifier {
 
   void setMessageSeenList() {
     _socket.on("message-seen-list", (lastMessage) {
-      print(lastMessage);
       final chatID = lastMessage["chat"];
 
-      print("message seen list!!!!");
-
-      //contactList.singleWhere((element) => element.getChatID == chatID).lastMessage = lastMessage["message"];
+      contactList.singleWhere((element) => element.getChatID == chatID).lastMessage = Message.message(
+          lastMessage["isSeen"],
+          lastMessage["_id"],
+          lastMessage["message"],
+          lastMessage["author"],
+          lastMessage["contact"],
+          chatID,
+          lastMessage["createdAt"],
+          lastMessage["updatedAt"],
+          null);
       notifyListeners();
     });
     print("Message Seen List socket listener is created");
@@ -157,14 +163,15 @@ class TherapistMessageListViewModel extends ChangeNotifier {
 
     if (contactList != null)
       for (Contact contact in contactList) {
-        if (!contact.lastMessage.isSeen && contact.lastMessage.getAuthorID != (_socketService.currentUser as Therapist).userID)
-          notSeenCount++;
+        if (!contact.lastMessage.isSeen &&
+            contact.lastMessage.getAuthorID != (_socketService.currentUser as Therapist).userID) notSeenCount++;
       }
 
     return notSeenCount;
   }
 
   void setLastMessagePerChat() {
+    _socket.off("message");
     _socket.on("message", (message) {
       Message newMessage = Message.messageWithOwner(
           message["isSeen"],
@@ -184,10 +191,12 @@ class TherapistMessageListViewModel extends ChangeNotifier {
         leftBarIndicatorColor: ViewConstants.myLightBlue,
         icon: Padding(
           padding: const EdgeInsets.only(left: 10),
-          child: CircleAvatar(
-            radius: 24,
-            backgroundImage: (Image.network(newMessage.messageOwner.profileImage + "/people/1")).image,
-          ),
+          child: newMessage.messageOwner.profileImage != null
+              ? CircleAvatar(
+                  radius: 24,
+                  backgroundImage: (Image.network(newMessage.messageOwner.profileImage + "/people/1")).image,
+                )
+              : Icon(Icons.person),
         ),
         title: "",
         titleText: Padding(
@@ -213,10 +222,18 @@ class TherapistMessageListViewModel extends ChangeNotifier {
     print("Last Message socket listener is created.");
   }
 
+  void deactivateFlushBar() {
+    isBarActivated = false;
+  }
+
+  void activateFlushBar() {
+    isBarActivated = true;
+  }
+
   @override
   void dispose() {
+    _socket.clearListeners();
     // TODO: implement dispose
     super.dispose();
-    _socket.clearListeners();
   }
 }

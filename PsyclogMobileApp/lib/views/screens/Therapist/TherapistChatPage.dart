@@ -1,39 +1,37 @@
-import 'dart:ui';
-
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:psyclog_app/src/models/Contact.dart';
 import 'package:psyclog_app/src/models/Message.dart';
-import 'package:psyclog_app/view_models/client/ClientChatListViewModel.dart';
+import 'package:psyclog_app/view_models/therapist/TherapistChatListViewModel.dart';
 import 'package:psyclog_app/views/util/DateParser.dart';
 import 'package:psyclog_app/views/util/ViewConstants.dart';
 import 'package:psyclog_app/views/widgets/AwareListItem.dart';
 
-class ClientChatPage extends StatefulWidget {
+class TherapistChatPage extends StatefulWidget {
   final Contact currentContact;
 
-  const ClientChatPage({Key key, this.currentContact}) : super(key: key);
+  const TherapistChatPage({Key key, this.currentContact}) : super(key: key);
 
   @override
-  _ClientChatPageState createState() => _ClientChatPageState();
+  _TherapistChatPageState createState() => _TherapistChatPageState();
 }
 
-class _ClientChatPageState extends State<ClientChatPage> {
-  ClientChatListViewModel _clientChatListViewModel;
+class _TherapistChatPageState extends State<TherapistChatPage> {
+  TherapistChatListViewModel _therapistChatListViewModel;
 
   TextEditingController _textEditingController = TextEditingController();
 
   @override
   void initState() {
     // TODO: implement initState
-    _clientChatListViewModel = ClientChatListViewModel(widget.currentContact, this.context);
+    _therapistChatListViewModel = TherapistChatListViewModel(widget.currentContact, this.context);
     super.initState();
   }
 
   Future<bool> initializeService() async {
-    await _clientChatListViewModel.initializeService();
+    await _therapistChatListViewModel.initializeService();
     return true;
   }
 
@@ -46,8 +44,8 @@ class _ClientChatPageState extends State<ClientChatPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ChangeNotifierProvider<ClientChatListViewModel>(
-          create: (context) => _clientChatListViewModel,
+      body: ChangeNotifierProvider<TherapistChatListViewModel>(
+          create: (context) => _therapistChatListViewModel,
           child: Container(
               color: ViewConstants.myWhite,
               child: Column(children: [
@@ -58,17 +56,24 @@ class _ClientChatPageState extends State<ClientChatPage> {
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Consumer<ClientChatListViewModel>(builder: (context, model, child) {
+                          Consumer<TherapistChatListViewModel>(builder: (context, model, child) {
                             return Padding(
                               padding: EdgeInsets.only(
                                 left: 20,
                               ),
                               child: Stack(
                                 children: [
-                                  CircleAvatar(
-                                    radius: 24,
-                                    backgroundImage: (Image.network(widget.currentContact.profileImage + "/people/2")).image,
-                                  ),
+                                  widget.currentContact.profileImage != null
+                                      ? CircleAvatar(
+                                          radius: 24,
+                                          backgroundImage:
+                                              (Image.network(widget.currentContact.profileImage + "/people/2")).image,
+                                        )
+                                      : Icon(
+                                          Icons.person,
+                                          size: 30,
+                                          color: ViewConstants.myGrey,
+                                        ),
                                   Positioned(
                                     bottom: 0,
                                     right: 0,
@@ -123,10 +128,7 @@ class _ClientChatPageState extends State<ClientChatPage> {
                     future: initializeService(),
                     builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
                       if (snapshot.hasData) {
-                        return Consumer<ClientChatListViewModel>(builder: (context, model, child) {
-                          bool isAuthorLast = false;
-                          bool isContactLast = false;
-
+                        return Consumer<TherapistChatListViewModel>(builder: (context, model, child) {
                           return CustomScrollView(
                             reverse: true,
                             shrinkWrap: true,
@@ -140,7 +142,7 @@ class _ClientChatPageState extends State<ClientChatPage> {
                                       Message currentMessage = model.getMessageByIndex(index);
                                       DateTime dateTime =
                                           DateParser.jsonToDateTimeWithClock(currentMessage.createdAt).toLocal();
-                                      if (currentMessage.messageOwner.id == widget.currentContact.getPsychologistID) {
+                                      if (currentMessage.messageOwner.id == widget.currentContact.getPatientID) {
                                         return Row(
                                           mainAxisAlignment: MainAxisAlignment.start,
                                           children: [
@@ -256,7 +258,7 @@ class _ClientChatPageState extends State<ClientChatPage> {
                       height = MediaQuery.of(context).size.height * 0.09;
                     }
 
-                    return Consumer<ClientChatListViewModel>(builder: (context, model, child) {
+                    return Consumer<TherapistChatListViewModel>(builder: (context, model, child) {
                       return Container(
                         padding: EdgeInsets.only(left: 15),
                         decoration: BoxDecoration(

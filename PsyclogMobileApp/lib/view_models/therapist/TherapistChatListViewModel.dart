@@ -7,7 +7,7 @@ import 'package:psyclog_app/src/models/Message.dart';
 import 'package:psyclog_app/views/util/ViewConstants.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
-class ClientChatListViewModel extends ChangeNotifier {
+class TherapistChatListViewModel extends ChangeNotifier {
   Contact contact;
   List<Message> messageList;
   BuildContext context;
@@ -17,7 +17,7 @@ class ClientChatListViewModel extends ChangeNotifier {
   int skipCount;
   int pageCount;
 
-  ClientChatListViewModel(Contact contact, BuildContext context) {
+  TherapistChatListViewModel(Contact contact, BuildContext context) {
     this.contact = contact;
     this.context = context;
     skipCount = 0;
@@ -53,12 +53,14 @@ class ClientChatListViewModel extends ChangeNotifier {
   }
 
   setPreviousMessagesConnection() {
+    String contactID = contact.getPatientID;
+
     _socket.on('previousMessages', (messages) {
       skipCount += messages.length;
 
       for (var message in messages) {
         Message newMessage = Message.messageWithOwner(
-            message["isSeen"],
+            contactID == message["author"]["_id"] ? true : message["isSeen"],
             message["_id"],
             message["message"],
             MessageOwner(message["author"]["_id"], message["author"]["username"], message["author"]["name"],
@@ -88,12 +90,12 @@ class ClientChatListViewModel extends ChangeNotifier {
           message["createdAt"],
           message["updatedAt"],
           null);
-      if (message["author"]["_id"] == contact.getPsychologistID) {
+      if (message["author"]["_id"] == contact.getPatientID) {
         newMessage.isSeen = true;
         messageList.insert(0, newMessage);
         signalLastMessage(newMessage);
         notifyListeners();
-      } else if (message["author"]["_id"] == contact.getPatientID) {
+      } else if (message["author"]["_id"] == contact.getPsychologistID) {
         messageList.insert(0, newMessage);
         signalLastMessage(newMessage);
         notifyListeners();
@@ -132,8 +134,8 @@ class ClientChatListViewModel extends ChangeNotifier {
   }
 
   setActiveConnection() {
-    _socket.off(contact.getPsychologistID);
-    _socket.on(contact.getPsychologistID, (status) {
+    _socket.off(contact.getPatientID);
+    _socket.on(contact.getPatientID, (status) {
       print(status);
       contact.isActive = status;
       notifyListeners();
@@ -168,7 +170,7 @@ class ClientChatListViewModel extends ChangeNotifier {
   }
 
   Future<void> setSeenMessages() async {
-    String contactID = contact.getPsychologistID;
+    String contactID = contact.getPatientID;
 
     _socket.on('message-seen-chat-$contactID', (seenMessageIDs) {
       List<String> messageIDs = List<String>.generate(seenMessageIDs.length, (index) => seenMessageIDs[index]);
@@ -178,6 +180,7 @@ class ClientChatListViewModel extends ChangeNotifier {
       for (Message message in messageList) {
         if (message.isSeen) continue;
         message.isSeen = messageIDs.contains(message.getId);
+        print(message.text);
       }
       notifyListeners();
     });
@@ -185,15 +188,16 @@ class ClientChatListViewModel extends ChangeNotifier {
 
   Future<void> signalLastMessage(Message message) async {
     final String userToken = await _socketService.getToken();
-    if (message.getAuthorID == contact.getPatientID)
+    if (message.getAuthorID == contact.getPsychologistID) {
       return;
-    else
+    } else {
       _socket.emit('messageSeen', {"chat": contact.getChatID, "accessToken": userToken});
+    }
   }
 
   @override
   void dispose() {
-    String contactID = contact.getPsychologistID;
+    String contactID = contact.getPatientID;
 
     _socket.off('previousMessages');
     _socket.off('message-seen-chat-$contactID');

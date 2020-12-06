@@ -242,8 +242,8 @@ class ClientUserMessageListViewModel extends ChangeNotifier {
 
   @override
   void dispose() {
+    _socket.clearListeners();
     // TODO: implement dispose
     super.dispose();
-    _socket.clearListeners();
   }
 }
