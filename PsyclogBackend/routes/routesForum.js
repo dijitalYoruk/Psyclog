@@ -18,6 +18,7 @@ const {
     createPost,
     updatePost,
     deletePost,
+    retrievePosts,
     retrieveTopics,
     retrieveNewestTopics,
     retrieveMostPopularTopics } = require('../controller/ControllerForum')
@@ -32,6 +33,8 @@ routerForum.delete('/topic', middlewareRestrict(Constants.ROLE_USER), deleteTopi
 routerForum.get('/topic', middlewareRestrict(Constants.ROLE_USER), retrieveTopics)
 routerForum.get('/topic/newest', middlewareRestrict(Constants.ROLE_USER), retrieveNewestTopics)
 routerForum.get('/topic/popular', middlewareRestrict(Constants.ROLE_USER), retrieveMostPopularTopics)
+routerForum.get('/topic/:topicId/posts', middlewareRestrict(Constants.ROLE_USER), retrievePosts)
+
 
 routerForum.use(middlewareRestrict(Constants.ROLE_USER))
 routerForum.route('/post')

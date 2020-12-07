@@ -269,15 +269,20 @@ const seedUsersData = async () => {
 
          const images = []
 
-         if (Math.random() < 0.4) {
+         if (Math.random() < 0.5) {
             for (let k = 0; k < 3; k++) {
                images.push('https://picsum.photos/200/300')
             }
          }
+         
+         let quotation = undefined
+         if (Math.random() < 0.2) {
+            quotation = await randomForumPost(topic._id)
+         }
 
          await ForumPost.create({
             topic: topic._id, author: author._id, 
-            isAuthorAnonymous, content, images
+            isAuthorAnonymous, content, images, quotation
          })
       }
    }
@@ -303,6 +308,12 @@ const randomUser = async () => {
    const userCount = await User.countDocuments()
    const skip = Math.floor(Math.random * userCount)
    return await User.findOne({}).skip(skip)
+}
+
+const randomForumPost = async (topic) => {
+   const postCount = await ForumPost.countDocuments({ topic })
+   const skip = Math.floor(Math.random * postCount)
+   return await ForumPost.findOne({}).skip(skip).select('_id')
 }
 
 const seedReviewsData = async (author, psychologist) => {
