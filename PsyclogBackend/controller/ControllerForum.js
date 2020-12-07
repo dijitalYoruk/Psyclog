@@ -147,7 +147,6 @@ const updatePost = catchAsync(async (req, res, next) => {
     await post.deletePostImages(deletedPostImages)
 
     // upload new images
-    console.log(req.files)
     if (req.files) {
         await post.uploadPostImages(req.files, currentUser._id)
     }
@@ -179,6 +178,21 @@ const deletePost = catchAsync(async (req, res, next) => {
     })
 })
 
+const retrievePosts = catchAsync(async (req, res, next) => {
+    const topicId = req.params.topicId
+    const page = req.query.page || 1
+    console.log(topicId)
+
+    const posts = await ForumPost.paginate({ topic: topicId }, {
+        page, limit: 10, 
+        populate: { path: 'author quotation', select: 'username name surname profileImage' }
+    }) 
+
+    return res.status(200).json({
+        status: 200,
+        data: { posts }
+    })
+})
 
 module.exports = {
     createTopic,
@@ -186,6 +200,7 @@ module.exports = {
     createPost,
     updatePost,
     deletePost,
+    retrievePosts,
     retrieveTopics,
     retrieveNewestTopics,
     retrieveMostPopularTopics,
