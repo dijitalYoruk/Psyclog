@@ -181,11 +181,10 @@ const deletePost = catchAsync(async (req, res, next) => {
 const retrievePosts = catchAsync(async (req, res, next) => {
     const topicId = req.params.topicId
     const page = req.query.page || 1
-    console.log(topicId)
 
     const posts = await ForumPost.paginate({ topic: topicId }, {
         page, limit: 10, 
-        populate: { path: 'author quotation', select: 'username name surname profileImage' }
+        populate: [{ path: 'author', select: 'username name surname profileImage' }, { path: 'quotation' }]
     }) 
 
     return res.status(200).json({
