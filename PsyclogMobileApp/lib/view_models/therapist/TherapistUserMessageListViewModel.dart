@@ -188,7 +188,7 @@ class TherapistUserMessageListViewModel extends ChangeNotifier {
       Flushbar(
         margin: EdgeInsets.all(14),
         borderRadius: 8,
-        leftBarIndicatorColor: ViewConstants.myLightBlue,
+        leftBarIndicatorColor: ViewConstants.myBlue,
         icon: Padding(
           padding: const EdgeInsets.only(left: 10),
           child: newMessage.messageOwner.profileImage != null

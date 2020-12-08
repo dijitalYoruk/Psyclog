@@ -130,7 +130,7 @@ class _RequestInformationCardState extends State<RequestInformationCard> {
                     : Container(
                         padding: EdgeInsets.zero,
                         decoration: BoxDecoration(
-                          color: ViewConstants.myLightBlue,
+                          color: ViewConstants.myBlue,
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Center(

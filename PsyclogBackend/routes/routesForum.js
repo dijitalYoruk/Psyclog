@@ -28,12 +28,12 @@ const {
 // routes
 // =====================
 routerForum.use(middlewareAuth)
-routerForum.post('/topic', middlewareRestrict(Constants.ROLE_USER), uploadPostImages, createTopic)
-routerForum.delete('/topic', middlewareRestrict(Constants.ROLE_USER), deleteTopic)
-routerForum.get('/topic', middlewareRestrict(Constants.ROLE_USER), retrieveTopics)
-routerForum.get('/topic/newest', middlewareRestrict(Constants.ROLE_USER), retrieveNewestTopics)
-routerForum.get('/topic/popular', middlewareRestrict(Constants.ROLE_USER), retrieveMostPopularTopics)
-routerForum.get('/topic/:topicId/posts', middlewareRestrict(Constants.ROLE_USER), retrievePosts)
+routerForum.post('/topic', middlewareRestrict(Constants.ROLE_USER, Constants.ROLE_PSYCHOLOGIST), uploadPostImages, createTopic)
+routerForum.delete('/topic', middlewareRestrict(Constants.ROLE_USER, Constants.ROLE_PSYCHOLOGIST), deleteTopic)
+routerForum.get('/topic', middlewareRestrict(Constants.ROLE_USER, Constants.ROLE_PSYCHOLOGIST), retrieveTopics)
+routerForum.get('/topic/newest', middlewareRestrict(Constants.ROLE_USER, Constants.ROLE_PSYCHOLOGIST), retrieveNewestTopics)
+routerForum.get('/topic/popular', middlewareRestrict(Constants.ROLE_USER, Constants.ROLE_PSYCHOLOGIST), retrieveMostPopularTopics)
+routerForum.get('/topic/:topicId/posts', middlewareRestrict(Constants.ROLE_USER, Constants.ROLE_PSYCHOLOGIST), retrievePosts)
 
 
 routerForum.use(middlewareRestrict(Constants.ROLE_USER))

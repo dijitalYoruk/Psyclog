@@ -84,9 +84,9 @@ class _ClientCreateAppointmentPageState extends State<ClientCreateAppointmentPag
       daysTextStyle: GoogleFonts.lato(fontSize: 13, color: ViewConstants.myBlack, fontWeight: FontWeight.bold),
       weekdayTextStyle: GoogleFonts.lato(fontSize: 13, color: ViewConstants.myGrey, fontWeight: FontWeight.bold),
       weekendTextStyle:
-          GoogleFonts.lato(fontSize: 13, color: ViewConstants.myLightBlue.withOpacity(0.25), fontWeight: FontWeight.bold),
+          GoogleFonts.lato(fontSize: 13, color: ViewConstants.myBlue.withOpacity(0.25), fontWeight: FontWeight.bold),
       inactiveDaysTextStyle: GoogleFonts.lato(fontSize: 12, color: ViewConstants.myGrey.withOpacity(0.25)),
-      inactiveWeekendTextStyle: GoogleFonts.lato(fontSize: 12, color: ViewConstants.myLightBlue.withOpacity(0.25)),
+      inactiveWeekendTextStyle: GoogleFonts.lato(fontSize: 12, color: ViewConstants.myBlue.withOpacity(0.25)),
       nextDaysTextStyle: GoogleFonts.lato(fontSize: 12, color: ViewConstants.myWhite.withOpacity(0.25)),
       prevDaysTextStyle: GoogleFonts.lato(fontSize: 12, color: ViewConstants.myWhite.withOpacity(0.25)),
       headerMargin: EdgeInsets.only(bottom: 25),
@@ -102,7 +102,7 @@ class _ClientCreateAppointmentPageState extends State<ClientCreateAppointmentPag
       todayButtonColor: ViewConstants.myGrey,
       todayTextStyle: GoogleFonts.lato(fontSize: 12, color: ViewConstants.myWhite, fontWeight: FontWeight.bold),
       todayBorderColor: Colors.transparent,
-      selectedDayButtonColor: ViewConstants.myLightBlue.withOpacity(0.25),
+      selectedDayButtonColor: ViewConstants.myBlue.withOpacity(0.25),
       selectedDayTextStyle: GoogleFonts.lato(fontSize: 12, color: ViewConstants.myBlack, fontWeight: FontWeight.bold),
       selectedDayBorderColor: Colors.transparent,
     );
@@ -143,7 +143,7 @@ class _ClientCreateAppointmentPageState extends State<ClientCreateAppointmentPag
                       gradient: LinearGradient(
                           begin: Alignment.topLeft,
                           end: Alignment(4, 4),
-                          colors: [ViewConstants.myWhite, ViewConstants.myLightBlue]),
+                          colors: [ViewConstants.myWhite, ViewConstants.myBlue]),
                     ),
                   ),
                 ),
@@ -179,7 +179,7 @@ class _ClientCreateAppointmentPageState extends State<ClientCreateAppointmentPag
                           gradient: LinearGradient(
                               begin: Alignment.topLeft,
                               end: Alignment(10, 10),
-                              colors: [ViewConstants.myWhite, ViewConstants.myLightBlue])),
+                              colors: [ViewConstants.myWhite, ViewConstants.myBlue])),
                       child: _calendarCarousel,
                     ),
                     Container(
@@ -198,8 +198,8 @@ class _ClientCreateAppointmentPageState extends State<ClientCreateAppointmentPag
                             child: Padding(
                               padding: EdgeInsets.symmetric(horizontal: 35),
                               child: FlatButton(
-                                  splashColor: ViewConstants.myLightBlue,
-                                  color: ViewConstants.myLightBlue.withOpacity(0.25),
+                                  splashColor: ViewConstants.myBlue,
+                                  color: ViewConstants.myBlue.withOpacity(0.25),
                                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                                   onPressed: () async {
@@ -258,7 +258,7 @@ class _ClientCreateAppointmentPageState extends State<ClientCreateAppointmentPag
                       gradient: LinearGradient(
                           begin: Alignment.topLeft,
                           end: Alignment(4, 4),
-                          colors: [ViewConstants.myWhite, ViewConstants.myLightBlue]),
+                          colors: [ViewConstants.myWhite, ViewConstants.myBlue]),
                     ),
                   ),
                 ),
@@ -292,7 +292,7 @@ class _ClientCreateAppointmentPageState extends State<ClientCreateAppointmentPag
                               clipBehavior: Clip.hardEdge,
                               elevation: _applied ? 20 : 2,
                               padding: EdgeInsets.zero,
-                              splashColor: ViewConstants.myLightBlue.withOpacity(0.5),
+                              splashColor: ViewConstants.myBlue.withOpacity(0.5),
                               color: ViewConstants.myWhite,
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                               onPressed: () {
@@ -333,8 +333,8 @@ class _ClientCreateAppointmentPageState extends State<ClientCreateAppointmentPag
                                         width: constraints.maxWidth,
                                         decoration: BoxDecoration(
                                           color: _applied
-                                              ? ViewConstants.myLightBlue.withOpacity(0.8)
-                                              : ViewConstants.myLightBlue.withOpacity(0.4),
+                                              ? ViewConstants.myBlue.withOpacity(0.8)
+                                              : ViewConstants.myBlue.withOpacity(0.4),
                                         ),
                                         child: AutoSizeText(
                                           "Session " + (_currentInterval.interval + 1).toString(),
@@ -363,7 +363,7 @@ class _ClientCreateAppointmentPageState extends State<ClientCreateAppointmentPag
                                                 _currentInterval.startTime.substring(0, 5),
                                                 style: GoogleFonts.lato(
                                                     fontSize: 16,
-                                                    color: ViewConstants.myLightBlue,
+                                                    color: ViewConstants.myBlue,
                                                     fontWeight: FontWeight.bold),
                                                 textAlign: TextAlign.center,
                                               ),
@@ -384,7 +384,7 @@ class _ClientCreateAppointmentPageState extends State<ClientCreateAppointmentPag
                                                 _currentInterval.endTime.substring(0, 5),
                                                 style: GoogleFonts.lato(
                                                     fontSize: 16,
-                                                    color: ViewConstants.myLightBlue,
+                                                    color: ViewConstants.myBlue,
                                                     fontWeight: FontWeight.bold),
                                                 textAlign: TextAlign.center,
                                               ),
@@ -436,7 +436,7 @@ class _ClientCreateAppointmentPageState extends State<ClientCreateAppointmentPag
                                           gradient: LinearGradient(
                                               begin: Alignment.topLeft,
                                               end: Alignment(4, 4),
-                                              colors: [ViewConstants.myWhite, ViewConstants.myLightBlue]),
+                                              colors: [ViewConstants.myWhite, ViewConstants.myBlue]),
                                           borderRadius: BorderRadius.circular(20)),
                                       height: MediaQuery.of(context).size.height * 0.5,
                                       width: MediaQuery.of(context).size.width * 0.75,
@@ -521,8 +521,8 @@ class _ClientCreateAppointmentPageState extends State<ClientCreateAppointmentPag
                       children: [
                         Expanded(
                           child: FlatButton(
-                              splashColor: ViewConstants.myLightBlue,
-                              color: ViewConstants.myLightBlue.withOpacity(0.25),
+                              splashColor: ViewConstants.myBlue,
+                              color: ViewConstants.myBlue.withOpacity(0.25),
                               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                               onPressed: () async {
@@ -585,7 +585,7 @@ class _ClientCreateAppointmentPageState extends State<ClientCreateAppointmentPag
                       gradient: LinearGradient(
                           begin: Alignment.topLeft,
                           end: Alignment(4, 4),
-                          colors: [ViewConstants.myWhite, ViewConstants.myLightBlue]),
+                          colors: [ViewConstants.myWhite, ViewConstants.myBlue]),
                     ),
                   ),
                 ),
@@ -601,7 +601,7 @@ class _ClientCreateAppointmentPageState extends State<ClientCreateAppointmentPag
                           gradient: LinearGradient(
                               begin: Alignment.topLeft,
                               end: Alignment(10, 10),
-                              colors: [ViewConstants.myWhite, ViewConstants.myLightBlue]),
+                              colors: [ViewConstants.myWhite, ViewConstants.myBlue]),
                           borderRadius: BorderRadius.circular(20)),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -757,7 +757,7 @@ class _ClientCreateAppointmentPageState extends State<ClientCreateAppointmentPag
                           gradient: LinearGradient(
                               begin: Alignment.topLeft,
                               end: Alignment(10, 10),
-                              colors: [ViewConstants.myWhite, ViewConstants.myLightBlue]),
+                              colors: [ViewConstants.myWhite, ViewConstants.myBlue]),
                           borderRadius: BorderRadius.circular(20)),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -783,8 +783,8 @@ class _ClientCreateAppointmentPageState extends State<ClientCreateAppointmentPag
                         children: [
                           Expanded(
                             child: FlatButton(
-                                splashColor: ViewConstants.myLightBlue,
-                                color: ViewConstants.myLightBlue.withOpacity(0.25),
+                                splashColor: ViewConstants.myBlue,
+                                color: ViewConstants.myBlue.withOpacity(0.25),
                                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                                 onPressed: () async {

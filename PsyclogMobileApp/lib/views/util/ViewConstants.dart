@@ -44,7 +44,6 @@ class ViewConstants {
   static Color myBlack = HexColor("#222831");
   static Color myLightBlack = HexColor("#393e46");
   static Color myPink = HexColor('#ff2e63');
-  static Color myLightBlue = HexColor('#08d9d6');
   static Color myBlue = HexColor('#4267B3');
   static Color myWhite = HexColor('#fafafa');
   static Color myYellow = HexColor('#f0a500');
@@ -68,9 +67,9 @@ class ViewConstants {
 
   static ThemeData lightTheme = ThemeData(
     backgroundColor: myWhite,
-    primaryColor: myLightBlue,
-    accentColor: myLightBlue,
-    cursorColor: myLightBlue,
+    primaryColor: myBlue,
+    accentColor: myBlue,
+    cursorColor: myBlue,
     scaffoldBackgroundColor: myWhite,
   );
 

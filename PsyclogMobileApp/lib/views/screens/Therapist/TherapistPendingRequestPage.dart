@@ -30,7 +30,7 @@ class _TherapistPendingRequestPageState extends State<TherapistPendingRequestPag
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
-            begin: Alignment.topLeft, end: Alignment(10, 10), colors: [ViewConstants.myWhite, ViewConstants.myLightBlue]),
+            begin: Alignment.topLeft, end: Alignment(10, 10), colors: [ViewConstants.myWhite, ViewConstants.myBlue]),
       ),
       child: CustomScrollView(slivers: <Widget>[
         SliverAppBar(
@@ -52,14 +52,14 @@ class _TherapistPendingRequestPageState extends State<TherapistPendingRequestPag
         SliverToBoxAdapter(
           child: Card(
             elevation: 4,
-            shadowColor: ViewConstants.myLightBlue,
+            shadowColor: ViewConstants.myBlue,
             color: ViewConstants.myWhite,
             clipBehavior: Clip.antiAlias,
             margin: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
             child: Container(
               padding: EdgeInsets.all(18),
               height: MediaQuery.of(context).size.height / 8,
-              decoration: BoxDecoration(color: ViewConstants.myLightBlue.withOpacity(0.4)),
+              decoration: BoxDecoration(color: ViewConstants.myBlue.withOpacity(0.4)),
               child: Center(
                 child: AutoSizeText(
                   "You can check your pending requests here. To deny the request, slide left; to accept it, slide right.",
@@ -147,7 +147,7 @@ class _TherapistPendingRequestPageState extends State<TherapistPendingRequestPag
                                       height: containerHeight,
                                       width: containerHeight,
                                       decoration: BoxDecoration(
-                                        color: ViewConstants.myLightBlue.withOpacity(0.4),
+                                        color: ViewConstants.myBlue.withOpacity(0.4),
                                         borderRadius: BorderRadius.circular(10),
                                       ),
                                     ),
@@ -213,7 +213,7 @@ class _TherapistPendingRequestPageState extends State<TherapistPendingRequestPag
                       FlatButton(
                         child: Text(
                           'Accept',
-                          style: TextStyle(color: ViewConstants.myLightBlue),
+                          style: TextStyle(color: ViewConstants.myBlue),
                         ),
                         onPressed: () async {
                           bool isAccepted = await _pendingListViewModel.acceptPendingRequestByIndex(index);
@@ -248,7 +248,7 @@ class _TherapistPendingRequestPageState extends State<TherapistPendingRequestPag
                       FlatButton(
                         child: Text(
                           'Deny',
-                          style: TextStyle(color: ViewConstants.myLightBlue),
+                          style: TextStyle(color: ViewConstants.myBlue),
                         ),
                         onPressed: () async {
                           bool isRemoved = false;

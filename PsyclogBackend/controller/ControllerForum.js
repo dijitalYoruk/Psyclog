@@ -98,6 +98,7 @@ const retrieveMostPopularTopics = catchAsync(async (req, res, next) => {
 
     const popularTopics = await ForumTopic.find({})
                                           .limit(10)
+                                          .populate('author')
                                           .select('-posts')
                                           .sort('+posts')
 

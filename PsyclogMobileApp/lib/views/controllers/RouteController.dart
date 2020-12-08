@@ -5,7 +5,6 @@ import 'package:psyclog_app/views/screens/Shared/HomePage.dart';
 import 'package:psyclog_app/views/screens/Shared/LoginPage.dart';
 import 'package:psyclog_app/views/screens/Shared/RegisterPage.dart';
 import 'package:psyclog_app/views/screens/Client/ClientCreateAppointmentPage.dart';
-import 'package:psyclog_app/views/screens/SessionTherapistPage.dart';
 import 'package:psyclog_app/views/screens/SplashPage.dart';
 import 'package:psyclog_app/views/screens/Therapist/TherapistIntervalsPage.dart';
 import 'package:psyclog_app/views/screens/Therapist/TherapistPendingRequestPage.dart';
@@ -355,10 +354,6 @@ class RouteController {
             );
           },
         );
-        break;
-      case ViewConstants.sessionRoute:
-        return MaterialPageRoute(
-            settings: settings, builder: (_) => InnerDrawerWithScreen(scaffoldArea: SessionTherapistPage()));
         break;
       case ViewConstants.walletRoute:
         return MaterialPageRoute(settings: settings, builder: (_) => InnerDrawerWithScreen(scaffoldArea: WalletPage()));

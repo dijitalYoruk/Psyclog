@@ -48,7 +48,7 @@ class _InnerDrawerWithScreenState extends State<InnerDrawerWithScreen> {
             begin: Alignment(-1, -1),
             end: Alignment(1, 1),
             colors: <Color>[
-              ViewConstants.myLightBlue.withOpacity(1),
+              ViewConstants.myBlue.withOpacity(1),
               ViewConstants.myBlack.withOpacity(1),
             ],
           ),
