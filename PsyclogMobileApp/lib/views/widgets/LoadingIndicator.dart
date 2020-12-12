@@ -17,8 +17,8 @@ class LoadingIndicator extends StatelessWidget {
                 colors: [
                   ViewConstants.myPink,
                   ViewConstants.myYellow,
+                  ViewConstants.myGreyBlue,
                   ViewConstants.myBlue,
-                  ViewConstants.myLightBlue,
                 ],
                 durations: [
                   50000,

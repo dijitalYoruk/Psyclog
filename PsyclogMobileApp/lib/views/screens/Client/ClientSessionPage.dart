@@ -64,7 +64,7 @@ class _ClientSessionPageState extends State<ClientSessionPage> {
             gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment(10, 10),
-                colors: [ViewConstants.myWhite, ViewConstants.myLightBlue]),
+                colors: [ViewConstants.myWhite, ViewConstants.myBlue]),
           ),
           child: CustomScrollView(
             physics: const BouncingScrollPhysics(),
@@ -141,7 +141,7 @@ class _ClientSessionPageState extends State<ClientSessionPage> {
                           height: MediaQuery.of(context).size.height / 12,
                           margin: EdgeInsets.only(top: 20, right: 20, left: 20),
                           child: FlatButton(
-                            color: ViewConstants.myLightBlue.withOpacity(0.75),
+                            color: ViewConstants.myBlue.withOpacity(0.75),
                             splashColor: ViewConstants.myPink,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
@@ -177,14 +177,14 @@ class _ClientSessionPageState extends State<ClientSessionPage> {
               SliverToBoxAdapter(
                 child: Card(
                   elevation: 4,
-                  shadowColor: ViewConstants.myLightBlue,
+                  shadowColor: ViewConstants.myBlue,
                   color: ViewConstants.myWhite,
                   clipBehavior: Clip.antiAlias,
                   margin: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
                   child: Container(
                     padding: EdgeInsets.all(18),
                     height: MediaQuery.of(context).size.height / 8,
-                    decoration: BoxDecoration(color: ViewConstants.myLightBlue.withOpacity(0.4)),
+                    decoration: BoxDecoration(color: ViewConstants.myBlue.withOpacity(0.4)),
                     child: Center(
                       child: AutoSizeText(
                         "From the list below, you can find the registered therapists for fast and efficient consultation.",
@@ -211,7 +211,7 @@ class _ClientSessionPageState extends State<ClientSessionPage> {
 
                         if (index == listLength) {
                           return Card(
-                            color: ViewConstants.myLightBlue.withOpacity(0.5),
+                            color: ViewConstants.myBlue.withOpacity(0.5),
                             margin: EdgeInsets.only(left: index.isEven ? 20 : 10, right: index.isEven ? 10 : 20, bottom: 20),
                             child: FlatButton(
                               splashColor: ViewConstants.myBlack,
@@ -237,14 +237,14 @@ class _ClientSessionPageState extends State<ClientSessionPage> {
                               print(e);
                               profileImage = Icon(
                                 Icons.person,
-                                color: ViewConstants.myLightBlue,
+                                color: ViewConstants.myBlue,
                                 size: 75,
                               );
                             }
                           } else {
                             profileImage = Icon(
                               Icons.person,
-                              color: ViewConstants.myLightBlue,
+                              color: ViewConstants.myBlue,
                               size: 75,
                             );
                           }
@@ -252,7 +252,7 @@ class _ClientSessionPageState extends State<ClientSessionPage> {
                           return Card(
                             clipBehavior: Clip.hardEdge,
                             elevation: 2,
-                            shadowColor: ViewConstants.myLightBlue,
+                            shadowColor: ViewConstants.myBlue,
                             color: ViewConstants.myWhite,
                             margin: EdgeInsets.only(left: index.isEven ? 20 : 10, right: index.isEven ? 10 : 20, bottom: 20),
                             child: Container(
@@ -268,7 +268,7 @@ class _ClientSessionPageState extends State<ClientSessionPage> {
                                                 begin: Alignment.topCenter,
                                                 end: Alignment.bottomCenter,
                                                 colors: [
-                                              ViewConstants.myLightBlue.withOpacity(0.3),
+                                              ViewConstants.myBlue.withOpacity(0.3),
                                               ViewConstants.myBlack.withOpacity(0.6),
                                               ViewConstants.myBlack
                                             ])),
@@ -310,7 +310,7 @@ class _ClientSessionPageState extends State<ClientSessionPage> {
                                                   style: GoogleFonts.lato(fontSize: 14, color: ViewConstants.myWhite)),
                                               minWidth: constraints.minWidth,
                                               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                              color: ViewConstants.myLightBlue.withOpacity(0.5),
+                                              color: ViewConstants.myBlue.withOpacity(0.5),
                                               splashColor: ViewConstants.myYellow,
                                               shape: RoundedRectangleBorder(),
                                             )

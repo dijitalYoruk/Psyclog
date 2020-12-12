@@ -11,15 +11,6 @@ class TherapistAppointment {
   final int _endTime;
   final int _startTime;
 
-  get getAppointmentID => _appointmentID;
-  get getIntervals => _intervals;
-  get getPatient => _patient;
-  get getPsychologistID => _psychologistID;
-  get getAppointmentDate => _appointmentDate;
-  get getAppointmentPrice => _appointmentPrice;
-  get getEndTime => _endTime;
-  get getStartTime => _startTime;
-
   TherapistAppointment.fromJson(Map<String, dynamic> json)
       : _appointmentID = json['_id'] as String,
         _intervals = List<int>.generate(json['intervals'].length, (index) => json['intervals'][index]),
@@ -29,4 +20,13 @@ class TherapistAppointment {
         _appointmentPrice = json['price'] as int,
         _endTime = json['end'] as int,
         _startTime = json['start'] as int;
+
+  get getAppointmentID => _appointmentID;
+  get getIntervals => _intervals;
+  get getPatient => _patient;
+  get getPsychologistID => _psychologistID;
+  get getAppointmentDate => _appointmentDate;
+  get getAppointmentPrice => _appointmentPrice;
+  get getEndTime => _endTime;
+  get getStartTime => _startTime;
 }

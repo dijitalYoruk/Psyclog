@@ -38,7 +38,7 @@ class ClientRequestPage extends StatelessWidget {
                       height: MediaQuery.of(context).size.height * 0.3,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
-                        color: ViewConstants.myLightBlue,
+                        color: ViewConstants.myBlue,
                       ),
                     ),
                     Expanded(

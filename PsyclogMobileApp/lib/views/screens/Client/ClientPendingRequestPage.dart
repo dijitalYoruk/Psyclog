@@ -30,7 +30,7 @@ class _ClientPendingRequestPageState extends State<ClientPendingRequestPage> {
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
-            begin: Alignment.topLeft, end: Alignment(10, 10), colors: [ViewConstants.myWhite, ViewConstants.myLightBlue]),
+            begin: Alignment.topLeft, end: Alignment(10, 10), colors: [ViewConstants.myWhite, ViewConstants.myBlue]),
       ),
       child: CustomScrollView(slivers: <Widget>[
         SliverAppBar(
@@ -52,14 +52,14 @@ class _ClientPendingRequestPageState extends State<ClientPendingRequestPage> {
         SliverToBoxAdapter(
           child: Card(
             elevation: 4,
-            shadowColor: ViewConstants.myLightBlue,
+            shadowColor: ViewConstants.myBlue,
             color: ViewConstants.myWhite,
             clipBehavior: Clip.antiAlias,
             margin: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
             child: Container(
               padding: EdgeInsets.all(18),
               height: MediaQuery.of(context).size.height / 8,
-              decoration: BoxDecoration(color: ViewConstants.myLightBlue.withOpacity(0.4)),
+              decoration: BoxDecoration(color: ViewConstants.myBlue.withOpacity(0.4)),
               child: Center(
                 child: AutoSizeText(
                   "You can check your pending requests or remove them by sliding the cards to the left.",
@@ -108,13 +108,13 @@ class _ClientPendingRequestPageState extends State<ClientPendingRequestPage> {
                                 print(e);
                                 profileImage = Icon(
                                   Icons.person,
-                                  color: ViewConstants.myLightBlue,
+                                  color: ViewConstants.myBlue,
                                 );
                               }
                             } else {
                               profileImage = Icon(
                                 Icons.person,
-                                color: ViewConstants.myLightBlue,
+                                color: ViewConstants.myBlue,
                               );
                             }
 
@@ -260,7 +260,7 @@ class _ClientPendingRequestPageState extends State<ClientPendingRequestPage> {
                 FlatButton(
                   child: Text(
                     'Remove',
-                    style: TextStyle(color: ViewConstants.myLightBlue),
+                    style: TextStyle(color: ViewConstants.myBlue),
                   ),
                   onPressed: () async {
                     bool isRemoved = await _pendingListViewModel.removePendingRequestByIndex(index);

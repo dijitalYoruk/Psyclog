@@ -163,7 +163,7 @@ class _ClientProfilePageState extends State<ClientProfilePage> with TickerProvid
                                                   focusElevation: 0,
                                                   highlightElevation: 0,
                                                   hoverElevation: 0,
-                                                  splashColor: ViewConstants.myLightBlue,
+                                                  splashColor: ViewConstants.myBlue,
                                                   color: ViewConstants.myBlack,
                                                   padding: EdgeInsets.zero,
                                                   child: Text(
@@ -189,7 +189,7 @@ class _ClientProfilePageState extends State<ClientProfilePage> with TickerProvid
                                                   focusElevation: 0,
                                                   highlightElevation: 0,
                                                   hoverElevation: 0,
-                                                  splashColor: ViewConstants.myLightBlue,
+                                                  splashColor: ViewConstants.myBlue,
                                                   color: ViewConstants.myBlack,
                                                   padding: EdgeInsets.zero,
                                                   child: Text(

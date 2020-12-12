@@ -139,7 +139,7 @@ class _ClientRegisterPageState extends State<ClientRegisterPage> with SingleTick
             borderSide: BorderSide(color: ViewConstants.myWhite),
           ),
           focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: ViewConstants.myLightBlue),
+            borderSide: BorderSide(color: ViewConstants.myBlue),
           ),
           border: OutlineInputBorder(
             borderSide: BorderSide(color: ViewConstants.myWhite),
@@ -179,7 +179,7 @@ class _ClientRegisterPageState extends State<ClientRegisterPage> with SingleTick
             borderSide: BorderSide(color: ViewConstants.myWhite),
           ),
           focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: ViewConstants.myLightBlue),
+            borderSide: BorderSide(color: ViewConstants.myBlue),
           ),
           border: OutlineInputBorder(
             borderSide: BorderSide(color: ViewConstants.myWhite),
@@ -219,7 +219,7 @@ class _ClientRegisterPageState extends State<ClientRegisterPage> with SingleTick
             borderSide: BorderSide(color: ViewConstants.myWhite),
           ),
           focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: ViewConstants.myLightBlue),
+            borderSide: BorderSide(color: ViewConstants.myBlue),
           ),
           border: OutlineInputBorder(
             borderSide: BorderSide(color: ViewConstants.myWhite),
@@ -259,7 +259,7 @@ class _ClientRegisterPageState extends State<ClientRegisterPage> with SingleTick
               borderSide: BorderSide(color: ViewConstants.myWhite),
             ),
             focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: ViewConstants.myLightBlue),
+              borderSide: BorderSide(color: ViewConstants.myBlue),
             ),
             border: OutlineInputBorder(
               borderSide: BorderSide(color: ViewConstants.myWhite),
@@ -298,7 +298,7 @@ class _ClientRegisterPageState extends State<ClientRegisterPage> with SingleTick
             borderSide: BorderSide(color: ViewConstants.myWhite),
           ),
           focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: ViewConstants.myLightBlue),
+            borderSide: BorderSide(color: ViewConstants.myBlue),
           ),
           border: OutlineInputBorder(
             borderSide: BorderSide(color: ViewConstants.myWhite),
@@ -337,7 +337,7 @@ class _ClientRegisterPageState extends State<ClientRegisterPage> with SingleTick
             borderSide: BorderSide(color: ViewConstants.myWhite),
           ),
           focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: ViewConstants.myLightBlue),
+            borderSide: BorderSide(color: ViewConstants.myBlue),
           ),
           border: OutlineInputBorder(
             borderSide: BorderSide(color: ViewConstants.myWhite),
@@ -523,7 +523,7 @@ class _ClientRegisterPageState extends State<ClientRegisterPage> with SingleTick
                                     bottomLeft: Radius.circular(10),
                                     topLeft: Radius.circular(10),
                                   ),
-                                  color: ViewConstants.myLightBlue,
+                                  color: ViewConstants.myBlue,
                                 ),
                                 child: FlatButton(
                                   splashColor: Colors.transparent,

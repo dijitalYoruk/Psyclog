@@ -44,7 +44,7 @@ class _ClientAppointmentPageState extends State<ClientAppointmentPage> {
       ViewConstants.myYellow,
       ViewConstants.myPink,
       ViewConstants.myBlue,
-      ViewConstants.myLightBlue,
+      ViewConstants.myBlue,
       ViewConstants.myLightGrey
     ];
   }
@@ -246,14 +246,14 @@ class _ClientAppointmentPageState extends State<ClientAppointmentPage> {
                                 print(e);
                                 profileImage = Icon(
                                   Icons.person,
-                                  color: ViewConstants.myLightBlue,
+                                  color: ViewConstants.myBlue,
                                   size: 75,
                                 );
                               }
                             } else {
                               profileImage = Icon(
                                 Icons.person,
-                                color: ViewConstants.myLightBlue,
+                                color: ViewConstants.myBlue,
                                 size: 75,
                               );
                             }

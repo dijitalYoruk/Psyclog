@@ -39,7 +39,7 @@ class _ClientTherapistsListPageState extends State<ClientTherapistsListPage> {
 
     switch (widget.pageName) {
       case ViewConstants.allTherapists:
-        pageColor = ViewConstants.myLightBlue;
+        pageColor = ViewConstants.myBlue;
         pageTitle = ViewConstants.allTherapists + " Therapists";
         pageTitleColor = ViewConstants.myBlack;
         break;
@@ -164,14 +164,14 @@ class _ClientTherapistsListPageState extends State<ClientTherapistsListPage> {
                                         print(e);
                                         profileImage = Icon(
                                           Icons.person,
-                                          color: ViewConstants.myLightBlue,
+                                          color: ViewConstants.myBlue,
                                           size: 25,
                                         );
                                       }
                                     } else {
                                       profileImage = Icon(
                                         Icons.person,
-                                        color: ViewConstants.myLightBlue,
+                                        color: ViewConstants.myBlue,
                                         size: 25,
                                       );
                                     }

@@ -31,8 +31,6 @@ class _ClientSearchPageState extends State<ClientSearchPage> {
 
   @override
   Widget build(BuildContext context) {
-    final double categoryWidth = MediaQuery.of(context).size.width / 3;
-
     return Stack(
       children: [
         BackdropFilter(
@@ -42,7 +40,7 @@ class _ClientSearchPageState extends State<ClientSearchPage> {
                 gradient: LinearGradient(
                     begin: Alignment.topLeft,
                     end: Alignment(5, 5),
-                    colors: [ViewConstants.myWhite, ViewConstants.myGreyBlue]),
+                    colors: [ViewConstants.myWhite, ViewConstants.myBlue]),
               ),
             )),
         Theme(
@@ -126,7 +124,7 @@ class _ClientSearchPageState extends State<ClientSearchPage> {
                 height: MediaQuery.of(context).size.height * 0.35,
                 child: Theme(
                   data: ThemeData(
-                    accentColor: ViewConstants.myLightBlue,
+                    accentColor: ViewConstants.myBlue,
                   ),
                   child: ListView(
                     scrollDirection: Axis.horizontal,
@@ -145,7 +143,7 @@ class _ClientSearchPageState extends State<ClientSearchPage> {
                                 begin: Alignment(-1, -1),
                                 end: Alignment(1, -0.5),
                                 colors: <Color>[
-                                  ViewConstants.myLightBlue.withOpacity(0.75),
+                                  ViewConstants.myBlue.withOpacity(0.75),
                                   ViewConstants.myBlack,
                                 ],
                               ),
@@ -321,248 +319,6 @@ class _ClientSearchPageState extends State<ClientSearchPage> {
                                   )
                                 ],
                               ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.only(
-                  top: 30,
-                  bottom: 20,
-                  left: 20,
-                ),
-                child: Text("Today's News",
-                    textAlign: TextAlign.left,
-                    style: TextStyle(fontSize: 20, color: ViewConstants.myBlack, fontWeight: FontWeight.bold)),
-              ),
-              Container(
-                padding: EdgeInsets.only(left: 15, right: 20, top: 20, bottom: 20),
-                height: MediaQuery.of(context).size.height / 3,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                      begin: Alignment.centerLeft,
-                      end: Alignment(10, 0),
-                      colors: [ViewConstants.myWhite, ViewConstants.myBlue]),
-                ),
-                child: Theme(
-                  data: ThemeData(
-                    accentColor: ViewConstants.myBlue,
-                  ),
-                  child: ListView(
-                    scrollDirection: Axis.horizontal,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
-                        child: InkWell(
-                          onTap: () {},
-                          child: Container(
-                            color: ViewConstants.myWhite,
-                            width: MediaQuery.of(context).size.width / 3,
-                            height: MediaQuery.of(context).size.height / 3,
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
-                        child: InkWell(
-                          onTap: () {},
-                          child: Container(
-                            color: ViewConstants.myWhite,
-                            width: MediaQuery.of(context).size.width / 3,
-                            height: MediaQuery.of(context).size.height / 3,
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
-                        child: InkWell(
-                          onTap: () {},
-                          child: Container(
-                            color: ViewConstants.myWhite,
-                            width: MediaQuery.of(context).size.width / 3,
-                            height: MediaQuery.of(context).size.height / 3,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.only(
-                  top: 30,
-                  bottom: 20,
-                  left: 20,
-                ),
-                child: Text("News Categories",
-                    textAlign: TextAlign.left,
-                    style: TextStyle(fontSize: 20, color: ViewConstants.myBlack, fontWeight: FontWeight.bold)),
-              ),
-              Container(
-                margin: EdgeInsets.only(bottom: 50, left: 15, right: 20),
-                height: categoryWidth,
-                child: Theme(
-                  data: ThemeData(
-                    accentColor: ViewConstants.myWhite,
-                  ),
-                  child: ListView(
-                    scrollDirection: Axis.horizontal,
-                    children: [
-                      InkWell(
-                        onTap: () {},
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          margin: EdgeInsets.symmetric(horizontal: 5),
-                          width: categoryWidth,
-                          height: categoryWidth,
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(10),
-                            child: Stack(
-                              children: [
-                                Image.asset(
-                                  "assets/category_pictures/home_picture.png",
-                                  fit: BoxFit.fill,
-                                ),
-                                Container(
-                                  color: ViewConstants.myBlue.withOpacity(0.25),
-                                ),
-                                Center(
-                                  child: Text("Family",
-                                      textAlign: TextAlign.left,
-                                      style: TextStyle(
-                                          fontSize: 20, color: ViewConstants.myWhite, fontWeight: FontWeight.bold)),
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                      InkWell(
-                        onTap: () {},
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          margin: EdgeInsets.symmetric(horizontal: 5),
-                          width: categoryWidth,
-                          height: categoryWidth,
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(10),
-                            child: Stack(
-                              children: [
-                                Image.asset(
-                                  "assets/category_pictures/parent_picture.png",
-                                  fit: BoxFit.fill,
-                                ),
-                                Container(
-                                  color: ViewConstants.myLightBlue.withOpacity(0.25),
-                                ),
-                                Center(
-                                  child: Text("Parenting",
-                                      textAlign: TextAlign.left,
-                                      style: TextStyle(
-                                          fontSize: 20, color: ViewConstants.myWhite, fontWeight: FontWeight.bold)),
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                      InkWell(
-                        onTap: () {},
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          margin: EdgeInsets.symmetric(horizontal: 5),
-                          width: categoryWidth,
-                          height: categoryWidth,
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(10),
-                            child: Stack(
-                              children: [
-                                Image.asset(
-                                  "assets/category_pictures/relationship_picture.png",
-                                  fit: BoxFit.fill,
-                                ),
-                                Container(
-                                  color: ViewConstants.myYellow.withOpacity(0.25),
-                                ),
-                                Center(
-                                  child: Text("Relationship",
-                                      textAlign: TextAlign.left,
-                                      style: TextStyle(
-                                          fontSize: 20, color: ViewConstants.myWhite, fontWeight: FontWeight.bold)),
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                      InkWell(
-                        onTap: () {},
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          margin: EdgeInsets.symmetric(horizontal: 5),
-                          width: categoryWidth,
-                          height: categoryWidth,
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(10),
-                            child: Stack(
-                              children: [
-                                Image.asset(
-                                  "assets/category_pictures/happy_picture.png",
-                                  fit: BoxFit.fill,
-                                ),
-                                Container(
-                                  color: ViewConstants.myLightBlue.withOpacity(0.25),
-                                ),
-                                Center(
-                                  child: Text("Happiness",
-                                      textAlign: TextAlign.left,
-                                      style: TextStyle(
-                                          fontSize: 20, color: ViewConstants.myWhite, fontWeight: FontWeight.bold)),
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                      InkWell(
-                        onTap: () {},
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          margin: EdgeInsets.symmetric(horizontal: 5),
-                          width: categoryWidth,
-                          height: categoryWidth,
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(10),
-                            child: Stack(
-                              children: [
-                                Image.asset(
-                                  "assets/category_pictures/personality_picture.png",
-                                  fit: BoxFit.fill,
-                                ),
-                                Container(
-                                  color: ViewConstants.myLightBlue.withOpacity(0.25),
-                                ),
-                                Center(
-                                  child: Text("Personality",
-                                      textAlign: TextAlign.left,
-                                      style: TextStyle(
-                                          fontSize: 20, color: ViewConstants.myWhite, fontWeight: FontWeight.bold)),
-                                )
-                              ],
                             ),
                           ),
                         ),

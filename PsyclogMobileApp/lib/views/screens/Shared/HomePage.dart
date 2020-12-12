@@ -10,6 +10,7 @@ import 'package:psyclog_app/views/screens/Client/ClientAppointmentPage.dart';
 import 'package:psyclog_app/views/screens/Client/ClientMessagePage.dart';
 import 'package:psyclog_app/views/screens/Client/ClientSessionPage.dart';
 import 'package:psyclog_app/views/screens/Client/ClientSearchPage.dart';
+import 'package:psyclog_app/views/screens/Shared/TopicPage.dart';
 import 'package:psyclog_app/views/screens/Therapist/TherapistAppointmentPage.dart';
 import 'package:psyclog_app/views/screens/Therapist/TherapistMessagePage.dart';
 import 'package:psyclog_app/views/screens/Therapist/TherapistSessionPage.dart';
@@ -57,9 +58,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
 
     // Initialize Homepage Tabs according to User Type
     _homepageTabs = <Widget>[
-      Container(
-        color: ViewConstants.myWhite,
-      ),
+      TopicPage(),
       Builder(
         builder: (BuildContext context) {
           if (_webServerService.currentUser is Patient) {
@@ -147,8 +146,8 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
           return CustomNavigationBar(
             scaleFactor: 0.2,
             iconSize: 25.0,
-            selectedColor: ViewConstants.myLightBlue,
-            strokeColor: ViewConstants.myLightBlue,
+            selectedColor: ViewConstants.myBlue,
+            strokeColor: ViewConstants.myBlue,
             unSelectedColor: ViewConstants.myWhite,
             backgroundColor: ViewConstants.myBlack,
             items: bottomIconButtons,

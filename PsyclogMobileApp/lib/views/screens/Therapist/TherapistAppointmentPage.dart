@@ -44,7 +44,7 @@ class _TherapistAppointmentPageState extends State<TherapistAppointmentPage> {
       ViewConstants.myYellow,
       ViewConstants.myPink,
       ViewConstants.myBlue,
-      ViewConstants.myLightBlue,
+      ViewConstants.myBlue,
       ViewConstants.myLightGrey
     ];
   }

@@ -87,7 +87,7 @@ class _TherapistIntervalsPageState extends State<TherapistIntervalsPage> {
                       gradient: LinearGradient(
                           begin: Alignment.topLeft,
                           end: Alignment(4, 4),
-                          colors: [ViewConstants.myWhite, ViewConstants.myLightBlue]),
+                          colors: [ViewConstants.myWhite, ViewConstants.myBlue]),
                     ),
                     child: Builder(builder: (BuildContext context) {
                       List<String> weekdays = ["monday", "tuesday", "wednesday", "thursday", "friday"];
@@ -111,7 +111,7 @@ class _TherapistIntervalsPageState extends State<TherapistIntervalsPage> {
                                                 builder: (BuildContext context, BoxConstraints constraints) {
                                                   double elevation = _chosenDay == weekdays[index] ? 20 : 2;
                                                   Color buttonColor = _chosenDay == weekdays[index]
-                                                      ? ViewConstants.myLightBlue.withOpacity(0.75)
+                                                      ? ViewConstants.myBlue.withOpacity(0.75)
                                                       : ViewConstants.myWhite;
 
                                                   return MaterialButton(
@@ -125,7 +125,7 @@ class _TherapistIntervalsPageState extends State<TherapistIntervalsPage> {
                                                     ),
                                                     minWidth: constraints.maxWidth,
                                                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                                                    splashColor: ViewConstants.myLightBlue.withOpacity(0.5),
+                                                    splashColor: ViewConstants.myBlue.withOpacity(0.5),
                                                     color: buttonColor,
                                                     onPressed: () {
                                                       buttonSetState(() {
@@ -159,8 +159,8 @@ class _TherapistIntervalsPageState extends State<TherapistIntervalsPage> {
                                           child: Padding(
                                             padding: EdgeInsets.symmetric(horizontal: 35),
                                             child: FlatButton(
-                                                splashColor: ViewConstants.myLightBlue,
-                                                color: ViewConstants.myLightBlue.withOpacity(0.25),
+                                                splashColor: ViewConstants.myBlue,
+                                                color: ViewConstants.myBlue.withOpacity(0.25),
                                                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                                                 onPressed: () async {
@@ -243,7 +243,7 @@ class _TherapistIntervalsPageState extends State<TherapistIntervalsPage> {
                       gradient: LinearGradient(
                           begin: Alignment.topLeft,
                           end: Alignment(4, 4),
-                          colors: [ViewConstants.myWhite, ViewConstants.myLightBlue]),
+                          colors: [ViewConstants.myWhite, ViewConstants.myBlue]),
                     ),
                   ),
                 ),
@@ -304,7 +304,7 @@ class _TherapistIntervalsPageState extends State<TherapistIntervalsPage> {
                                         decoration: BoxDecoration(
                                           color: _applied
                                               ? ViewConstants.myYellow.withOpacity(0.5)
-                                              : ViewConstants.myLightBlue.withOpacity(0.4),
+                                              : ViewConstants.myBlue.withOpacity(0.4),
                                         ),
                                         child: AutoSizeText(
                                           "Session " + (index + 1).toString(),
@@ -333,7 +333,7 @@ class _TherapistIntervalsPageState extends State<TherapistIntervalsPage> {
                                                 _interval.startTime.substring(0, 5),
                                                 style: GoogleFonts.lato(
                                                     fontSize: 16,
-                                                    color: ViewConstants.myLightBlue,
+                                                    color: ViewConstants.myBlue,
                                                     fontWeight: FontWeight.bold),
                                                 textAlign: TextAlign.center,
                                               ),
@@ -354,7 +354,7 @@ class _TherapistIntervalsPageState extends State<TherapistIntervalsPage> {
                                                 _interval.endTime.substring(0, 5),
                                                 style: GoogleFonts.lato(
                                                     fontSize: 16,
-                                                    color: ViewConstants.myLightBlue,
+                                                    color: ViewConstants.myBlue,
                                                     fontWeight: FontWeight.bold),
                                                 textAlign: TextAlign.center,
                                               ),
@@ -396,8 +396,8 @@ class _TherapistIntervalsPageState extends State<TherapistIntervalsPage> {
                       children: [
                         Expanded(
                           child: FlatButton(
-                              splashColor: ViewConstants.myLightBlue,
-                              color: ViewConstants.myLightBlue.withOpacity(0.25),
+                              splashColor: ViewConstants.myBlue,
+                              color: ViewConstants.myBlue.withOpacity(0.25),
                               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                               onPressed: () async {
@@ -447,7 +447,7 @@ class _TherapistIntervalsPageState extends State<TherapistIntervalsPage> {
                       gradient: LinearGradient(
                           begin: Alignment.topLeft,
                           end: Alignment(4, 4),
-                          colors: [ViewConstants.myWhite, ViewConstants.myLightBlue]),
+                          colors: [ViewConstants.myWhite, ViewConstants.myBlue]),
                     ),
                   ),
                 ),
@@ -524,7 +524,7 @@ class _TherapistIntervalsPageState extends State<TherapistIntervalsPage> {
                                                     _interval.startTime.substring(0, 5),
                                                     style: GoogleFonts.lato(
                                                         fontSize: 16,
-                                                        color: ViewConstants.myLightBlue,
+                                                        color: ViewConstants.myBlue,
                                                         fontWeight: FontWeight.bold),
                                                     textAlign: TextAlign.center,
                                                   ),
@@ -547,7 +547,7 @@ class _TherapistIntervalsPageState extends State<TherapistIntervalsPage> {
                                                     _interval.endTime.substring(0, 5),
                                                     style: GoogleFonts.lato(
                                                         fontSize: 16,
-                                                        color: ViewConstants.myLightBlue,
+                                                        color: ViewConstants.myBlue,
                                                         fontWeight: FontWeight.bold),
                                                     textAlign: TextAlign.center,
                                                   ),
@@ -588,8 +588,8 @@ class _TherapistIntervalsPageState extends State<TherapistIntervalsPage> {
                           children: [
                             Expanded(
                               child: FlatButton(
-                                  splashColor: ViewConstants.myLightBlue,
-                                  color: ViewConstants.myLightBlue.withOpacity(0.25),
+                                  splashColor: ViewConstants.myBlue,
+                                  color: ViewConstants.myBlue.withOpacity(0.25),
                                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                                   onPressed: () async {
