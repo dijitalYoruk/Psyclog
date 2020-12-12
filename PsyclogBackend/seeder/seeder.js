@@ -15,6 +15,7 @@ const Appointment = require('../model/appointment')
 const ClientRequest = require('../model/clientRequest')
 const { getToday } = require('../utils/util')
 const SupportMessage = require('../model/supportMessage')
+const { v4:uuidv4 }  = require('uuid')
 dotenv.config({ path: './config.env' })
 
 // ============================
@@ -53,6 +54,7 @@ const seedUsersData = async () => {
 
    for (let i = 0; i < 100; i++) {
 
+      const profileImage = 'https://i.pravatar.cc/300/'+uuidv4();
       const username = faker.internet.userName()
       const surname = faker.name.lastName()
       const email = faker.internet.email()
@@ -61,7 +63,6 @@ const seedUsersData = async () => {
       if (i % 2 === 0) { // seed Psychologist
          const appointmentPrice = 100
          const biography = faker.lorem.paragraph()
-         const profileImage = faker.image.imageUrl()
          const role = Constants.ROLE_PSYCHOLOGIST
          const isActiveForClientRequest = true
          const isPsychologistVerified = Math.random() < 0.5
@@ -125,6 +126,7 @@ const seedUsersData = async () => {
             isAccountVerified,
             registeredPsychologists,
             banTerminationDate,
+            profileImage,
             passwordConfirm, phone
          }
          
@@ -244,7 +246,7 @@ const seedUsersData = async () => {
    }
 
    for (let i = 0; i < 50; i++) {
-      const title = faker.name.title()
+      const title = Constants.psychology_topics[i % Constants.psychology_topics.length]
       const description = faker.lorem.paragraph()
       let isAuthorAnonymous = Math.random() < 0.5
 

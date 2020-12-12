@@ -104,6 +104,26 @@ const actions = {
                 }
             });
         });
+    },
+    verifyUser({ rootState }, payload) {
+        console.log(payload)
+        return new Promise((resolve, reject) => {
+            axios.post(URL.VERIFY_USER, payload, {
+                headers: {
+                    'Authorization': `Bearer ${rootState.auth.accessToken}`,
+                }
+            })
+            .then(response => {
+                resolve(response.data.data)
+            })
+            .catch(error => {
+                if (error.response) {
+                    reject(error.response.data.message);
+                } else {
+                    reject(this.$t('alert_error_server'));
+                }
+            });
+        });
     }
 }
 

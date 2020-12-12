@@ -9,6 +9,7 @@ const Mailer = require('../utils/mailer')
 const Wallet = require('../model/wallet')
 const User = require('../model/user')
 const crypto = require('crypto')
+const { nextTick } = require('process')
 
 
 // =====================
@@ -144,8 +145,6 @@ const signIn = catchAsync(async(req, res, next) => {
    if (!emailOrUsername || !password) { 
       return next(new ApiError(__('validation_password_username'), 400)) 
    }
-
-   console.log("->")
 
    // checking whether user exists in db.
    const user = await User.findOne({ 
@@ -314,6 +313,17 @@ const getResetPassword = catchAsync(async (req, res, next) => {
    });
 })
 
+const verifyAsAdmin = catchAsync(async (req, res, next) => {
+   const { userId, isAccountVerified } = req.body
+   await User.findByIdAndUpdate({ _id: userId }, { isAccountVerified })
+
+   res.status(200).json({
+      status: 200,
+      data: {
+         message: __('success_change', 'Verification') 
+      }
+   })
+})
 
 module.exports = {
    signIn,
@@ -325,5 +335,6 @@ module.exports = {
    forgotPassword,
    retrieveProfile,
    signUpPsychologist,
-   verifyUser
+   verifyUser,
+   verifyAsAdmin
 }
