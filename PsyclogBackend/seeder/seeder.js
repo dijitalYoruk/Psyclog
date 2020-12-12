@@ -54,7 +54,7 @@ const seedUsersData = async () => {
 
    for (let i = 0; i < 100; i++) {
 
-      const profileImage = 'https://i.pravatar.cc/300/'+uuidv4();
+      const profileImage = 'https://i.pravatar.cc/100/'+uuidv4();
       const username = faker.internet.userName()
       const surname = faker.name.lastName()
       const email = faker.internet.email()
