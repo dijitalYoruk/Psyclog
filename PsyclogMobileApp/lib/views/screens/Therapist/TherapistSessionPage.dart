@@ -260,8 +260,8 @@ class _TherapistSessionPageState extends State<TherapistSessionPage> {
                                               child: Text("Client Notes",
                                                   style: GoogleFonts.lato(fontSize: 14, color: ViewConstants.myBlack)),
                                               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                              color: ViewConstants.myYellow,
-                                              splashColor: ViewConstants.myYellow,
+                                              color: ViewConstants.myWhite,
+                                              splashColor: ViewConstants.myWhite,
                                               shape: RoundedRectangleBorder(),
                                             );
                                           },

@@ -8,7 +8,7 @@ const ApiError = require('../utils/ApiError')
 const createTopic = catchAsync(async (req, res, next) => {
     const currentUser = req.currentUser
     let { title, description, isAuthorAnonymous, postContent } = req.body
-    
+
     // create topic  
     const topic = new ForumTopic({
         title, description, author: currentUser._id, isAuthorAnonymous, 
@@ -48,8 +48,8 @@ const deleteTopic = catchAsync(async (req, res, next) => {
     if (!topic) return next(new ApiError(__('error_not_found', 'Topic'), 404))
     await topic.remove()
 
-    res.status(204).json({
-        status: 204,
+    res.status(200).json({
+        status: 200,
         data: { message: __('success_delete', 'Topic') }
     })
 })
@@ -60,7 +60,7 @@ const retrieveTopics = catchAsync(async (req, res, next) => {
     const topics = await ForumTopic.paginate({}, {
         page, limit: 10, select: '-posts', sort: '+posts',
         populate: { path: 'author', select: 'username name surname profileImage' }
-    }) 
+    })
 
     res.status(200).json({
         status: 200,
@@ -173,8 +173,8 @@ const deletePost = catchAsync(async (req, res, next) => {
 
     await post.remove()
 
-    res.status(204).json({
-        status: 204,
+    res.status(200).json({
+        status: 200,
         message: __('success_delete', 'Post')
     })
 })
@@ -182,12 +182,11 @@ const deletePost = catchAsync(async (req, res, next) => {
 const retrievePosts = catchAsync(async (req, res, next) => {
     const topicId = req.params.topicId
     const page = req.query.page || 1
-    console.log(topicId)
 
     const posts = await ForumPost.paginate({ topic: topicId }, {
         page, limit: 10, 
         populate: { path: 'author quotation', select: 'username name surname profileImage' }
-    }) 
+    })
 
     return res.status(200).json({
         status: 200,

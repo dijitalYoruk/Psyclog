@@ -25,6 +25,9 @@ class ViewConstants {
   static const String therapistPendingRequestRoute = '/therapistPendingRequests';
   static const String clientCreateAppointmentRoute = '/clientCreateAppointment';
   static const String therapistIntervalRoute = '/therapistIntervals';
+  static const String topicCreateRoute = '/topicCreate';
+  static const String postCreateRoute = '/postCreate';
+  static const String postListRoute = '/postList';
 
   //Constraints for Widgets
   static const int therapistsPerPage = 10;
