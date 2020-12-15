@@ -13,7 +13,8 @@ class ViewConstants {
   static const String registerRoute = '/register';
   static const String registerClientRoute = '/registerClient';
   static const String registerTherapistRoute = '/registerTherapist';
-  static const String videoCallRoute = '/videoCall';
+  static const String therapistVideoCallRoute = '/therapistVideoCall';
+  static const String clientVideoCallRoute = '/clientVideoCall';
   static const String sessionRoute = '/session';
   static const String walletRoute = '/wallet';
   static const String allTherapistsRoute = '/allTherapists';

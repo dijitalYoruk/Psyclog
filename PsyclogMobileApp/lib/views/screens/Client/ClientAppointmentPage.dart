@@ -11,6 +11,7 @@ import 'package:psyclog_app/src/models/Therapist.dart';
 import 'package:psyclog_app/view_models/client/ClientAppointmentListViewModel.dart';
 import 'package:psyclog_app/views/util/DateParser.dart';
 import 'package:psyclog_app/views/util/ViewConstants.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class ClientAppointmentPage extends StatefulWidget {
   @override
@@ -75,6 +76,18 @@ class _ClientAppointmentPageState extends State<ClientAppointmentPage> {
     } else {
       return Icon(Icons.person);
     }
+  }
+
+  Future<void> onJoin() async {
+    // await for camera and mic permissions before pushing video page
+    await _handleCameraAndMic(Permission.camera);
+    await _handleCameraAndMic(Permission.microphone);
+    return;
+  }
+
+  Future<void> _handleCameraAndMic(Permission permission) async {
+    final status = await permission.request();
+    print(status);
   }
 
   @override
@@ -366,7 +379,11 @@ class _ClientAppointmentPageState extends State<ClientAppointmentPage> {
                                                 buttons.add(Expanded(
                                                   child: FlatButton(
                                                     materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                                    onPressed: () {},
+                                                    onPressed: () async {
+                                                      await onJoin();
+                                                      Navigator.pushNamed(context, ViewConstants.clientVideoCallRoute,
+                                                          arguments: _currentAppointment);
+                                                    },
                                                     child: AutoSizeText(
                                                       "Join",
                                                       style: GoogleFonts.lato(
@@ -628,7 +645,7 @@ class _ClientAppointmentPageState extends State<ClientAppointmentPage> {
 
                                 double height;
 
-                                if(MediaQuery.of(context).size.height > 800) {
+                                if (MediaQuery.of(context).size.height > 800) {
                                   height = MediaQuery.of(context).size.height * 0.8;
                                 } else {
                                   height = MediaQuery.of(context).size.height;

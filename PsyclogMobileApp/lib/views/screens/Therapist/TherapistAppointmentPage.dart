@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:psyclog_app/service/WebServerService.dart';
 import 'package:psyclog_app/service/util/ServiceConstants.dart';
@@ -75,6 +76,18 @@ class _TherapistAppointmentPageState extends State<TherapistAppointmentPage> {
     } else {
       return Icon(Icons.person);
     }
+  }
+
+  Future<void> onJoin() async {
+    // await for camera and mic permissions before pushing video page
+    await _handleCameraAndMic(Permission.camera);
+    await _handleCameraAndMic(Permission.microphone);
+    return;
+  }
+
+  Future<void> _handleCameraAndMic(Permission permission) async {
+    final status = await permission.request();
+    print(status);
   }
 
   @override
@@ -247,8 +260,7 @@ class _TherapistAppointmentPageState extends State<TherapistAppointmentPage> {
                         margin: EdgeInsets.symmetric(vertical: 5, horizontal: 25),
                         child: Text(
                           DateParser.monthToString(_dateTime),
-                          style: GoogleFonts.lato(
-                              color: ViewConstants.myBlue.withOpacity(0.5), fontWeight: FontWeight.bold),
+                          style: GoogleFonts.lato(color: ViewConstants.myBlue.withOpacity(0.5), fontWeight: FontWeight.bold),
                         )));
 
                     while (_appointmentIndex < _appointmentLength) {
@@ -359,8 +371,8 @@ class _TherapistAppointmentPageState extends State<TherapistAppointmentPage> {
                                                       padding: const EdgeInsets.symmetric(horizontal: 10),
                                                       child: AutoSizeText(
                                                         _currentPatient.userEmail,
-                                                        style: GoogleFonts.lato(
-                                                            color: ViewConstants.myWhite.withOpacity(0.75)),
+                                                        style:
+                                                            GoogleFonts.lato(color: ViewConstants.myWhite.withOpacity(0.75)),
                                                         maxFontSize: 13,
                                                       ),
                                                     )
@@ -397,7 +409,11 @@ class _TherapistAppointmentPageState extends State<TherapistAppointmentPage> {
                                             buttons.add(Expanded(
                                               child: FlatButton(
                                                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                                onPressed: () {},
+                                                onPressed: () async {
+                                                  await onJoin();
+                                                  Navigator.pushNamed(context, ViewConstants.therapistVideoCallRoute,
+                                                      arguments: _currentAppointment);
+                                                },
                                                 child: AutoSizeText(
                                                   "Join",
                                                   style: GoogleFonts.lato(
@@ -454,8 +470,7 @@ class _TherapistAppointmentPageState extends State<TherapistAppointmentPage> {
                                                                     borderRadius: BorderRadius.circular(20)),
                                                                 child: Column(children: [
                                                                   Text("Do you want to cancel this appointment?",
-                                                                      style:
-                                                                          GoogleFonts.lato(color: ViewConstants.myGrey)),
+                                                                      style: GoogleFonts.lato(color: ViewConstants.myGrey)),
                                                                   Padding(
                                                                     padding: const EdgeInsets.only(top: 12.0),
                                                                     child: Row(
@@ -479,11 +494,9 @@ class _TherapistAppointmentPageState extends State<TherapistAppointmentPage> {
                                                                                     content: Text(
                                                                                         'Appointment is cancelled.',
                                                                                         style: GoogleFonts.lato(
-                                                                                            color:
-                                                                                                ViewConstants.myGrey)));
+                                                                                            color: ViewConstants.myGrey)));
 
-                                                                                Scaffold.of(context)
-                                                                                    .showSnackBar(snackBar);
+                                                                                Scaffold.of(context).showSnackBar(snackBar);
                                                                               }
                                                                             },
                                                                             child: Text("Cancel",
@@ -548,7 +561,7 @@ class _TherapistAppointmentPageState extends State<TherapistAppointmentPage> {
 
                             double height;
 
-                            if(MediaQuery.of(context).size.height > 800) {
+                            if (MediaQuery.of(context).size.height > 800) {
                               height = MediaQuery.of(context).size.height * 0.8;
                             } else {
                               height = MediaQuery.of(context).size.height;

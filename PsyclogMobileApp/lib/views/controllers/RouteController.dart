@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:psyclog_app/src/models/ClientAppointment.dart';
+import 'package:psyclog_app/src/models/TherapistAppointment.dart';
 import 'package:psyclog_app/src/models/Topic.dart';
 import 'package:psyclog_app/views/controllers/RouteArguments.dart';
 import 'package:psyclog_app/views/screens/Client/ClientProfilePage.dart';
+import 'package:psyclog_app/views/screens/Client/ClientVideoCallPage.dart';
 import 'package:psyclog_app/views/screens/Shared/HomePage.dart';
 import 'package:psyclog_app/views/screens/Shared/LoginPage.dart';
 import 'package:psyclog_app/views/screens/Shared/PostCreatePage.dart';
@@ -16,7 +19,7 @@ import 'package:psyclog_app/views/screens/Therapist/TherapistProfilePage.dart';
 import 'package:psyclog_app/views/screens/Therapist/TherapistRegisterPage.dart';
 import 'package:psyclog_app/views/screens/Client/ClientRegisterPage.dart';
 import 'package:psyclog_app/views/screens/Client/ClientRequestPage.dart';
-import 'package:psyclog_app/views/screens/VideoCallPage.dart';
+import 'package:psyclog_app/views/screens/Therapist/TherapistVideoCallPage.dart';
 import 'package:psyclog_app/views/screens/WalletPage.dart';
 import 'package:psyclog_app/views/screens/WelcomePage.dart';
 import 'package:psyclog_app/views/util/ViewConstants.dart';
@@ -334,7 +337,6 @@ class RouteController {
         );
         break;
       case ViewConstants.clientCreateAppointmentRoute:
-
         final CreateAppointmentScreenArguments _args = settings.arguments;
 
         return PageRouteBuilder(
@@ -382,7 +384,6 @@ class RouteController {
         );
         break;
       case ViewConstants.postListRoute:
-
         final Topic _currentTopic = settings.arguments;
 
         return PageRouteBuilder(
@@ -407,7 +408,6 @@ class RouteController {
         );
         break;
       case ViewConstants.postCreateRoute:
-
         final Topic _currentTopic = settings.arguments;
 
         return PageRouteBuilder(
@@ -434,9 +434,52 @@ class RouteController {
       case ViewConstants.walletRoute:
         return MaterialPageRoute(settings: settings, builder: (_) => InnerDrawerWithScreen(scaffoldArea: WalletPage()));
         break;
-      case ViewConstants.videoCallRoute:
-        return MaterialPageRoute(settings: settings, builder: (_) => InnerDrawerWithScreen(scaffoldArea: VideoCallPage()));
-        break;
+      case ViewConstants.clientVideoCallRoute:
+        final ClientAppointment _currentAppointment = settings.arguments;
+
+        return PageRouteBuilder(
+          settings: settings,
+          pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
+            return ClientVideoCallPage(_currentAppointment);
+          },
+          transitionsBuilder:
+              (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
+            var curve = Curves.linearToEaseOut;
+
+            var curvedAnimation = CurvedAnimation(
+              parent: animation,
+              curve: curve,
+            );
+
+            return FadeTransition(
+              opacity: curvedAnimation,
+              child: child,
+            );
+          },
+        );
+      case ViewConstants.therapistVideoCallRoute:
+        final TherapistAppointment _currentAppointment = settings.arguments;
+
+        return PageRouteBuilder(
+          settings: settings,
+          pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
+            return TherapistVideoCallPage(_currentAppointment);
+          },
+          transitionsBuilder:
+              (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
+            var curve = Curves.linearToEaseOut;
+
+            var curvedAnimation = CurvedAnimation(
+              parent: animation,
+              curve: curve,
+            );
+
+            return FadeTransition(
+              opacity: curvedAnimation,
+              child: child,
+            );
+          },
+        );
       default:
         return MaterialPageRoute(
             settings: settings,
