@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:psyclog_app/src/models/ClientAppointment.dart';
+import 'package:psyclog_app/src/models/Patient.dart';
 import 'package:psyclog_app/src/models/TherapistAppointment.dart';
 import 'package:psyclog_app/src/models/Topic.dart';
 import 'package:psyclog_app/views/controllers/RouteArguments.dart';
@@ -14,6 +15,7 @@ import 'package:psyclog_app/views/screens/Client/ClientCreateAppointmentPage.dar
 import 'package:psyclog_app/views/screens/Shared/TopicCreatePage.dart';
 import 'package:psyclog_app/views/screens/SplashPage.dart';
 import 'package:psyclog_app/views/screens/Therapist/TherapistIntervalsPage.dart';
+import 'package:psyclog_app/views/screens/Therapist/TherapistNotePage.dart';
 import 'package:psyclog_app/views/screens/Therapist/TherapistPendingRequestPage.dart';
 import 'package:psyclog_app/views/screens/Therapist/TherapistProfilePage.dart';
 import 'package:psyclog_app/views/screens/Therapist/TherapistRegisterPage.dart';
@@ -464,6 +466,31 @@ class RouteController {
           settings: settings,
           pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
             return TherapistVideoCallPage(_currentAppointment);
+          },
+          transitionsBuilder:
+              (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
+            var curve = Curves.linearToEaseOut;
+
+            var curvedAnimation = CurvedAnimation(
+              parent: animation,
+              curve: curve,
+            );
+
+            return FadeTransition(
+              opacity: curvedAnimation,
+              child: child,
+            );
+          },
+        );
+      case ViewConstants.therapistNoteRoute:
+        final Patient _currentPatient = settings.arguments;
+
+        return PageRouteBuilder(
+          settings: settings,
+          pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
+            return Scaffold(
+              body: TherapistNotePage(_currentPatient),
+            );
           },
           transitionsBuilder:
               (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {

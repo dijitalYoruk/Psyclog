@@ -1,12 +1,15 @@
 import 'package:agora_rtc_engine/rtc_engine.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:psyclog_app/service/util/ServiceConstants.dart';
 import 'package:psyclog_app/src/models/ClientAppointment.dart';
 import 'package:agora_rtc_engine/rtc_local_view.dart' as RtcLocalView;
 import 'package:agora_rtc_engine/rtc_remote_view.dart' as RtcRemoteView;
+import 'package:psyclog_app/src/models/Therapist.dart';
 import 'package:psyclog_app/views/util/ViewConstants.dart';
+import 'package:psyclog_app/views/widgets/LoadingIndicator.dart';
 
 class ClientVideoCallPage extends StatefulWidget {
   final ClientAppointment _currentAppointment;
@@ -18,9 +21,9 @@ class ClientVideoCallPage extends StatefulWidget {
 }
 
 class _ClientVideoCallPageState extends State<ClientVideoCallPage> {
-  ClientRole _clientRole = ClientRole.Broadcaster;
   RtcEngine _engine;
   bool muted = false;
+  bool isConnected = false;
 
   final _infoStrings = <String>[];
   final _users = <int>[];
@@ -66,8 +69,7 @@ class _ClientVideoCallPageState extends State<ClientVideoCallPage> {
   Future<void> _initAgoraRtcEngine() async {
     _engine = await RtcEngine.create(ServiceConstants.agoraAPIKey);
     await _engine.enableVideo();
-    await _engine.setChannelProfile(ChannelProfile.LiveBroadcasting);
-    await _engine.setClientRole(_clientRole);
+    await _engine.setChannelProfile(ChannelProfile.Communication);
   }
 
   /// Add agora event handlers
@@ -92,13 +94,45 @@ class _ClientVideoCallPageState extends State<ClientVideoCallPage> {
         final info = 'userJoined: $uid';
         _infoStrings.add(info);
         _users.add(uid);
+        isConnected = true;
       });
+      Flushbar(
+        margin: EdgeInsets.all(14),
+        borderRadius: 8,
+        leftBarIndicatorColor: ViewConstants.myBlue,
+        messageText: Padding(
+          padding: const EdgeInsets.only(left: 8.0),
+          child: AutoSizeText("Consultant joined the channel."),
+        ),
+        flushbarStyle: FlushbarStyle.FLOATING,
+        reverseAnimationCurve: Curves.decelerate,
+        forwardAnimationCurve: Curves.decelerate,
+        flushbarPosition: FlushbarPosition.TOP,
+        backgroundColor: ViewConstants.myBlack,
+        duration: Duration(seconds: 3),
+      )..show(context);
     }, userOffline: (uid, elapsed) {
       setState(() {
         final info = 'userOffline: $uid';
         _infoStrings.add(info);
         _users.remove(uid);
+        isConnected = false;
       });
+      Flushbar(
+        margin: EdgeInsets.all(14),
+        borderRadius: 8,
+        leftBarIndicatorColor: ViewConstants.myBlue,
+        messageText: Padding(
+          padding: const EdgeInsets.only(left: 8.0),
+          child: AutoSizeText("Consultant left the channel."),
+        ),
+        flushbarStyle: FlushbarStyle.FLOATING,
+        reverseAnimationCurve: Curves.decelerate,
+        forwardAnimationCurve: Curves.decelerate,
+        flushbarPosition: FlushbarPosition.TOP,
+        backgroundColor: ViewConstants.myBlack,
+        duration: Duration(seconds: 3),
+      )..show(context);
     }, firstRemoteVideoFrame: (uid, width, height, elapsed) {
       setState(() {
         final info = 'firstRemoteVideo: $uid ${width}x $height';
@@ -110,9 +144,7 @@ class _ClientVideoCallPageState extends State<ClientVideoCallPage> {
   /// Helper function to get list of native views
   List<Widget> _getRenderViews() {
     final List<StatefulWidget> list = [];
-    if (_clientRole == ClientRole.Broadcaster) {
-      list.add(RtcLocalView.SurfaceView());
-    }
+    list.add(RtcLocalView.SurfaceView());
     _users.forEach((int uid) => list.add(RtcRemoteView.SurfaceView(uid: uid)));
     return list;
   }
@@ -130,24 +162,23 @@ class _ClientVideoCallPageState extends State<ClientVideoCallPage> {
                 gradient: LinearGradient(
                     begin: Alignment.topLeft, end: Alignment(5, 5), colors: [ViewConstants.myWhite, ViewConstants.myBlue]),
               ),
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: Center(
-                    child: AutoSizeText(
-                  "Please wait for your consultant to connect.",
-                  style: GoogleFonts.heebo(color: ViewConstants.myBlue, fontWeight: FontWeight.bold),
-                  minFontSize: 25,
-                  textAlign: TextAlign.center,
-                )),
+              child: Stack(
+                children: [
+                  LoadingIndicator(),
+                ],
               ),
             ),
             Positioned(
               child: SizedBox(
-                height: MediaQuery.of(context).size.height / 4 + 20,
-                width: MediaQuery.of(context).size.width / 4 + 20,
-                child: views[0],
+                height: MediaQuery.of(context).size.height / 4,
+                width: MediaQuery.of(context).size.width / 4,
+                child: Card(
+                  elevation: 5,
+                  child: views[0],
+                  clipBehavior: Clip.hardEdge,
+                ),
               ),
-              bottom: 15,
+              top: 30,
               right: 15,
             )
           ],
@@ -161,11 +192,15 @@ class _ClientVideoCallPageState extends State<ClientVideoCallPage> {
             ),
             Positioned(
               child: SizedBox(
-                height: MediaQuery.of(context).size.height / 4 + 20,
-                width: MediaQuery.of(context).size.width / 4 + 20,
-                child: views[0],
+                height: MediaQuery.of(context).size.height / 4,
+                width: MediaQuery.of(context).size.width / 4,
+                child: Card(
+                  elevation: 5,
+                  child: views[0],
+                  clipBehavior: Clip.hardEdge,
+                ),
               ),
-              bottom: 15,
+              top: 30,
               right: 15,
             )
           ],
@@ -177,48 +212,76 @@ class _ClientVideoCallPageState extends State<ClientVideoCallPage> {
 
   /// Toolbar layout
   Widget _toolbar() {
-    if (_clientRole == ClientRole.Audience) return Container();
     return Container(
       alignment: Alignment.bottomCenter,
-      padding: const EdgeInsets.symmetric(vertical: 48),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          RawMaterialButton(
-            onPressed: _onToggleMute,
-            child: Icon(
-              muted ? Icons.mic_off : Icons.mic,
-              color: muted ? Colors.white : Colors.blueAccent,
-              size: 20.0,
-            ),
-            shape: CircleBorder(),
-            elevation: 2.0,
-            fillColor: muted ? Colors.blueAccent : Colors.white,
-            padding: const EdgeInsets.all(12.0),
-          ),
-          RawMaterialButton(
-            onPressed: () => _onCallEnd(context),
-            child: Icon(
-              Icons.call_end,
-              color: Colors.white,
-              size: 35.0,
-            ),
-            shape: CircleBorder(),
-            elevation: 2.0,
-            fillColor: Colors.redAccent,
-            padding: const EdgeInsets.all(15.0),
-          ),
-          RawMaterialButton(
-            onPressed: _onSwitchCamera,
-            child: Icon(
-              Icons.switch_camera,
-              color: Colors.blueAccent,
-              size: 20.0,
-            ),
-            shape: CircleBorder(),
-            elevation: 2.0,
-            fillColor: Colors.white,
-            padding: const EdgeInsets.all(12.0),
+      padding: const EdgeInsets.symmetric(vertical: 30),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 15),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Consultant",
+                      style: GoogleFonts.heebo(color: ViewConstants.myWhite),
+                    ),
+                    AutoSizeText(
+                      (widget._currentAppointment.getTherapist as Therapist).getFullName(),
+                      style: GoogleFonts.heebo(fontWeight: FontWeight.bold, color: ViewConstants.myWhite),
+                      minFontSize: 25,
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: RawMaterialButton(
+                  onPressed: () => _onCallEnd(context),
+                  child: Icon(
+                    Icons.call_end,
+                    color: Colors.white,
+                    size: 25.0,
+                  ),
+                  shape: CircleBorder(),
+                  elevation: 2.0,
+                  fillColor: ViewConstants.myPink,
+                  padding: const EdgeInsets.all(15.0),
+                ),
+              ),
+              Expanded(
+                child: RawMaterialButton(
+                  onPressed: _onToggleMute,
+                  child: Icon(
+                    muted ? Icons.mic_off : Icons.mic,
+                    color: muted ? Colors.white : ViewConstants.myBlue,
+                    size: 15.0,
+                  ),
+                  shape: CircleBorder(),
+                  elevation: 2.0,
+                  fillColor: muted ? ViewConstants.myBlue : Colors.white,
+                  padding: const EdgeInsets.all(12.0),
+                ),
+              ),
+              Expanded(
+                child: RawMaterialButton(
+                  onPressed: _onSwitchCamera,
+                  child: Icon(
+                    Icons.switch_camera,
+                    color: ViewConstants.myBlue,
+                    size: 15.0,
+                  ),
+                  shape: CircleBorder(),
+                  elevation: 2.0,
+                  fillColor: Colors.white,
+                  padding: const EdgeInsets.all(12.0),
+                ),
+              )
+            ],
           )
         ],
       ),

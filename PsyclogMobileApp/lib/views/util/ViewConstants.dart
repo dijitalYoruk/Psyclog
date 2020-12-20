@@ -29,6 +29,7 @@ class ViewConstants {
   static const String topicCreateRoute = '/topicCreate';
   static const String postCreateRoute = '/postCreate';
   static const String postListRoute = '/postList';
+  static const String therapistNoteRoute = '/therapistNotes';
 
   //Constraints for Widgets
   static const int therapistsPerPage = 10;
