@@ -44,7 +44,8 @@
               <v-col class="col-lg-2 col-md-4 col-sm-6 col-12">
                 <div class="caption text--secondary">Verified</div>
                 <div>
-                  <v-btn class="elevation-0" color="success" fab x-small>
+                  <v-btn @click="verifyUser(user)" class="elevation-0" 
+                      :color="user.isAccountVerified ? 'success' : 'error'" fab x-small>
                     <v-icon small> mdi-swap-horizontal-bold </v-icon>
                   </v-btn>
                 </div>
@@ -153,6 +154,19 @@ export default {
       this.page--
       }
       this.retrieveAllUsers()
+    },
+    verifyUser(user) {
+      this.$store.dispatch('verifyUser', {
+        isAccountVerified: !user.isAccountVerified,
+        userId: user._id 
+      })
+      .then(response => {
+        this.$toast.success(response.message)
+        user.isAccountVerified = !user.isAccountVerified 
+      })
+      .catch(error => {
+        this.$toast.error(error)
+      })
     }
   },
   computed: {

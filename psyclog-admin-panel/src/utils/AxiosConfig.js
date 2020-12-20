@@ -28,5 +28,6 @@ export const URL = {
     UPDATE_USER: 'user',
     RETRIEVE_SUPPORT_MESSAGES: 'support',
     DELETE_SUPPORT_MESSAGE: 'support',
-    HANDLE_SUPPORT_MESSAGE: 'support/handle'
+    HANDLE_SUPPORT_MESSAGE: 'support/handle',
+    VERIFY_USER: 'auth/verifyAsAdmin'
 }
