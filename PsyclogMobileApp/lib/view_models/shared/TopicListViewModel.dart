@@ -5,7 +5,6 @@ import 'package:http/http.dart';
 import 'package:psyclog_app/service/ForumService.dart';
 import 'package:psyclog_app/service/util/ServiceErrorHandling.dart';
 import 'package:psyclog_app/src/models/Topic.dart';
-import 'package:psyclog_app/views/util/ViewConstants.dart';
 import 'package:psyclog_app/views/util/ViewErrorHandling.dart';
 
 class TopicListViewModel extends ChangeNotifier {
@@ -24,6 +23,7 @@ class TopicListViewModel extends ChangeNotifier {
 
   Future<void> initializeService(ForumService forumService) async {
     this._forumService = forumService;
+    _allTopicList = List<Topic>();
     initializeModel();
   }
 
@@ -106,6 +106,18 @@ class TopicListViewModel extends ChangeNotifier {
       }
     } else {
       initializeModel();
+    }
+  }
+
+  Future<bool> deleteTopic(String topicID) async {
+    bool isDeleted = await _forumService.deleteTopic(topicID);
+
+    if (isDeleted) {
+      _allTopicList.removeWhere((element) => element.getID == topicID);
+      notifyListeners();
+      return true;
+    } else {
+      return false;
     }
   }
 }

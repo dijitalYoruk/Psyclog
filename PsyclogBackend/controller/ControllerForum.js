@@ -1,92 +1,98 @@
-const { catchAsync } = require('../utils/ErrorHandling')
-const { isMatching } = require('../utils/util')
-const ForumTopic = require('../model/forumTopic')
-const ForumPost = require('../model/forumPost')
-const ApiError = require('../utils/ApiError')
-
+const { catchAsync } = require("../utils/ErrorHandling");
+const { isMatching } = require("../utils/util");
+const ForumTopic = require("../model/forumTopic");
+const ForumPost = require("../model/forumPost");
+const ApiError = require("../utils/ApiError");
 
 const createTopic = catchAsync(async (req, res, next) => {
-    const currentUser = req.currentUser
-    let { title, description, isAuthorAnonymous, postContent } = req.body
-    
-    // create topic  
-    const topic = new ForumTopic({
-        title, description, author: currentUser._id, isAuthorAnonymous, 
-    })
+  const currentUser = req.currentUser;
+  let { title, description, isAuthorAnonymous, postContent } = req.body;
 
-    // create initial post
-    const post = new ForumPost({
-        content: postContent, 
-        author: currentUser._id,
-        topic: topic._id,
-        isAuthorAnonymous
-    })
+  // create topic
+  const topic = new ForumTopic({
+    title,
+    description,
+    author: currentUser._id,
+    isAuthorAnonymous,
+  });
 
-    topic.posts.push(post);
+  // create initial post
+  const post = new ForumPost({
+    content: postContent,
+    author: currentUser._id,
+    topic: topic._id,
+    isAuthorAnonymous,
+  });
 
-    if (req.files) {
-        await post.uploadPostImages(req.files, currentUser._id)
-    }
+  topic.posts.push(post);
 
-    // save
-    const promiseTopic = topic.save()
-    const promisePost = post.save()
-    await Promise.all([promiseTopic, promisePost])
+  if (req.files) {
+    await post.uploadPostImages(req.files, currentUser._id);
+  }
 
-    res.status(200).json({
-        status: 200,
-        data: { 
-            message: __('success_create', 'Topic')
-        } 
-    })    
-})
+  // save
+  const promiseTopic = topic.save();
+  const promisePost = post.save();
+  await Promise.all([promiseTopic, promisePost]);
 
+  res.status(200).json({
+    status: 200,
+    data: {
+      message: __("success_create", "Topic"),
+    },
+  });
+});
 
 const deleteTopic = catchAsync(async (req, res, next) => {
-    let { topicId } = req.body
-    const topic = await ForumTopic.findById(topicId)
-    if (!topic) return next(new ApiError(__('error_not_found', 'Topic'), 404))
-    await topic.remove()
+  let { topicId } = req.body;
+  const topic = await ForumTopic.findById(topicId);
+  if (!topic) return next(new ApiError(__("error_not_found", "Topic"), 404));
+  await topic.remove();
 
-    res.status(204).json({
-        status: 204,
-        data: { message: __('success_delete', 'Topic') }
-    })
-})
-
+  res.status(200).json({
+    status: 200,
+    data: { message: __("success_delete", "Topic") },
+  });
+});
 
 const retrieveTopics = catchAsync(async (req, res, next) => {
-    const page = req.query.page || 1
-    const topics = await ForumTopic.paginate({}, {
-        page, limit: 10, select: '-posts', sort: '+posts',
-        populate: { path: 'author', select: 'username name surname profileImage' }
-    }) 
+  const page = req.query.page || 1;
+  const topics = await ForumTopic.paginate(
+    {},
+    {
+      page,
+      limit: 10,
+      select: "-posts",
+      sort: "+posts",
+      populate: {
+        path: "author",
+        select: "username name surname profileImage",
+      },
+    }
+  );
 
-    res.status(200).json({
-        status: 200,
-        data: { topics }
-    })
-})
-
+  res.status(200).json({
+    status: 200,
+    data: { topics },
+  });
+});
 
 const retrieveNewestTopics = catchAsync(async (req, res, next) => {
-    const newestTopics = await ForumTopic
-            .find({})
-            .populate('author')
-            .select('-posts')
-            .limit(10)
-            .sort('createdAt-')
-       
-    res.status(200).json({
-        status: 200,
-        data: { newestTopics }
-    })
-})
+  const newestTopics = await ForumTopic.find({})
+    .populate("author")
+    .select("-posts")
+    .limit(10)
+    .sort("createdAt-");
 
+  res.status(200).json({
+    status: 200,
+    data: { newestTopics },
+  });
+});
 
 const retrieveMostPopularTopics = catchAsync(async (req, res, next) => {
-    // ALternative
-/*    let popularTopics = await ForumPost.aggregate([
+  // ALternative
+  /*    let popularTopics = await ForumPost.aggregate([
         { $group: { _id: '$topic', postCount: { $sum: 1 } } },
         { $sort: { postCount: -1 } }, { $limit: 10 }
     ])
@@ -96,112 +102,119 @@ const retrieveMostPopularTopics = catchAsync(async (req, res, next) => {
                                     .select('-posts')
 */
 
-    const popularTopics = await ForumTopic.find({})
-                                          .limit(10)
-                                          .populate('author')
-                                          .select('-posts')
-                                          .sort('+posts')
+  const popularTopics = await ForumTopic.find({})
+    .limit(10)
+    .populate("author")
+    .select("-posts")
+    .sort("+posts");
 
-    res.status(200).json({
-        status: 200,
-        data: { popularTopics }
-    })
-})
-
+  res.status(200).json({
+    status: 200,
+    data: { popularTopics },
+  });
+});
 
 const createPost = catchAsync(async (req, res, next) => {
-    const currentUser = req.currentUser
-    let { isAuthorAnonymous, postContent, topic, quotation } = req.body
-    
-    const post = new ForumPost({
-        isAuthorAnonymous, content: postContent, 
-        topic, quotation, author: currentUser._id
-    })
+  const currentUser = req.currentUser;
+  let { isAuthorAnonymous, postContent, topic, quotation } = req.body;
 
-    if (req.files) {
-        await post.uploadPostImages(req.files, currentUser._id)
-    }
+  const post = new ForumPost({
+    isAuthorAnonymous,
+    content: postContent,
+    topic,
+    quotation,
+    author: currentUser._id,
+  });
 
-    await post.save()
+  if (req.files) {
+    await post.uploadPostImages(req.files, currentUser._id);
+  }
 
-    res.status(200).json({
-        status: 200,
-        message: __('success_create', 'Post')
-    })
-})
+  await post.save();
 
+  res.status(200).json({
+    status: 200,
+    message: __("success_create", "Post"),
+  });
+});
 
 const updatePost = catchAsync(async (req, res, next) => {
-    const currentUser = req.currentUser
-    const { deletedPostImages, postId } = req.body
-    
-    // retrieve post 
-    const post = await ForumPost.findById(postId)
-    if (!post) return next(new ApiError(__('error_not_found', 'Post'), 404))
-    if (!isMatching(post.author, currentUser._id) )
-        return next(new ApiError(__('error_unauthorized'), 403))
+  const currentUser = req.currentUser;
+  const { deletedPostImages, postId } = req.body;
 
-    await ForumPost.mapData(post, req.body)
-    await post.save()
+  // retrieve post
+  const post = await ForumPost.findById(postId);
+  if (!post) return next(new ApiError(__("error_not_found", "Post"), 404));
+  if (!isMatching(post.author, currentUser._id))
+    return next(new ApiError(__("error_unauthorized"), 403));
 
-    // delete images
-    await post.deletePostImages(deletedPostImages)
+  await ForumPost.mapData(post, req.body);
+  await post.save();
 
-    // upload new images
-    if (req.files) {
-        await post.uploadPostImages(req.files, currentUser._id)
-    }
+  // delete images
+  await post.deletePostImages(deletedPostImages);
 
-    await post.save()
+  // upload new images
+  if (req.files) {
+    await post.uploadPostImages(req.files, currentUser._id);
+  }
 
-    res.status(200).json({
-        status: 200,
-        message: __('success_change', 'Post')
-    })
-})
+  await post.save();
 
+  res.status(200).json({
+    status: 200,
+    message: __("success_change", "Post"),
+  });
+});
 
 const deletePost = catchAsync(async (req, res, next) => {
-    const currentUser = req.currentUser
-    const { postId } = req.body
+  const currentUser = req.currentUser;
+  const { postId } = req.body;
 
-    // retrieve post 
-    const post = await ForumPost.findById(postId)
-    if (!post) return next(new ApiError(__('error_not_found', 'Post'), 404))
-    if (!isMatching(post.author, currentUser._id) )
-        return next(new ApiError(__('error_unauthorized'), 403))
+  // retrieve post
+  const post = await ForumPost.findById(postId);
+  if (!post) return next(new ApiError(__("error_not_found", "Post"), 404));
+  if (!isMatching(post.author, currentUser._id))
+    return next(new ApiError(__("error_unauthorized"), 403));
 
-    await post.remove()
+  await post.remove();
 
-    res.status(204).json({
-        status: 204,
-        message: __('success_delete', 'Post')
-    })
-})
+  res.status(200).json({
+    status: 200,
+    message: __("success_delete", "Post"),
+  });
+});
 
 const retrievePosts = catchAsync(async (req, res, next) => {
-    const topicId = req.params.topicId
-    const page = req.query.page || 1
+  const topicId = req.params.topicId;
+  const page = req.query.page || 1;
 
-    const posts = await ForumPost.paginate({ topic: topicId }, {
-        page, limit: 10, 
-        populate: [{ path: 'author', select: 'username name surname profileImage' }, { path: 'quotation' }]
-    }) 
+  const posts = await ForumPost.paginate(
+    { topic: topicId },
+    {
+      page,
+      limit: 10,
+      populate: [
+        { path: "author", select: "username name surname profileImage" },
+        { path: "quotation" },
+      ],
+    }
+  );
 
-    return res.status(200).json({
-        status: 200,
-        data: { posts }
-    })
-})
+  return res.status(200).json({
+    status: 200,
+    data: { posts },
+  });
+});
 
 module.exports = {
-    createTopic,
-    deleteTopic,
-    createPost,
-    updatePost,
-    deletePost,
-    retrievePosts,
-    retrieveTopics,
-    retrieveNewestTopics,
-    retrieveMostPopularTopics,
-}
+  createTopic,
+  deleteTopic,
+  createPost,
+  updatePost,
+  deletePost,
+  retrievePosts,
+  retrieveTopics,
+  retrieveNewestTopics,
+  retrieveMostPopularTopics,
+};

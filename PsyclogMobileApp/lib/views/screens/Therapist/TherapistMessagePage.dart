@@ -246,12 +246,13 @@ class _TherapistMessagePageState extends State<TherapistMessagePage> {
                                                 currentContact.profileImage != null
                                                     ? CircleAvatar(
                                                         radius: 24,
-                                                        backgroundImage: (Image.network(currentContact.profileImage +
-                                                                "/people/" +
-                                                                ((index + 2) % 10).toString()))
-                                                            .image,
+                                                        backgroundImage: (Image.network(currentContact.profileImage)).image,
                                                       )
-                                                    : Icon(Icons.person, color: ViewConstants.myGrey, size: 35,),
+                                                    : Icon(
+                                                        Icons.person,
+                                                        color: ViewConstants.myGrey,
+                                                        size: 35,
+                                                      ),
                                                 Positioned(
                                                   bottom: 0,
                                                   right: 0,

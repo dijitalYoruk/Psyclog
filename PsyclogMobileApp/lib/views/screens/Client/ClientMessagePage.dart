@@ -245,9 +245,7 @@ class _ClientMessagePageState extends State<ClientMessagePage> {
                                               children: [
                                                 CircleAvatar(
                                                   radius: 24,
-                                                  backgroundImage: (Image.network(currentContact.profileImage +
-                                                          "/people/" +
-                                                          ((index + 2) % 10).toString()))
+                                                  backgroundImage: (Image.network(currentContact.profileImage))
                                                       .image,
                                                 ),
                                                 Positioned(

@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:psyclog_app/service/WebServerService.dart';
 import 'package:psyclog_app/service/util/ServiceConstants.dart';
@@ -75,6 +76,18 @@ class _TherapistAppointmentPageState extends State<TherapistAppointmentPage> {
     } else {
       return Icon(Icons.person);
     }
+  }
+
+  Future<void> onJoin() async {
+    // await for camera and mic permissions before pushing video page
+    await _handleCameraAndMic(Permission.camera);
+    await _handleCameraAndMic(Permission.microphone);
+    return;
+  }
+
+  Future<void> _handleCameraAndMic(Permission permission) async {
+    final status = await permission.request();
+    print(status);
   }
 
   @override
@@ -247,8 +260,7 @@ class _TherapistAppointmentPageState extends State<TherapistAppointmentPage> {
                         margin: EdgeInsets.symmetric(vertical: 5, horizontal: 25),
                         child: Text(
                           DateParser.monthToString(_dateTime),
-                          style: GoogleFonts.lato(
-                              color: ViewConstants.myBlue.withOpacity(0.5), fontWeight: FontWeight.bold),
+                          style: GoogleFonts.lato(color: ViewConstants.myBlue.withOpacity(0.5), fontWeight: FontWeight.bold),
                         )));
 
                     while (_appointmentIndex < _appointmentLength) {
@@ -271,9 +283,7 @@ class _TherapistAppointmentPageState extends State<TherapistAppointmentPage> {
 
                         if (_currentPatient.profileImageURL != null) {
                           try {
-                            profileImage = Image.network(
-                                _currentPatient.profileImageURL + "/people/" + (_appointmentIndex % 10).toString(),
-                                fit: BoxFit.fill);
+                            profileImage = Image.network(_currentPatient.profileImageURL, fit: BoxFit.fill);
                           } catch (e) {
                             print(e);
                             profileImage = Icon(
@@ -359,8 +369,8 @@ class _TherapistAppointmentPageState extends State<TherapistAppointmentPage> {
                                                       padding: const EdgeInsets.symmetric(horizontal: 10),
                                                       child: AutoSizeText(
                                                         _currentPatient.userEmail,
-                                                        style: GoogleFonts.lato(
-                                                            color: ViewConstants.myWhite.withOpacity(0.75)),
+                                                        style:
+                                                            GoogleFonts.lato(color: ViewConstants.myWhite.withOpacity(0.75)),
                                                         maxFontSize: 13,
                                                       ),
                                                     )
@@ -393,11 +403,15 @@ class _TherapistAppointmentPageState extends State<TherapistAppointmentPage> {
 
                                           List<Widget> buttons = [];
 
-                                          if (currentUnixTime > startUnixTime) {
+                                          if (currentUnixTime > startUnixTime || true) {
                                             buttons.add(Expanded(
                                               child: FlatButton(
                                                 materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                                onPressed: () {},
+                                                onPressed: () async {
+                                                  await onJoin();
+                                                  Navigator.pushNamed(context, ViewConstants.therapistVideoCallRoute,
+                                                      arguments: _currentAppointment);
+                                                },
                                                 child: AutoSizeText(
                                                   "Join",
                                                   style: GoogleFonts.lato(
@@ -431,81 +445,76 @@ class _TherapistAppointmentPageState extends State<TherapistAppointmentPage> {
                                                       builder: (BuildContext dialogContext) {
                                                         return AlertDialog(
                                                           backgroundColor: Colors.transparent,
-                                                          shape: RoundedRectangleBorder(
-                                                            borderRadius: BorderRadius.circular(20),
-                                                          ),
-                                                          contentPadding: EdgeInsets.all(20),
-                                                          content: Column(
-                                                            mainAxisSize: MainAxisSize.min,
-                                                            children: [
-                                                              Container(
-                                                                padding: EdgeInsets.all(15),
-                                                                decoration: BoxDecoration(
-                                                                    border: Border.all(
-                                                                        color: ViewConstants.myBlue.withOpacity(0.5),
-                                                                        width: 5),
-                                                                    gradient: LinearGradient(
-                                                                        begin: Alignment.topLeft,
-                                                                        end: Alignment(4, 4),
-                                                                        colors: [
-                                                                          ViewConstants.myWhite,
-                                                                          ViewConstants.myBlue
-                                                                        ]),
-                                                                    borderRadius: BorderRadius.circular(20)),
-                                                                child: Column(children: [
-                                                                  Text("Do you want to cancel this appointment?",
-                                                                      style:
-                                                                          GoogleFonts.lato(color: ViewConstants.myGrey)),
-                                                                  Padding(
-                                                                    padding: const EdgeInsets.only(top: 12.0),
-                                                                    child: Row(
-                                                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                                                      children: [
-                                                                        FlatButton(
-                                                                            shape: RoundedRectangleBorder(
-                                                                                side: BorderSide(
-                                                                                    color: ViewConstants.myBlue
-                                                                                        .withOpacity(0.5),
-                                                                                    width: 2),
-                                                                                borderRadius: BorderRadius.circular(10)),
-                                                                            onPressed: () async {
-                                                                              bool isCancelled = await model
-                                                                                  .cancelAppointmentByIndex(index);
-
-                                                                              if (isCancelled) {
-                                                                                Navigator.pop(context);
-
-                                                                                final snackBar = SnackBar(
-                                                                                    content: Text(
-                                                                                        'Appointment is cancelled.',
-                                                                                        style: GoogleFonts.lato(
-                                                                                            color:
-                                                                                                ViewConstants.myGrey)));
-
-                                                                                Scaffold.of(context)
-                                                                                    .showSnackBar(snackBar);
-                                                                              }
-                                                                            },
-                                                                            child: Text("Cancel",
-                                                                                style: GoogleFonts.lato(
-                                                                                    color: ViewConstants.myBlue,
-                                                                                    fontWeight: FontWeight.bold,
-                                                                                    fontSize: 14))),
-                                                                        FlatButton(
-                                                                            onPressed: () {
-                                                                              Navigator.pop(context);
-                                                                            },
-                                                                            child: Text("Return",
-                                                                                style: GoogleFonts.lato(
-                                                                                    color: ViewConstants.myGrey,
-                                                                                    fontWeight: FontWeight.bold,
-                                                                                    fontSize: 14))),
-                                                                      ],
+                                                          content: SizedBox(
+                                                            height: MediaQuery.of(context).size.height / 5,
+                                                            width: MediaQuery.of(context).size.width * 0.75,
+                                                            child: Container(
+                                                              padding: EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+                                                              decoration: BoxDecoration(
+                                                                  border: Border.all(color: ViewConstants.myBlue, width: 2),
+                                                                  color: ViewConstants.myWhite,
+                                                                  borderRadius: BorderRadius.circular(15)),
+                                                              child: Column(
+                                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                                  children: [
+                                                                    Expanded(
+                                                                      child: Center(
+                                                                        child: AutoSizeText(
+                                                                          "Do you want to cancel this appointment?",
+                                                                          maxLines: 1,
+                                                                          style: GoogleFonts.heebo(
+                                                                              color: ViewConstants.myBlack),
+                                                                        ),
+                                                                      ),
                                                                     ),
-                                                                  ),
-                                                                ]),
-                                                              ),
-                                                            ],
+                                                                    Padding(
+                                                                      padding: const EdgeInsets.only(top: 12.0),
+                                                                      child: Row(
+                                                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                                        children: [
+                                                                          FlatButton(
+                                                                              shape: RoundedRectangleBorder(
+                                                                                  side: BorderSide(
+                                                                                      color: ViewConstants.myBlue
+                                                                                          .withOpacity(0.5),
+                                                                                      width: 2),
+                                                                                  borderRadius: BorderRadius.circular(10)),
+                                                                              onPressed: () async {
+                                                                                bool isCancelled = await model
+                                                                                    .cancelAppointmentByIndex(index);
+
+                                                                                if (isCancelled) {
+                                                                                  Navigator.pop(context);
+
+                                                                                  final snackBar = SnackBar(
+                                                                                      content: Text(
+                                                                                          'Appointment is cancelled.',
+                                                                                          style: GoogleFonts.lato(
+                                                                                              color: ViewConstants.myGrey)));
+
+                                                                                  Scaffold.of(context)
+                                                                                      .showSnackBar(snackBar);
+                                                                                }
+                                                                              },
+                                                                              child: Text("Cancel",
+                                                                                  style: GoogleFonts.lato(
+                                                                                      color: ViewConstants.myBlue,
+                                                                                      fontWeight: FontWeight.bold,
+                                                                                      fontSize: 14))),
+                                                                          FlatButton(
+                                                                              onPressed: () {
+                                                                                Navigator.pop(context);
+                                                                              },
+                                                                              child: Text("Return",
+                                                                                  style: GoogleFonts.lato(
+                                                                                      color: ViewConstants.myGrey,
+                                                                                      fontWeight: FontWeight.bold,
+                                                                                      fontSize: 14))),
+                                                                        ],
+                                                                      ),
+                                                                    ),
+                                                                  ]),
+                                                            ),
                                                           ),
                                                           insetPadding: EdgeInsets.all(20),
                                                         );
@@ -537,7 +546,7 @@ class _TherapistAppointmentPageState extends State<TherapistAppointmentPage> {
                           ),
                           builder: (context, value, child) {
                             double _colorValue;
-                            double _changeLength = 3;
+                            double _changeLength = 1;
                             double _div = value / (255 * _changeLength);
 
                             if (_div.toInt().isEven) {
@@ -548,7 +557,7 @@ class _TherapistAppointmentPageState extends State<TherapistAppointmentPage> {
 
                             double height;
 
-                            if(MediaQuery.of(context).size.height > 800) {
+                            if (MediaQuery.of(context).size.height > 800) {
                               height = MediaQuery.of(context).size.height * 0.8;
                             } else {
                               height = MediaQuery.of(context).size.height;
@@ -563,7 +572,7 @@ class _TherapistAppointmentPageState extends State<TherapistAppointmentPage> {
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               clipBehavior: Clip.hardEdge,
-                              color: ViewConstants.myBlue.withOpacity(0.5),
+                              color: ViewConstants.myWhite.withOpacity(0.5),
                               child: Container(
                                 margin: EdgeInsets.all(5),
                                 height: height * 0.25,
@@ -572,7 +581,7 @@ class _TherapistAppointmentPageState extends State<TherapistAppointmentPage> {
                                   gradient: LinearGradient(
                                       begin: Alignment.topLeft,
                                       end: Alignment(4, 4),
-                                      colors: [ViewConstants.myBlue, _redAppliedColor.withOpacity(0.75)]),
+                                      colors: [ViewConstants.myBlue, _redAppliedColor, _redAppliedColor]),
                                 ),
                                 child: Column(
                                   children: [

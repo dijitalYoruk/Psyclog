@@ -195,7 +195,7 @@ class _TherapistSessionPageState extends State<TherapistSessionPage> {
 
                         if (patient.profileImageURL != null) {
                           try {
-                            profileImage = Image.network(patient.profileImageURL + "/people/" + (index % 10).toString(),
+                            profileImage = Image.network(patient.profileImageURL,
                                 fit: BoxFit.fill);
                           } catch (e) {
                             print(e);
@@ -256,12 +256,14 @@ class _TherapistSessionPageState extends State<TherapistSessionPage> {
                                           builder: (BuildContext context, BoxConstraints constraints) {
                                             return FlatButton(
                                               minWidth: constraints.maxWidth,
-                                              onPressed: () {},
+                                              onPressed: () {
+                                                Navigator.pushNamed(context, ViewConstants.therapistNoteRoute, arguments: patient);
+                                              },
                                               child: Text("Client Notes",
                                                   style: GoogleFonts.lato(fontSize: 14, color: ViewConstants.myBlack)),
                                               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                              color: ViewConstants.myYellow,
-                                              splashColor: ViewConstants.myYellow,
+                                              color: ViewConstants.myWhite,
+                                              splashColor: ViewConstants.myWhite,
                                               shape: RoundedRectangleBorder(),
                                             );
                                           },

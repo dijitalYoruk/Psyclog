@@ -11,6 +11,7 @@ const multerStorage = multer.memoryStorage()
 
 // setup storage filter
 const multerFilter = (req, file, cb) => {
+
     if (file.mimetype.startsWith('image')) {
         cb(null, true)
     } else {

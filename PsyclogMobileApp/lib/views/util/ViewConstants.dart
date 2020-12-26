@@ -13,7 +13,8 @@ class ViewConstants {
   static const String registerRoute = '/register';
   static const String registerClientRoute = '/registerClient';
   static const String registerTherapistRoute = '/registerTherapist';
-  static const String videoCallRoute = '/videoCall';
+  static const String therapistVideoCallRoute = '/therapistVideoCall';
+  static const String clientVideoCallRoute = '/clientVideoCall';
   static const String sessionRoute = '/session';
   static const String walletRoute = '/wallet';
   static const String allTherapistsRoute = '/allTherapists';
@@ -25,6 +26,10 @@ class ViewConstants {
   static const String therapistPendingRequestRoute = '/therapistPendingRequests';
   static const String clientCreateAppointmentRoute = '/clientCreateAppointment';
   static const String therapistIntervalRoute = '/therapistIntervals';
+  static const String topicCreateRoute = '/topicCreate';
+  static const String postCreateRoute = '/postCreate';
+  static const String postListRoute = '/postList';
+  static const String therapistNoteRoute = '/therapistNotes';
 
   //Constraints for Widgets
   static const int therapistsPerPage = 10;
