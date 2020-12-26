@@ -231,7 +231,7 @@ class _ClientSessionPageState extends State<ClientSessionPage> {
 
                           if (therapist.profileImageURL != "") {
                             try {
-                              profileImage = Image.network(therapist.profileImageURL + "/people/" + (index % 10).toString(),
+                              profileImage = Image.network(therapist.profileImageURL,
                                   fit: BoxFit.fill);
                             } catch (e) {
                               print(e);

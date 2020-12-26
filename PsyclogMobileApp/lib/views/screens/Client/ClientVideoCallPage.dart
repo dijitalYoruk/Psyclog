@@ -22,8 +22,11 @@ class ClientVideoCallPage extends StatefulWidget {
 
 class _ClientVideoCallPageState extends State<ClientVideoCallPage> {
   RtcEngine _engine;
-  bool muted = false;
+
+  bool micMuted = false;
+  bool camMuted = false;
   bool isConnected = false;
+  bool therapistCamMuted = false;
 
   final _infoStrings = <String>[];
   final _users = <int>[];
@@ -83,6 +86,14 @@ class _ClientVideoCallPageState extends State<ClientVideoCallPage> {
       setState(() {
         final info = 'onJoinChannel: $channel, uid: $uid';
         _infoStrings.add(info);
+      });
+    }, remoteVideoStateChanged: (uid, state, reason, elapsed) {
+      setState(() {
+        if(state == VideoRemoteState.Decoding) {
+          therapistCamMuted = false;
+        } else if(state == VideoRemoteState.Stopped) {
+          therapistCamMuted = true;
+        }
       });
     }, leaveChannel: (stats) {
       setState(() {
@@ -162,11 +173,7 @@ class _ClientVideoCallPageState extends State<ClientVideoCallPage> {
                 gradient: LinearGradient(
                     begin: Alignment.topLeft, end: Alignment(5, 5), colors: [ViewConstants.myWhite, ViewConstants.myBlue]),
               ),
-              child: Stack(
-                children: [
-                  LoadingIndicator(),
-                ],
-              ),
+              child: LoadingIndicator(),
             ),
             Positioned(
               child: SizedBox(
@@ -174,7 +181,11 @@ class _ClientVideoCallPageState extends State<ClientVideoCallPage> {
                 width: MediaQuery.of(context).size.width / 4,
                 child: Card(
                   elevation: 5,
-                  child: views[0],
+                  child: !camMuted
+                      ? views[0]
+                      : Container(
+                    child: Icon(Icons.videocam_off),
+                  ),
                   clipBehavior: Clip.hardEdge,
                 ),
               ),
@@ -188,7 +199,12 @@ class _ClientVideoCallPageState extends State<ClientVideoCallPage> {
             child: Stack(
           children: [
             Container(
-              child: views[1],
+              child: !therapistCamMuted
+                  ? views[1]
+                  : Container(
+                color: ViewConstants.myBlack,
+                child: Center(child: Icon(Icons.videocam_off)),
+              )
             ),
             Positioned(
               child: SizedBox(
@@ -196,7 +212,11 @@ class _ClientVideoCallPageState extends State<ClientVideoCallPage> {
                 width: MediaQuery.of(context).size.width / 4,
                 child: Card(
                   elevation: 5,
-                  child: views[0],
+                  child: !camMuted
+                      ? views[0]
+                      : Container(
+                    child: Icon(Icons.videocam_off),
+                  ),
                   clipBehavior: Clip.hardEdge,
                 ),
               ),
@@ -219,7 +239,7 @@ class _ClientVideoCallPageState extends State<ClientVideoCallPage> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 15),
@@ -239,48 +259,6 @@ class _ClientVideoCallPageState extends State<ClientVideoCallPage> {
                   ],
                 ),
               ),
-              Expanded(
-                child: RawMaterialButton(
-                  onPressed: () => _onCallEnd(context),
-                  child: Icon(
-                    Icons.call_end,
-                    color: Colors.white,
-                    size: 25.0,
-                  ),
-                  shape: CircleBorder(),
-                  elevation: 2.0,
-                  fillColor: ViewConstants.myPink,
-                  padding: const EdgeInsets.all(15.0),
-                ),
-              ),
-              Expanded(
-                child: RawMaterialButton(
-                  onPressed: _onToggleMute,
-                  child: Icon(
-                    muted ? Icons.mic_off : Icons.mic,
-                    color: muted ? Colors.white : ViewConstants.myBlue,
-                    size: 15.0,
-                  ),
-                  shape: CircleBorder(),
-                  elevation: 2.0,
-                  fillColor: muted ? ViewConstants.myBlue : Colors.white,
-                  padding: const EdgeInsets.all(12.0),
-                ),
-              ),
-              Expanded(
-                child: RawMaterialButton(
-                  onPressed: _onSwitchCamera,
-                  child: Icon(
-                    Icons.switch_camera,
-                    color: ViewConstants.myBlue,
-                    size: 15.0,
-                  ),
-                  shape: CircleBorder(),
-                  elevation: 2.0,
-                  fillColor: Colors.white,
-                  padding: const EdgeInsets.all(12.0),
-                ),
-              )
             ],
           )
         ],
@@ -292,11 +270,18 @@ class _ClientVideoCallPageState extends State<ClientVideoCallPage> {
     Navigator.pop(context);
   }
 
-  void _onToggleMute() {
+  void _onToggleMic() {
     setState(() {
-      muted = !muted;
+      micMuted = !micMuted;
     });
-    _engine.muteLocalAudioStream(muted);
+    _engine.muteLocalAudioStream(micMuted);
+  }
+
+  void _onToggleCam() {
+    setState(() {
+      camMuted = !camMuted;
+    });
+    _engine.muteLocalVideoStream(camMuted);
   }
 
   void _onSwitchCamera() {
@@ -312,6 +297,74 @@ class _ClientVideoCallPageState extends State<ClientVideoCallPage> {
           children: <Widget>[
             _viewRows(),
             _toolbar(),
+            Positioned(
+              right: 0,
+              bottom: 20,
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: RawMaterialButton(
+                      onPressed: _onSwitchCamera,
+                      child: Icon(
+                        Icons.switch_camera,
+                        color: ViewConstants.myBlue,
+                        size: 15.0,
+                      ),
+                      shape: CircleBorder(),
+                      elevation: 2.0,
+                      fillColor: Colors.white,
+                      padding: const EdgeInsets.all(12.0),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: RawMaterialButton(
+                      onPressed: _onToggleMic,
+                      child: Icon(
+                        micMuted ? Icons.mic_off : Icons.mic,
+                        color: micMuted ? Colors.white : ViewConstants.myBlue,
+                        size: 15.0,
+                      ),
+                      shape: CircleBorder(),
+                      elevation: 2.0,
+                      fillColor: micMuted ? ViewConstants.myBlue : Colors.white,
+                      padding: const EdgeInsets.all(12.0),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: RawMaterialButton(
+                      onPressed: _onToggleCam,
+                      child: Icon(
+                        camMuted ? Icons.videocam_off : Icons.videocam,
+                        color: camMuted ? Colors.white : ViewConstants.myBlue,
+                        size: 15.0,
+                      ),
+                      shape: CircleBorder(),
+                      elevation: 2.0,
+                      fillColor: camMuted ? ViewConstants.myBlue : Colors.white,
+                      padding: const EdgeInsets.all(12.0),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: RawMaterialButton(
+                      onPressed: () => _onCallEnd(context),
+                      child: Icon(
+                        Icons.call_end,
+                        color: ViewConstants.myWhite,
+                        size: 25.0,
+                      ),
+                      shape: CircleBorder(),
+                      elevation: 2.0,
+                      fillColor: ViewConstants.myPink,
+                      padding: const EdgeInsets.all(15.0),
+                    ),
+                  ),
+                ],
+              ),
+            )
           ],
         ),
       ),

@@ -253,7 +253,7 @@ class _ClientAppointmentPageState extends State<ClientAppointmentPage> {
                             if (_currentTherapist.profileImageURL != "") {
                               try {
                                 profileImage = Image.network(
-                                    _currentTherapist.profileImageURL + "/people/" + (_appointmentIndex % 10).toString(),
+                                    _currentTherapist.profileImageURL,
                                     fit: BoxFit.fill);
                               } catch (e) {
                                 print(e);
@@ -375,7 +375,7 @@ class _ClientAppointmentPageState extends State<ClientAppointmentPage> {
 
                                               List<Widget> buttons = [];
 
-                                              if (currentUnixTime > startUnixTime) {
+                                              if (currentUnixTime > startUnixTime || true) {
                                                 buttons.add(Expanded(
                                                   child: FlatButton(
                                                     materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,

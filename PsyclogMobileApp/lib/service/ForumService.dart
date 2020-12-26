@@ -250,7 +250,7 @@ class ForumService extends WebServerService {
     final String currentUserToken = await getToken();
 
     if (currentUserToken != null) {
-      // Waiting for Therapist List
+
       try {
         var request = http.Request('DELETE', Uri.parse('$_serverAddress/$_currentAPI/forum/topic'));
         request.body = jsonEncode({"topicId": topicID});

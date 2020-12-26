@@ -158,7 +158,7 @@ class _ClientTherapistsListPageState extends State<ClientTherapistsListPage> {
                                     if (_currentIndexedTherapist.profileImageURL != null) {
                                       try {
                                         profileImage = Image.network(
-                                            _currentIndexedTherapist.profileImageURL + "/people/" + (index % 10).toString(),
+                                            _currentIndexedTherapist.profileImageURL,
                                             fit: BoxFit.fill);
                                       } catch (e) {
                                         print(e);

@@ -67,7 +67,7 @@ class _TherapistChatPageState extends State<TherapistChatPage> {
                                       ? CircleAvatar(
                                           radius: 24,
                                           backgroundImage:
-                                              (Image.network(widget.currentContact.profileImage + "/people/2")).image,
+                                              (Image.network(widget.currentContact.profileImage)).image,
                                         )
                                       : Icon(
                                           Icons.person,

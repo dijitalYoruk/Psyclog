@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:psyclog_app/src/models/ClientAppointment.dart';
 import 'package:psyclog_app/src/models/Patient.dart';
@@ -489,6 +490,18 @@ class RouteController {
           settings: settings,
           pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
             return Scaffold(
+              backgroundColor: ViewConstants.myWhite,
+              appBar: AppBar(
+                backgroundColor: Colors.transparent,
+                iconTheme: IconThemeData(
+                  color: ViewConstants.myBlack
+                ),
+                shadowColor: Colors.transparent,
+                centerTitle: true,
+                title: AutoSizeText("Client Notes",
+                    minFontSize: 23,
+                    style: TextStyle(color: ViewConstants.myBlack, fontWeight: FontWeight.bold)),
+              ),
               body: TherapistNotePage(_currentPatient),
             );
           },

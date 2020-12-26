@@ -479,7 +479,7 @@ class _TopicPageState extends State<TopicPage> {
                                     String profileImage;
 
                                     if (indexedAuthor.getProfileImageURL != null)
-                                      profileImage = indexedAuthor.getProfileImageURL + "/people/" + (index % 10).toString();
+                                      profileImage = indexedAuthor.getProfileImageURL;
 
                                     return AwareListItem(itemCreated: () {
                                       print("List Item:" + index.toString());

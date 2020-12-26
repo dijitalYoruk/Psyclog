@@ -7,6 +7,7 @@ import 'package:psyclog_app/service/WebServerService.dart';
 import 'package:psyclog_app/service/middleware/UserRestrict.dart';
 import 'package:psyclog_app/service/util/ServiceConstants.dart';
 import 'package:psyclog_app/service/util/ServiceErrorHandling.dart';
+import 'package:psyclog_app/src/models/Note.dart';
 import 'package:psyclog_app/src/models/Patient.dart';
 import 'package:psyclog_app/src/models/TherapistAppointment.dart';
 import 'package:psyclog_app/src/models/TherapistSchedule.dart';
@@ -247,7 +248,7 @@ class TherapistServerService extends WebServerService {
     final String currentUserToken = await getToken();
 
     if (currentUserToken != null) {
-      final message = jsonEncode({"blockedIntervals": blockedIntervals, "day" : dayNumber});
+      final message = jsonEncode({"blockedIntervals": blockedIntervals, "day": dayNumber});
 
       try {
         var response = await http.post('$_serverAddress/$_currentAPI/appointment/block-intervals',
@@ -290,6 +291,119 @@ class TherapistServerService extends WebServerService {
       }
     } else {
       throw ServiceErrorHandling.noTokenError;
+    }
+  }
+
+  Future<List<Note>> getNoteList(String patientID) async {
+    final String currentUserToken = await getToken();
+
+    if (currentUserToken != null) {
+      List<Note> _noteList = List<Note>();
+
+      try {
+        var response = await http.get('$_serverAddress/$_currentAPI/patientNotes?patient=$patientID',
+            headers: {'Authorization': "Bearer " + currentUserToken});
+
+        if (response.statusCode == ServiceConstants.STATUS_SUCCESS_CODE) {
+          dynamic _decodedBody = jsonDecode(response.body);
+
+          int numberOfNotes = _decodedBody['data']['notes'].length;
+
+          _noteList = List<Note>.generate(numberOfNotes, (index) => Note.fromJson(_decodedBody["data"]["notes"][index]));
+
+          return _noteList;
+        } else {
+          throw ServiceErrorHandling.couldNotCreateRequestError;
+        }
+      } catch (e) {
+        print(e);
+        throw ServiceErrorHandling.serverNotRespondingError;
+      }
+    } else {
+      throw ServiceErrorHandling.noTokenError;
+    }
+  }
+
+  Future<bool> createNote(String content, String patientID) async {
+    final String currentUserToken = await getToken();
+
+    if (currentUserToken != null) {
+      final message = jsonEncode({
+        "content": content,
+        "patient": patientID,
+      });
+
+      try {
+        var response = await http.post('$_serverAddress/$_currentAPI/patientNotes',
+            headers: {'Authorization': "Bearer " + currentUserToken, 'Content-Type': 'application/json'}, body: message);
+
+        print(response.body);
+
+        if (response.statusCode == ServiceConstants.STATUS_SUCCESS_CODE) {
+          return true;
+        } else {
+          throw ServiceErrorHandling.couldNotCreateRequestError;
+        }
+      } catch (e) {
+        print(e);
+        throw ServiceErrorHandling.serverNotRespondingError;
+      }
+    } else {
+      throw ServiceErrorHandling.noTokenError;
+    }
+  }
+
+  Future<bool> deleteNote(String noteID) async {
+    final String currentUserToken = await getToken();
+
+    if (currentUserToken != null) {
+      try {
+        var request = http.Request('DELETE', Uri.parse('$_serverAddress/$_currentAPI/patientNotes'));
+        request.body = jsonEncode({"noteId": noteID});
+        request.headers
+            .addAll(<String, String>{'Authorization': "Bearer " + currentUserToken, 'Content-Type': 'application/json'});
+
+        final response = await request.send();
+
+        if (response.statusCode == ServiceConstants.STATUS_DELETE_SUCCESS_CODE) {
+          return true;
+        } else {
+          return false;
+        }
+      } catch (e) {
+        print(e);
+        throw ServiceErrorHandling.serverNotRespondingError;
+      }
+    } else {
+      print(ServiceErrorHandling.tokenEmptyError);
+      return false;
+    }
+  }
+
+  Future<bool> updateNote(String noteID, String content) async {
+    final String currentUserToken = await getToken();
+
+    if (currentUserToken != null) {
+      try {
+        var request = http.Request('PATCH', Uri.parse('$_serverAddress/$_currentAPI/patientNotes'));
+        request.body = jsonEncode({"noteId": noteID, "content": content});
+        request.headers
+            .addAll(<String, String>{'Authorization': "Bearer " + currentUserToken, 'Content-Type': 'application/json'});
+
+        final response = await request.send();
+
+        if (response.statusCode == ServiceConstants.STATUS_SUCCESS_CODE) {
+          return true;
+        } else {
+          return false;
+        }
+      } catch (e) {
+        print(e);
+        throw ServiceErrorHandling.serverNotRespondingError;
+      }
+    } else {
+      print(ServiceErrorHandling.tokenEmptyError);
+      return false;
     }
   }
 }

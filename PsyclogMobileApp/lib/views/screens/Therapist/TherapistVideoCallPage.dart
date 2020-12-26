@@ -8,6 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:psyclog_app/service/util/ServiceConstants.dart';
 import 'package:psyclog_app/src/models/Patient.dart';
 import 'package:psyclog_app/src/models/TherapistAppointment.dart';
+import 'package:psyclog_app/views/screens/Therapist/TherapistNotePage.dart';
 import 'package:psyclog_app/views/util/CustomPainter.dart';
 import 'package:psyclog_app/views/util/ViewConstants.dart';
 import 'package:agora_rtc_engine/rtc_local_view.dart' as RtcLocalView;
@@ -28,8 +29,10 @@ class _ClientVideoCallPageState extends State<TherapistVideoCallPage> {
 
   PageController _pageController;
 
-  bool muted = false;
+  bool micMuted = false;
   bool isConnected = false;
+  bool camMuted = false;
+  bool clientCamMuted = false;
 
   Timer _timer;
   int duration;
@@ -57,6 +60,7 @@ class _ClientVideoCallPageState extends State<TherapistVideoCallPage> {
     _engine.leaveChannel();
     _engine.destroy();
     _pageController.dispose();
+    _timer.cancel();
     super.dispose();
   }
 
@@ -98,6 +102,14 @@ class _ClientVideoCallPageState extends State<TherapistVideoCallPage> {
       setState(() {
         final info = 'onJoinChannel: $channel, uid: $uid';
         _infoStrings.add(info);
+      });
+    }, remoteVideoStateChanged: (uid, state, reason, elapsed) {
+      setState(() {
+        if(state == VideoRemoteState.Decoding) {
+          clientCamMuted = false;
+        } else if(state == VideoRemoteState.Stopped) {
+          clientCamMuted = true;
+        }
       });
     }, leaveChannel: (stats) {
       setState(() {
@@ -177,11 +189,7 @@ class _ClientVideoCallPageState extends State<TherapistVideoCallPage> {
                 gradient: LinearGradient(
                     begin: Alignment.topLeft, end: Alignment(5, 5), colors: [ViewConstants.myWhite, ViewConstants.myBlue]),
               ),
-              child: Stack(
-                children: [
-                  LoadingIndicator(),
-                ],
-              ),
+              child: LoadingIndicator(),
             ),
             Positioned(
               child: SizedBox(
@@ -189,7 +197,11 @@ class _ClientVideoCallPageState extends State<TherapistVideoCallPage> {
                 width: MediaQuery.of(context).size.width / 4,
                 child: Card(
                   elevation: 5,
-                  child: views[0],
+                  child: !camMuted
+                      ? views[0]
+                      : Container(
+                    child: Icon(Icons.videocam_off),
+                  ),
                   clipBehavior: Clip.hardEdge,
                 ),
               ),
@@ -203,7 +215,12 @@ class _ClientVideoCallPageState extends State<TherapistVideoCallPage> {
             child: Stack(
           children: [
             Container(
-              child: views[1],
+                child: !clientCamMuted
+                    ? views[1]
+                    : Container(
+                  color: ViewConstants.myBlack,
+                  child: Center(child: Icon(Icons.videocam_off)),
+                )
             ),
             Positioned(
               child: SizedBox(
@@ -211,7 +228,11 @@ class _ClientVideoCallPageState extends State<TherapistVideoCallPage> {
                 width: MediaQuery.of(context).size.width / 4,
                 child: Card(
                   elevation: 5,
-                  child: views[0],
+                  child: !camMuted
+                      ? views[0]
+                      : Container(
+                          child: Icon(Icons.videocam_off),
+                        ),
                   clipBehavior: Clip.hardEdge,
                 ),
               ),
@@ -234,7 +255,7 @@ class _ClientVideoCallPageState extends State<TherapistVideoCallPage> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 15),
@@ -254,48 +275,6 @@ class _ClientVideoCallPageState extends State<TherapistVideoCallPage> {
                   ],
                 ),
               ),
-              Expanded(
-                child: RawMaterialButton(
-                  onPressed: () => _onCallEnd(context),
-                  child: Icon(
-                    Icons.call_end,
-                    color: ViewConstants.myWhite,
-                    size: 25.0,
-                  ),
-                  shape: CircleBorder(),
-                  elevation: 2.0,
-                  fillColor: ViewConstants.myPink,
-                  padding: const EdgeInsets.all(15.0),
-                ),
-              ),
-              Expanded(
-                child: RawMaterialButton(
-                  onPressed: _onToggleMute,
-                  child: Icon(
-                    muted ? Icons.mic_off : Icons.mic,
-                    color: muted ? Colors.white : ViewConstants.myBlue,
-                    size: 15.0,
-                  ),
-                  shape: CircleBorder(),
-                  elevation: 2.0,
-                  fillColor: muted ? ViewConstants.myBlue : Colors.white,
-                  padding: const EdgeInsets.all(12.0),
-                ),
-              ),
-              Expanded(
-                child: RawMaterialButton(
-                  onPressed: _onSwitchCamera,
-                  child: Icon(
-                    Icons.switch_camera,
-                    color: ViewConstants.myBlue,
-                    size: 15.0,
-                  ),
-                  shape: CircleBorder(),
-                  elevation: 2.0,
-                  fillColor: Colors.white,
-                  padding: const EdgeInsets.all(12.0),
-                ),
-              )
             ],
           )
         ],
@@ -307,11 +286,18 @@ class _ClientVideoCallPageState extends State<TherapistVideoCallPage> {
     Navigator.pop(context);
   }
 
-  void _onToggleMute() {
+  void _onToggleMic() {
     setState(() {
-      muted = !muted;
+      micMuted = !micMuted;
     });
-    _engine.muteLocalAudioStream(muted);
+    _engine.muteLocalAudioStream(micMuted);
+  }
+
+  void _onToggleCam() {
+    setState(() {
+      camMuted = !camMuted;
+    });
+    _engine.muteLocalVideoStream(camMuted);
   }
 
   void _onSwitchCamera() {
@@ -319,7 +305,7 @@ class _ClientVideoCallPageState extends State<TherapistVideoCallPage> {
   }
 
   Widget _viewNotes() {
-    return Container();
+    return TherapistNotePage(widget._currentAppointment.getPatient);
   }
 
   @override
@@ -329,7 +315,7 @@ class _ClientVideoCallPageState extends State<TherapistVideoCallPage> {
       body: Center(
         child: PageView(
           controller: _pageController,
-          physics: ClampingScrollPhysics(),
+          physics: AlwaysScrollableScrollPhysics(),
           children: [
             _viewNotes(),
             Stack(
@@ -355,6 +341,74 @@ class _ClientVideoCallPageState extends State<TherapistVideoCallPage> {
                         ),
                       ],
                     ),
+                  ),
+                ),
+                Positioned(
+                  right: 0,
+                  bottom: 20,
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        child: RawMaterialButton(
+                          onPressed: _onSwitchCamera,
+                          child: Icon(
+                            Icons.switch_camera,
+                            color: ViewConstants.myBlue,
+                            size: 15.0,
+                          ),
+                          shape: CircleBorder(),
+                          elevation: 2.0,
+                          fillColor: Colors.white,
+                          padding: const EdgeInsets.all(12.0),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        child: RawMaterialButton(
+                          onPressed: _onToggleMic,
+                          child: Icon(
+                            micMuted ? Icons.mic_off : Icons.mic,
+                            color: micMuted ? Colors.white : ViewConstants.myBlue,
+                            size: 15.0,
+                          ),
+                          shape: CircleBorder(),
+                          elevation: 2.0,
+                          fillColor: micMuted ? ViewConstants.myBlue : Colors.white,
+                          padding: const EdgeInsets.all(12.0),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        child: RawMaterialButton(
+                          onPressed: _onToggleCam,
+                          child: Icon(
+                            camMuted ? Icons.videocam_off : Icons.videocam,
+                            color: camMuted ? Colors.white : ViewConstants.myBlue,
+                            size: 15.0,
+                          ),
+                          shape: CircleBorder(),
+                          elevation: 2.0,
+                          fillColor: camMuted ? ViewConstants.myBlue : Colors.white,
+                          padding: const EdgeInsets.all(12.0),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        child: RawMaterialButton(
+                          onPressed: () => _onCallEnd(context),
+                          child: Icon(
+                            Icons.call_end,
+                            color: ViewConstants.myWhite,
+                            size: 25.0,
+                          ),
+                          shape: CircleBorder(),
+                          elevation: 2.0,
+                          fillColor: ViewConstants.myPink,
+                          padding: const EdgeInsets.all(15.0),
+                        ),
+                      ),
+                    ],
                   ),
                 )
               ],

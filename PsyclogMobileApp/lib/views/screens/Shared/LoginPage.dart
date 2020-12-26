@@ -135,9 +135,9 @@ class _LoginPageState extends State<LoginPage> {
                                       padding: EdgeInsets.zero,
                                       minWidth: constraints.maxWidth * 0.75,
                                       height: constraints.maxHeight / 3,
-                                      onPressed: () async {
+                                      onPressed: () {
                                         primaryFocus.unfocus(disposition: disposition);
-                                        await _login(context);
+                                        _login(context);
                                       },
                                       child: Text("Log in",
                                           textAlign: TextAlign.center,
