@@ -100,8 +100,6 @@ class WebServerService {
         if (response.statusCode == ServiceConstants.STATUS_SUCCESS_CODE) {
           bool isUserCreated = saveCurrentUserInformationForToken(response.body);
 
-          print("Current Token: " + currentUserToken);
-
           if (isUserCreated) {
             return ServiceErrorHandling.successfulStatusCode;
           } else {

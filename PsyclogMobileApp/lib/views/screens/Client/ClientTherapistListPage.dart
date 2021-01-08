@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -115,6 +116,21 @@ class _ClientTherapistsListPageState extends State<ClientTherapistsListPage> {
                       ),
                     ),
                   ),
+                  SliverToBoxAdapter(
+                    child: Container(
+                      margin: EdgeInsets.all(10),
+                      padding: EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: ViewConstants.myBlack.withOpacity(0.75),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: AutoSizeText(
+                        "From the list below, you can find the consultants we work with. In order to reserve appointments, you should first be accepted as a client.",
+                        style: GoogleFonts.heebo(color: ViewConstants.myWhite),
+                        minFontSize: 16,
+                      ),
+                    ),
+                  ),
                   ChangeNotifierProvider<ClientSearchListViewModel>(
                     create: (context) => _therapistListViewModel,
                     child: Consumer<ClientSearchListViewModel>(
@@ -124,11 +140,15 @@ class _ClientTherapistsListPageState extends State<ClientTherapistsListPage> {
                             bool currentUserApplied;
                             bool currentUserRegistered;
 
+                            String therapistArea;
+
                             Therapist _currentIndexedTherapist = model.getTherapistByElement(index);
 
                             if (_currentIndexedTherapist != null) {
                               currentUserApplied = model.checkAppliedStatus(_currentIndexedTherapist.userID);
                               currentUserRegistered = model.checkRegisteredStatus(_currentIndexedTherapist.userID);
+                              therapistArea =
+                                  ViewConstants.therapistAreas[Random().nextInt(ViewConstants.therapistAreas.length - 1)];
                             }
 
                             return AwareListItem(
@@ -157,9 +177,8 @@ class _ClientTherapistsListPageState extends State<ClientTherapistsListPage> {
 
                                     if (_currentIndexedTherapist.profileImageURL != null) {
                                       try {
-                                        profileImage = Image.network(
-                                            _currentIndexedTherapist.profileImageURL,
-                                            fit: BoxFit.fill);
+                                        profileImage =
+                                            Image.network(_currentIndexedTherapist.profileImageURL, fit: BoxFit.fill);
                                       } catch (e) {
                                         print(e);
                                         profileImage = Icon(
@@ -194,10 +213,13 @@ class _ClientTherapistsListPageState extends State<ClientTherapistsListPage> {
                                               margin: EdgeInsets.all(10),
                                               height: MediaQuery.of(context).size.height / 8,
                                               width: MediaQuery.of(context).size.height / 8,
-                                              child: ClipRRect(
-                                                borderRadius: BorderRadius.circular(10),
-                                                clipBehavior: Clip.hardEdge,
-                                                child: profileImage,
+                                              child: Hero(
+                                                tag: "${_currentIndexedTherapist.userID}",
+                                                child: ClipRRect(
+                                                  borderRadius: BorderRadius.circular(10),
+                                                  clipBehavior: Clip.hardEdge,
+                                                  child: profileImage,
+                                                ),
                                               ),
                                             ),
                                             Expanded(
@@ -207,52 +229,57 @@ class _ClientTherapistsListPageState extends State<ClientTherapistsListPage> {
                                                   children: [
                                                     Expanded(
                                                       child: Column(
-                                                        mainAxisAlignment: MainAxisAlignment.start,
+                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                         crossAxisAlignment: CrossAxisAlignment.start,
                                                         children: [
-                                                          Align(
-                                                            alignment: Alignment.centerLeft,
-                                                            child: Text(
-                                                              "Dr. " +
-                                                                  _currentIndexedTherapist.userFirstName.toString().inCaps +
-                                                                  " " +
-                                                                  _currentIndexedTherapist.userSurname.toString().inCaps,
-                                                              style: GoogleFonts.lato(
-                                                                  fontSize: 16,
-                                                                  color: ViewConstants.myBlack,
-                                                                  fontWeight: FontWeight.bold),
+                                                          Hero(
+                                                            tag: "${_currentIndexedTherapist.userID}2",
+                                                            child: Material(
+                                                              color: Colors.transparent,
+                                                              shadowColor: Colors.transparent,
+                                                              child: AutoSizeText(
+                                                                _currentIndexedTherapist.getFullName(),
+                                                                style: GoogleFonts.lato(
+                                                                    color: ViewConstants.myBlack,
+                                                                    fontWeight: FontWeight.bold),
+                                                                minFontSize: 16,
+                                                              ),
                                                             ),
                                                           ),
-                                                          Padding(
-                                                            padding: const EdgeInsets.only(top: 3),
-                                                            child: Text(
-                                                              "Family and Marriage Therapist",
-                                                              style: GoogleFonts.lato(
-                                                                  fontSize: 13,
-                                                                  color: ViewConstants.myBlue,
-                                                                  fontWeight: FontWeight.w600),
+                                                          Hero(
+                                                            tag: "${_currentIndexedTherapist.userID}3",
+                                                            child: Material(
+                                                              color: Colors.transparent,
+                                                              shadowColor: Colors.transparent,
+                                                              child: AutoSizeText(
+                                                                therapistArea,
+                                                                style: GoogleFonts.lato(
+                                                                    color: ViewConstants.myBlue,
+                                                                    fontWeight: FontWeight.w600),
+                                                                maxFontSize: 13,
+                                                              ),
                                                             ),
                                                           ),
-                                                          Padding(
-                                                            padding: const EdgeInsets.only(top: 3),
-                                                            child: Text(
-                                                              Random().nextInt(20).toString() + " years experience",
-                                                              style: GoogleFonts.lato(
-                                                                  fontSize: 12,
-                                                                  color: ViewConstants.myPink,
-                                                                  fontWeight: FontWeight.w600),
+                                                          Hero(
+                                                            tag: "${_currentIndexedTherapist.userID}4",
+                                                            child: Material(
+                                                              color: Colors.transparent,
+                                                              shadowColor: Colors.transparent,
+                                                              child: AutoSizeText(
+                                                                (Random().nextInt(20) + 1).toString() + " years experience",
+                                                                style: GoogleFonts.lato(
+                                                                    color: ViewConstants.myPink,
+                                                                    fontWeight: FontWeight.w600),
+                                                                maxFontSize: 13,
+                                                              ),
                                                             ),
                                                           ),
-                                                          Padding(
-                                                            padding: const EdgeInsets.only(top: 3),
-                                                            child: Text(
-                                                              _currentIndexedTherapist.appointmentPrice.toString() +
-                                                                  "\$ per Hour",
-                                                              style: GoogleFonts.lato(
-                                                                  fontSize: 12,
-                                                                  color: ViewConstants.myBlack,
-                                                                  fontWeight: FontWeight.bold),
-                                                            ),
+                                                          AutoSizeText(
+                                                            _currentIndexedTherapist.appointmentPrice.toString() +
+                                                                "\$ per Hour",
+                                                            style: GoogleFonts.lato(
+                                                                color: ViewConstants.myBlack, fontWeight: FontWeight.bold),
+                                                            maxFontSize: 13,
                                                           ),
                                                         ],
                                                       ),
@@ -282,7 +309,9 @@ class _ClientTherapistsListPageState extends State<ClientTherapistsListPage> {
                                                         await Navigator.pushNamed(
                                                             context, ViewConstants.therapistRequestRoute,
                                                             arguments: TherapistRequestScreenArguments(
-                                                                _currentIndexedTherapist, currentUserApplied));
+                                                                _currentIndexedTherapist,
+                                                                currentUserApplied,
+                                                                therapistArea));
 
                                                         // Refresh pending therapist list after Therapist Request Page to keep thew list fresh
                                                         model.refreshPendingList();
