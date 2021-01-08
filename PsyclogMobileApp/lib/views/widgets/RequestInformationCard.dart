@@ -62,10 +62,6 @@ class _RequestInformationCardState extends State<RequestInformationCard> {
       final snackBar = SnackBar(
           duration: Duration(milliseconds: 1500),
           backgroundColor: ViewConstants.myBlack,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(25),
-          ),
-          behavior: SnackBarBehavior.floating,
           content: Padding(
             padding: const EdgeInsets.all(5.0),
             child: Text(
@@ -90,14 +86,14 @@ class _RequestInformationCardState extends State<RequestInformationCard> {
       builder: (BuildContext context, BoxConstraints constraints) {
         return Container(
           color: Colors.transparent,
-          margin: EdgeInsets.only(bottom: 10),
           alignment: Alignment.bottomCenter,
+          height: MediaQuery.of(context).size.height * 0.1,
+          width: MediaQuery.of(context).size.width,
           child: AnimatedContainer(
             decoration: BoxDecoration(
               color: _onApply ? ViewConstants.myBlack.withOpacity(0.75) : ViewConstants.myBlack,
-              borderRadius: BorderRadius.circular(10),
             ),
-            width: _onApply ? constraints.maxWidth * 0.9 : constraints.maxWidth * 0.5,
+            width: constraints.maxWidth,
             height: _onApply ? constraints.maxHeight : constraints.maxHeight * 0.075,
             duration: Duration(milliseconds: 666),
             curve: Curves.easeOutCirc,
@@ -109,8 +105,7 @@ class _RequestInformationCardState extends State<RequestInformationCard> {
                     ? Container(
                         padding: EdgeInsets.zero,
                         decoration: BoxDecoration(
-                          color: ViewConstants.myBlack,
-                          borderRadius: BorderRadius.circular(10),
+                          color: ViewConstants.myYellow,
                         ),
                         child: MaterialButton(
                           padding: EdgeInsets.zero,
@@ -130,7 +125,7 @@ class _RequestInformationCardState extends State<RequestInformationCard> {
                     : Container(
                         padding: EdgeInsets.zero,
                         decoration: BoxDecoration(
-                          color: ViewConstants.myBlue,
+                          color: ViewConstants.myWhite,
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Center(
@@ -209,7 +204,7 @@ class _RequestInformationCardState extends State<RequestInformationCard> {
                                 padding: EdgeInsets.zero,
                                 color: ViewConstants.myBlack,
                                 height: constraints.maxHeight * 0.08,
-                                minWidth: constraints.maxWidth * 0.9,
+                                minWidth: constraints.maxWidth,
                                 onPressed: () {
                                   createPatientRequest(context);
                                 },

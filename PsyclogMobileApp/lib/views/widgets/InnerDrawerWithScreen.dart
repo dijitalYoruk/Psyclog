@@ -1,9 +1,12 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inner_drawer/inner_drawer.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:psyclog_app/service/ClientServerService.dart';
 import 'package:psyclog_app/service/SocketService.dart';
 import 'package:psyclog_app/service/WebServerService.dart';
 import 'package:psyclog_app/src/models/Patient.dart';
+import 'package:psyclog_app/src/models/User.dart';
 import 'package:psyclog_app/views/util/ViewConstants.dart';
 
 class InnerDrawerWithScreen extends StatefulWidget {
@@ -17,17 +20,18 @@ class InnerDrawerWithScreen extends StatefulWidget {
 
 class _InnerDrawerWithScreenState extends State<InnerDrawerWithScreen> {
   WebServerService _webServerService;
+  User _currentUser;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-
-    initializeService();
   }
 
-  initializeService() async {
+  Future<bool> initializeService() async {
     _webServerService = await WebServerService.getWebServerService();
+    _currentUser = _webServerService.currentUser;
+    return true;
   }
 
   @override
@@ -63,9 +67,49 @@ class _InnerDrawerWithScreenState extends State<InnerDrawerWithScreen> {
                   padding: EdgeInsets.fromLTRB(10, 20, 10, 0),
                   color: Colors.transparent,
                   child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height / 8,
+                      Spacer(),
+                      FutureBuilder(
+                        future: initializeService(),
+                        builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                          if (snapshot.hasData) {
+                            return Container(
+                              padding: EdgeInsets.symmetric(vertical: 15, horizontal: 5),
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                    begin: Alignment.topLeft,
+                                    end: Alignment(3, 3),
+                                    colors: [ViewConstants.myWhite, ViewConstants.myBlue]),
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    padding: EdgeInsets.all(3),
+                                    decoration: BoxDecoration(
+                                      color: ViewConstants.myBlue,
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: CircleAvatar(
+                                      backgroundImage: Image.network(_currentUser.profileImageURL, fit: BoxFit.fill).image,
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 8.0),
+                                    child: AutoSizeText(
+                                      _currentUser.getFullName(),
+                                      style: GoogleFonts.muli(color: ViewConstants.myBlack, fontWeight: FontWeight.w600),
+                                      minFontSize: 16,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          } else {
+                            return CircularProgressIndicator();
+                          }
+                        },
                       ),
                       ListTile(
                         title: Text("Homepage"),
@@ -92,29 +136,20 @@ class _InnerDrawerWithScreenState extends State<InnerDrawerWithScreen> {
                               context, ViewConstants.walletRoute, ((Route<dynamic> route) => false));
                         },
                       ),
-                      ListTile(
-                        title: Text("Sessions"),
-                        leading: Icon(Icons.calendar_today),
-                        onTap: () {
-                          Navigator.pushNamedAndRemoveUntil(
-                              context, ViewConstants.sessionRoute, ((Route<dynamic> route) => false));
-                        },
-                      ),
-                      Expanded(
-                        child: Align(
-                          alignment: Alignment.bottomCenter,
-                          child: ListTile(
-                            title: Text("Log Out"),
-                            leading: Icon(Icons.arrow_back_ios),
-                            onTap: () {
-                              ClientServerService.getClientServerService().then((value) {
-                                value.clearAllInfo();
-                                SocketService.disposeService();
-                                Navigator.pushNamedAndRemoveUntil(
-                                    context, ViewConstants.welcomeRoute, (Route<dynamic> route) => false);
-                              });
-                            },
-                          ),
+                      Spacer(),
+                      Align(
+                        alignment: Alignment.bottomCenter,
+                        child: ListTile(
+                          title: Text("Log Out"),
+                          leading: Icon(Icons.arrow_back_ios),
+                          onTap: () {
+                            ClientServerService.getClientServerService().then((value) {
+                              value.clearAllInfo();
+                              SocketService.disposeService();
+                              Navigator.pushNamedAndRemoveUntil(
+                                  context, ViewConstants.welcomeRoute, (Route<dynamic> route) => false);
+                            });
+                          },
                         ),
                       ),
                       SizedBox(

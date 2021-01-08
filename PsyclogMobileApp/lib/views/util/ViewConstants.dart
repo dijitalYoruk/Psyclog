@@ -39,6 +39,17 @@ class ViewConstants {
   static const String latestTherapists = "Latest";
   static const String seniorTherapists = "Senior Students";
 
+  //Constraints for Therapist Areas
+  static const List<String> therapistAreas = [
+    "Marriage and Family",
+    "Guidance and Career",
+    "Rehabilitation",
+    "Mental Health",
+    "Substance Abuse",
+    "Educational",
+    "Child Pediatric"
+  ];
+
   //Colors for theme
   static Color lightPrimary = Color(0xfffcfcff);
   static Color darkPrimary = Colors.black;
