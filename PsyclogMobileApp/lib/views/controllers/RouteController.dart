@@ -206,7 +206,10 @@ class RouteController {
           settings: settings,
           transitionDuration: Duration(milliseconds: 800),
           pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
-            return ClientRequestPage(therapist: _args.therapist, currentUserApplied: _args.currentUserApplied);
+            return ClientRequestPage(
+                therapist: _args.therapist,
+                currentUserApplied: _args.currentUserApplied,
+                therapistArea: _args.therapistArea);
           },
           transitionsBuilder:
               (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
@@ -493,14 +496,11 @@ class RouteController {
               backgroundColor: ViewConstants.myWhite,
               appBar: AppBar(
                 backgroundColor: Colors.transparent,
-                iconTheme: IconThemeData(
-                  color: ViewConstants.myBlack
-                ),
+                iconTheme: IconThemeData(color: ViewConstants.myBlack),
                 shadowColor: Colors.transparent,
                 centerTitle: true,
                 title: AutoSizeText("Client Notes",
-                    minFontSize: 23,
-                    style: TextStyle(color: ViewConstants.myBlack, fontWeight: FontWeight.bold)),
+                    minFontSize: 23, style: TextStyle(color: ViewConstants.myBlack, fontWeight: FontWeight.bold)),
               ),
               body: TherapistNotePage(_currentPatient),
             );

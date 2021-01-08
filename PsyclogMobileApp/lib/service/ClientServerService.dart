@@ -5,6 +5,7 @@ import 'package:psyclog_app/service/WebServerService.dart';
 import 'package:psyclog_app/service/util/ServiceConstants.dart';
 import 'package:psyclog_app/service/util/ServiceErrorHandling.dart';
 import 'package:psyclog_app/src/models/PatientSchedule.dart';
+import 'package:psyclog_app/src/models/Review.dart';
 import 'package:psyclog_app/src/models/Therapist.dart';
 import 'package:psyclog_app/src/models/controller/UserModelController.dart';
 import 'middleware/UserRestrict.dart';
@@ -34,7 +35,6 @@ class ClientServerService extends WebServerService {
 
     return _clientServerService;
   }
-
 
   Future<Response> getTherapistsByPage(int page) async {
     if (UserRestrict.restrictAccessByGivenRoles(
@@ -389,5 +389,90 @@ class ClientServerService extends WebServerService {
     } else {
       throw ServiceErrorHandling.noTokenError;
     }
+  }
+
+  Future<List<Review>> retrieveReviews(String psychologistID, int page) async {
+    // Waiting for User Token to be retrieved
+    final String currentUserToken = await getToken();
+
+    if (currentUserToken != null) {
+      final message = jsonEncode({"psychologistId": psychologistID});
+
+      try {
+        var response = await http.post('$_serverAddress/$_currentAPI/review/retrieve?page=' + page.toString(),
+            headers: {'Authorization': "Bearer " + currentUserToken, 'Content-Type': 'application/json'}, body: message);
+
+        if (response.statusCode == ServiceConstants.STATUS_SUCCESS_CODE) {
+          List<Review> _newReviews = List<Review>.generate(jsonDecode(response.body)["data"]["reviews"]["docs"].length,
+              (index) => Review.fromJson(jsonDecode(response.body)["data"]["reviews"]["docs"][index]));
+
+          return _newReviews;
+        } else {
+          throw ServiceErrorHandling.couldNotCreateRequestError;
+        }
+      } catch (e) {
+        print(e);
+        print(ServiceErrorHandling.serverNotRespondingError);
+      }
+    } else {
+      print(ServiceErrorHandling.tokenEmptyError);
+    }
+    return null;
+  }
+
+  Future<bool> deleteReview(String reviewID) async {
+    final String currentUserToken = await getToken();
+
+    if (currentUserToken != null) {
+      try {
+        var request = http.Request('DELETE', Uri.parse('$_serverAddress/$_currentAPI/review/$reviewID'));
+        request.headers.addAll(<String, String>{'Authorization': "Bearer " + currentUserToken});
+
+        final response = await request.send();
+
+        if (response.statusCode == ServiceConstants.STATUS_SUCCESS_CODE) {
+          return true;
+        } else {
+          throw ServiceErrorHandling.couldNotCreateRequestError;
+        }
+      } catch (e) {
+        print(e);
+        print(ServiceErrorHandling.serverNotRespondingError);
+      }
+    } else {
+      print(ServiceErrorHandling.tokenEmptyError);
+    }
+    return false;
+  }
+
+  Future<bool> createReview(String reviewTitle, String reviewContent, int rating, String therapistID) async {
+// Waiting for User Token to be retrieved
+    final String currentUserToken = await getToken();
+
+    if (currentUserToken != null) {
+      final message =
+          jsonEncode({"title": reviewTitle, "content": reviewContent, "rating": rating, "psychologistId": therapistID});
+
+      try {
+        var response = await http.post('$_serverAddress/$_currentAPI/review',
+            headers: {'Authorization': "Bearer " + currentUserToken, 'Content-Type': 'application/json'}, body: message);
+
+        print(response.body);
+
+        if (response.statusCode == ServiceConstants.STATUS_SUCCESS_CODE) {
+          return true;
+        } else if (response.statusCode == ServiceConstants.STATUS_FAIL_CODE)  {
+          return false;
+        } else {
+          throw ServiceErrorHandling.couldNotCreateRequestError;
+        }
+      } catch (e) {
+        print(e);
+        throw ServiceErrorHandling.serverNotRespondingError;
+      }
+    } else {
+      print(ServiceErrorHandling.tokenEmptyError);
+    }
+    return false;
   }
 }

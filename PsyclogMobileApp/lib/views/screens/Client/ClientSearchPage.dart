@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:psyclog_app/views/util/ViewConstants.dart';
@@ -38,9 +39,7 @@ class _ClientSearchPageState extends State<ClientSearchPage> {
             child: Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment(5, 5),
-                    colors: [ViewConstants.myWhite, ViewConstants.myBlue]),
+                    begin: Alignment.topLeft, end: Alignment(5, 5), colors: [ViewConstants.myWhite, ViewConstants.myBlue]),
               ),
             )),
         Theme(
@@ -119,211 +118,318 @@ class _ClientSearchPageState extends State<ClientSearchPage> {
                   ],
                 ),
               ),
-              Container(
-                padding: EdgeInsets.only(left: 15, right: 20, top: 10, bottom: 10),
-                height: MediaQuery.of(context).size.height * 0.35,
-                child: Theme(
-                  data: ThemeData(
-                    accentColor: ViewConstants.myBlue,
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 20),
+                child: InkWell(
+                  onTap: () {
+                    Navigator.pushNamed(context, ViewConstants.allTherapistsRoute, arguments: ViewConstants.allTherapists);
+                  },
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      gradient: LinearGradient(
+                        begin: Alignment(-1, -1),
+                        end: Alignment(1, -0.5),
+                        colors: <Color>[
+                          ViewConstants.myBlue.withOpacity(0.75),
+                          ViewConstants.myBlack,
+                        ],
+                      ),
+                    ),
+                    child: Container(
+                      height: MediaQuery.of(context).size.height / 4,
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              children: [
+                                Align(
+                                  alignment: Alignment.topCenter,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(15),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Icon(
+                                          Icons.all_inclusive,
+                                          color: ViewConstants.myWhite,
+                                          size: 35,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                Spacer(),
+                                Align(
+                                  alignment: Alignment.bottomRight,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(15),
+                                    child: AutoSizeText(
+                                      "All the consultants we work with. Safe and secure.",
+                                      textAlign: TextAlign.left,
+                                      style: TextStyle(color: ViewConstants.myWhite, fontWeight: FontWeight.bold),
+                                      minFontSize: 20,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.all(15),
+                            child: Container(
+                              padding: EdgeInsets.all(5),
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: ViewConstants.myWhite
+                              ),
+                              child: Icon(
+                                Icons.arrow_forward,
+                                color: ViewConstants.myBlue,
+                                size: 35,
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
                   ),
-                  child: ListView(
-                    scrollDirection: Axis.horizontal,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
-                        child: InkWell(
-                          onTap: () {
-                            Navigator.pushNamed(context, ViewConstants.allTherapistsRoute,
-                                arguments: ViewConstants.allTherapists);
-                          },
-                          child: DecoratedBox(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
-                              gradient: LinearGradient(
-                                begin: Alignment(-1, -1),
-                                end: Alignment(1, -0.5),
-                                colors: <Color>[
-                                  ViewConstants.myBlue.withOpacity(0.75),
-                                  ViewConstants.myBlack,
-                                ],
-                              ),
-                            ),
-                            child: Container(
-                              width: MediaQuery.of(context).size.width / 3,
-                              height: MediaQuery.of(context).size.height / 3,
-                              child: Column(
-                                children: [
-                                  Align(
-                                    alignment: Alignment.topLeft,
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(left: 10, top: 10, bottom: 40),
-                                      child: Text(ViewConstants.allTherapists,
-                                          textAlign: TextAlign.left,
-                                          style: TextStyle(
-                                              fontSize: 16, color: ViewConstants.myWhite, fontWeight: FontWeight.bold)),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 20),
+                child: InkWell(
+                  onTap: () {
+                    Navigator.pushNamed(context, ViewConstants.allTherapistsRoute,
+                        arguments: ViewConstants.preferredTherapists);
+                  },
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      gradient: LinearGradient(
+                        begin: Alignment(-1, -1),
+                        end: Alignment(1, -0.5),
+                        colors: <Color>[
+                          ViewConstants.myPink.withOpacity(0.75),
+                          ViewConstants.myBlack,
+                        ],
+                      ),
+                    ),
+                    child: Container(
+                      height: MediaQuery.of(context).size.height / 4,
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              children: [
+                                Align(
+                                  alignment: Alignment.topCenter,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(15),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Icon(
+                                          Icons.thumb_up,
+                                          color: ViewConstants.myWhite,
+                                          size: 35,
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                  Expanded(
-                                    child: Container(
-                                      width: MediaQuery.of(context).size.width / 3,
-                                      child: Image.asset(
-                                        "assets/therapists_pictures/william_james.png",
-                                        fit: BoxFit.fill,
-                                      ),
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
-                        child: InkWell(
-                          onTap: () {
-                            Navigator.pushNamed(context, ViewConstants.allTherapistsRoute,
-                                arguments: ViewConstants.preferredTherapists);
-                          },
-                          child: DecoratedBox(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
-                              gradient: LinearGradient(
-                                begin: Alignment(-1, -1),
-                                end: Alignment(1, -0.5),
-                                colors: <Color>[
-                                  ViewConstants.myPink.withOpacity(0.75),
-                                  ViewConstants.myBlack,
-                                ],
-                              ),
-                            ),
-                            child: Container(
-                              width: MediaQuery.of(context).size.width / 3,
-                              child: Column(
-                                children: [
-                                  Align(
-                                    alignment: Alignment.topLeft,
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(left: 10, top: 10, bottom: 40),
-                                      child: Text(ViewConstants.preferredTherapists,
-                                          textAlign: TextAlign.left,
-                                          style: TextStyle(
-                                              fontSize: 16, color: ViewConstants.myWhite, fontWeight: FontWeight.bold)),
+                                ),
+                                Spacer(),
+                                Align(
+                                  alignment: Alignment.bottomRight,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(15),
+                                    child: AutoSizeText(
+                                      "Preferred by our clients. Favourites and experienced.",
+                                      textAlign: TextAlign.left,
+                                      style: TextStyle(color: ViewConstants.myWhite, fontWeight: FontWeight.bold),
+                                      minFontSize: 20,
                                     ),
                                   ),
-                                  Expanded(
-                                    child: Container(
-                                      width: MediaQuery.of(context).size.width / 3,
-                                      child: Image.asset(
-                                        "assets/therapists_pictures/sigmund_freud.png",
-                                        fit: BoxFit.fill,
-                                      ),
-                                    ),
-                                  )
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
                           ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
-                        child: InkWell(
-                          onTap: () {
-                            Navigator.pushNamed(context, ViewConstants.allTherapistsRoute,
-                                arguments: ViewConstants.latestTherapists);
-                          },
-                          child: DecoratedBox(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.only(topLeft: Radius.circular(10), topRight: Radius.circular(10)),
-                              gradient: LinearGradient(
-                                begin: Alignment(-1, -1),
-                                end: Alignment(1, -0.5),
-                                colors: <Color>[
-                                  ViewConstants.myYellow.withOpacity(0.75),
-                                  ViewConstants.myBlack,
-                                ],
+                          Padding(
+                            padding: EdgeInsets.all(15),
+                            child: Container(
+                              padding: EdgeInsets.all(5),
+                              decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: ViewConstants.myWhite
+                              ),
+                              child: Icon(
+                                Icons.arrow_forward,
+                                color: ViewConstants.myPink,
+                                size: 35,
                               ),
                             ),
-                            child: Container(
-                              width: MediaQuery.of(context).size.width / 3,
-                              child: Column(
-                                children: [
-                                  Align(
-                                    alignment: Alignment.topLeft,
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(left: 10, top: 10, bottom: 40),
-                                      child: Text(ViewConstants.latestTherapists,
-                                          textAlign: TextAlign.left,
-                                          style: TextStyle(
-                                              fontSize: 16, color: ViewConstants.myWhite, fontWeight: FontWeight.bold)),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 20),
+                child: InkWell(
+                  onTap: () {
+                    Navigator.pushNamed(context, ViewConstants.allTherapistsRoute,
+                        arguments: ViewConstants.latestTherapists);
+                  },
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      gradient: LinearGradient(
+                        begin: Alignment(-1, -1),
+                        end: Alignment(1, -0.5),
+                        colors: <Color>[
+                          ViewConstants.myYellow.withOpacity(0.75),
+                          ViewConstants.myBlack,
+                        ],
+                      ),
+                    ),
+                    child: Container(
+                      height: MediaQuery.of(context).size.height / 4,
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              children: [
+                                Align(
+                                  alignment: Alignment.topCenter,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(15),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Icon(
+                                          Icons.fiber_new_rounded,
+                                          color: ViewConstants.myWhite,
+                                          size: 35,
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                  Expanded(
-                                    child: Container(
-                                      width: MediaQuery.of(context).size.width / 3,
-                                      child: Image.asset(
-                                        "assets/therapists_pictures/erik_erikson.png",
-                                        fit: BoxFit.fill,
-                                      ),
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
-                        child: InkWell(
-                          onTap: () {
-                            Navigator.pushNamed(context, ViewConstants.allTherapistsRoute,
-                                arguments: ViewConstants.seniorTherapists);
-                          },
-                          child: DecoratedBox(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              gradient: LinearGradient(
-                                begin: Alignment(-1, -1),
-                                end: Alignment(1, -0.5),
-                                colors: <Color>[
-                                  ViewConstants.myGreyBlue.withOpacity(0.75),
-                                  ViewConstants.myBlack,
-                                ],
-                              ),
-                            ),
-                            child: Container(
-                              width: MediaQuery.of(context).size.width / 3,
-                              height: MediaQuery.of(context).size.height / 3,
-                              child: Column(
-                                children: [
-                                  Align(
-                                    alignment: Alignment.topLeft,
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(left: 10, top: 10, bottom: 40),
-                                      child: Text(ViewConstants.seniorTherapists,
-                                          textAlign: TextAlign.left,
-                                          style: TextStyle(
-                                              fontSize: 16, color: ViewConstants.myWhite, fontWeight: FontWeight.bold)),
+                                ),
+                                Spacer(),
+                                Align(
+                                  alignment: Alignment.bottomRight,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(15),
+                                    child: AutoSizeText(
+                                      "Our newest consultants. Looking forward to work.",
+                                      textAlign: TextAlign.left,
+                                      style: TextStyle(color: ViewConstants.myWhite, fontWeight: FontWeight.bold),
+                                      minFontSize: 20,
                                     ),
                                   ),
-                                  Expanded(
-                                    child: Container(
-                                      width: MediaQuery.of(context).size.width / 3,
-                                      child: Image.asset(
-                                        "assets/therapists_pictures/melanie_klein.png",
-                                        fit: BoxFit.fill,
-                                      ),
-                                    ),
-                                  )
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
                           ),
-                        ),
+                          Padding(
+                            padding: EdgeInsets.all(15),
+                            child: Container(
+                              padding: EdgeInsets.all(5),
+                              decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: ViewConstants.myWhite
+                              ),
+                              child: Icon(
+                                Icons.arrow_forward,
+                                color: ViewConstants.myYellow,
+                                size: 35,
+                              ),
+                            ),
+                          )
+                        ],
                       ),
-                    ],
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 20),
+                child: InkWell(
+                  onTap: () {
+                    Navigator.pushNamed(context, ViewConstants.allTherapistsRoute,
+                        arguments: ViewConstants.seniorTherapists);
+                  },
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      gradient: LinearGradient(
+                        begin: Alignment(-1, -1),
+                        end: Alignment(1, -0.5),
+                        colors: <Color>[
+                          ViewConstants.myGreyBlue,
+                          ViewConstants.myBlack,
+                        ],
+                      ),
+                    ),
+                    child: Container(
+                      height: MediaQuery.of(context).size.height / 4,
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              children: [
+                                Align(
+                                  alignment: Alignment.topCenter,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(15),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Icon(
+                                          Icons.school,
+                                          color: ViewConstants.myWhite,
+                                          size: 35,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                Spacer(),
+                                Align(
+                                  alignment: Alignment.bottomRight,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(15),
+                                    child: AutoSizeText(
+                                      "Bilkent Senior Students. Ready to bloom.",
+                                      textAlign: TextAlign.left,
+                                      style: TextStyle(color: ViewConstants.myWhite, fontWeight: FontWeight.bold),
+                                      minFontSize: 20,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.all(15),
+                            child: Container(
+                              padding: EdgeInsets.all(5),
+                              decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: ViewConstants.myWhite
+                              ),
+                              child: Icon(
+                                Icons.arrow_forward,
+                                color: ViewConstants.myBlack,
+                                size: 35,
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
                   ),
                 ),
               ),

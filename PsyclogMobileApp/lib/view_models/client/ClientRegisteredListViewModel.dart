@@ -36,4 +36,9 @@ class ClientRegisteredListViewModel extends ChangeNotifier {
     }
     notifyListeners();
   }
+
+  Future<bool> createReview(String reviewTitle, String reviewContent, int rating, String therapistID) async {
+    bool isCreated = await _serverService.createReview(reviewTitle, reviewContent, rating, therapistID);
+    return isCreated;
+  }
 }

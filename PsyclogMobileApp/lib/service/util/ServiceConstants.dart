@@ -4,9 +4,10 @@ class ServiceConstants {
   static const String ROLE_PSYCHOLOGIST = "role_psychologist";
 
   static const int STATUS_SUCCESS_CODE = 200;
+  static const int STATUS_FAIL_CODE = 400;
   static const int STATUS_DELETE_SUCCESS_CODE = 204;
 
-  static String serverAddress = "http://192.168.1.34:8080";
+  static String serverAddress = "http://192.168.1.36:8080";
   static String currentAPI = "api/v1";
   static String agoraAPIKey = "f1656dc769f642fabf042b63b7ccca80";
 }
