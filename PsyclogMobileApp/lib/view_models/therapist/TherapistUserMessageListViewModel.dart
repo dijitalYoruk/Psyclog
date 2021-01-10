@@ -23,8 +23,9 @@ class TherapistUserMessageListViewModel extends ChangeNotifier {
   initializeService() async {
     contactList = List<Contact>();
     try {
-      _socketService = await SocketService.getSocketService();
+      _socketService = SocketService.getSocketService();
       _socket = _socketService.getSocket;
+      _socket.clearListeners();
       await _activateUser();
     } catch (e) {
       print(e);
@@ -36,7 +37,7 @@ class TherapistUserMessageListViewModel extends ChangeNotifier {
 
     if (userToken != null) {
       try {
-        activateUser(userToken);
+        _socket.emit("activateUser", {"accessToken": userToken});
         _socket.clearListeners();
         setChat();
         setMessageSeenList();
@@ -49,55 +50,57 @@ class TherapistUserMessageListViewModel extends ChangeNotifier {
     }
   }
 
-  void activateUser(String userToken) {
-    _socket.emit("activateUser", {"accessToken": userToken});
-    print("User is activated");
-  }
-
   void setChat() {
-    _socket.on("chats", (chats) {
-      List chatList = chats as List;
+    _socket.off("chats");
 
-      contactList = List<Contact>();
+    try {
+      _socket.on("chats", (chats) {
 
-      for (var value in chatList) {
-        print(value);
+        List chatList = chats as List;
 
-        contactList.add(Contact(
-            value["_id"],
-            value["patient"]["isActive"],
-            value["psychologist"],
-            value["patient"]["username"],
-            value["patient"]["name"],
-            value["patient"]["profileImage"],
-            value["patient"]["_id"],
-            value["createdAt"],
-            value["updateAt"],
-            Message.message(
-                value["lastMessage"]["isSeen"],
-                value["lastMessage"]["_id"],
-                value["lastMessage"]["message"],
-                value["lastMessage"]["contact"],
-                value["lastMessage"]["author"],
-                value["lastMessage"]["chat"],
-                value["lastMessage"]["createdAt"],
-                value["lastMessage"]["updatedAt"],
-                null)));
-      }
-      _socket.off("chats");
+        contactList = List<Contact>();
 
-      // Listening events on userIDs
-      for (Contact contact in contactList) {
-        _socket.on(contact.getPatientID, (status) {
-          contact.isActive = status;
-          notifyListeners();
-        });
-      }
+        for (var value in chatList) {
+          print(value);
+          if (value["patient"] != null)
+            contactList.add(Contact(
+                value["_id"],
+                value["patient"]["isActive"],
+                value["psychologist"],
+                value["patient"]["username"],
+                value["patient"]["name"],
+                value["patient"]["profileImage"],
+                value["patient"]["_id"],
+                value["createdAt"],
+                value["updateAt"],
+                Message.message(
+                    value["lastMessage"]["isSeen"],
+                    value["lastMessage"]["_id"],
+                    value["lastMessage"]["message"],
+                    value["lastMessage"]["contact"],
+                    value["lastMessage"]["author"],
+                    value["lastMessage"]["chat"],
+                    value["lastMessage"]["createdAt"],
+                    value["lastMessage"]["updatedAt"],
+                    null)));
+        }
+        _socket.off("chats");
 
-      sortContactList();
-      notifyListeners();
-      return;
-    });
+        // Listening events on userIDs
+        for (Contact contact in contactList) {
+          _socket.on(contact.getPatientID, (status) {
+            contact.isActive = status;
+            notifyListeners();
+          });
+        }
+
+        sortContactList();
+        notifyListeners();
+        return;
+      });
+    } catch (e) {
+      print(e);
+    }
   }
 
   int getContactListLength() {

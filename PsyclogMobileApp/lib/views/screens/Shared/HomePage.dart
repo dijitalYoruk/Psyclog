@@ -37,81 +37,58 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     _pageController = PageController(initialPage: 2);
     _currentIndex = _pageController.initialPage;
     super.initState();
-    initializeService()..then((value) => setState(() {}));
   }
 
   Future<bool> initializeService() async {
     // Wait for Web Server Service to be created
-    _webServerService = await WebServerService.getWebServerService();
+    try {
+      _webServerService = await WebServerService.getWebServerService();
 
-    print("here");
+      if (_webServerService.currentUser is Patient) {
+        _clientMessageListViewModel = ClientUserMessageListViewModel(context);
+        await _clientMessageListViewModel.initializeService();
+        _therapistMessageListViewModel = null;
 
-    if (_webServerService.currentUser is Patient) {
-      _clientMessageListViewModel = ClientUserMessageListViewModel(context);
-      _clientMessageListViewModel.initializeService();
-      _therapistMessageListViewModel = null;
-    } else if (_webServerService.currentUser is Therapist) {
-      _therapistMessageListViewModel = TherapistUserMessageListViewModel(context);
-      _therapistMessageListViewModel.initializeService();
-      _clientMessageListViewModel = null;
+        _homepageTabs = <Widget>[
+          TopicPage(),
+          ClientSearchPage(),
+          ClientSessionPage(),
+          ClientAppointmentPage(),
+          ChangeNotifierProvider.value(
+            value: _clientMessageListViewModel,
+            child: ClientMessagePage(),
+          )
+        ];
+
+        bottomIconButtons = <CustomNavigationBarItem>[
+          CustomNavigationBarItem(icon: Icons.all_inclusive),
+          CustomNavigationBarItem(icon: Icons.search),
+          CustomNavigationBarItem(icon: Icons.add),
+          CustomNavigationBarItem(icon: Icons.access_time),
+          CustomNavigationBarItem(icon: Icons.chat),
+        ];
+      } else if (_webServerService.currentUser is Therapist) {
+        _therapistMessageListViewModel = TherapistUserMessageListViewModel(context);
+        await _therapistMessageListViewModel.initializeService();
+        _clientMessageListViewModel = null;
+
+        _homepageTabs = <Widget>[
+          TopicPage(),
+          TherapistSessionPage(),
+          TherapistAppointmentPage(),
+          ChangeNotifierProvider.value(value: _therapistMessageListViewModel, child: TherapistMessagePage()),
+        ];
+
+        bottomIconButtons = <CustomNavigationBarItem>[
+          CustomNavigationBarItem(icon: Icons.all_inclusive),
+          CustomNavigationBarItem(icon: Icons.add),
+          CustomNavigationBarItem(icon: Icons.access_time),
+          CustomNavigationBarItem(icon: Icons.chat),
+        ];
+      }
+    } catch (e) {
+      print(e);
     }
-
-    // Initialize Homepage Tabs according to User Type
-    _homepageTabs = <Widget>[
-      TopicPage(),
-      Builder(
-        builder: (BuildContext context) {
-          if (_webServerService.currentUser is Patient) {
-            return ClientSearchPage();
-          } else if (_webServerService.currentUser is Therapist) {
-            return Container();
-          } else {
-            // TODO change after the debug process to " Container(); "
-            return Container();
-          }
-        },
-      ),
-      Builder(
-        builder: (BuildContext context) {
-          if (_webServerService.currentUser is Patient) {
-            return ClientSessionPage();
-          } else if (_webServerService.currentUser is Therapist) {
-            return TherapistSessionPage();
-          } else {
-            // TODO change after the debug process to " Container(); "
-            return Container();
-          }
-        },
-      ),
-      Builder(
-        builder: (BuildContext context) {
-          if (_webServerService.currentUser is Patient) {
-            return ClientAppointmentPage();
-          } else if (_webServerService.currentUser is Therapist) {
-            return TherapistAppointmentPage();
-          } else {
-            // TODO change after the debug process to " Container(); "
-            return Container();
-          }
-        },
-      ),
-      Builder(
-        builder: (BuildContext context) {
-          if (_webServerService.currentUser is Patient) {
-            return ChangeNotifierProvider.value(
-              value: _clientMessageListViewModel,
-              child: ClientMessagePage(),
-            );
-          } else if (_webServerService.currentUser is Therapist) {
-            return ChangeNotifierProvider.value(value: _therapistMessageListViewModel, child: TherapistMessagePage());
-          } else {
-            // TODO change after the debug process to " Container(); "
-            return Container();
-          }
-        },
-      ),
-    ];
-
     return true;
   }
 
@@ -130,44 +107,43 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
 
   @override
   Widget build(BuildContext context) {
-    bottomIconButtons = <CustomNavigationBarItem>[
-      CustomNavigationBarItem(icon: Icons.all_inclusive),
-      CustomNavigationBarItem(icon: Icons.search),
-      CustomNavigationBarItem(icon: Icons.add),
-      CustomNavigationBarItem(icon: Icons.access_time),
-      CustomNavigationBarItem(icon: Icons.chat),
-    ];
-
-    return Scaffold(
-      resizeToAvoidBottomPadding: false,
-      backgroundColor: ViewConstants.myWhite,
-      bottomNavigationBar: StatefulBuilder(
-        builder: (context, StateSetter stateSetter) {
-          return CustomNavigationBar(
-            scaleFactor: 0.2,
-            iconSize: 25.0,
-            selectedColor: ViewConstants.myBlue,
-            strokeColor: ViewConstants.myBlue,
-            unSelectedColor: ViewConstants.myWhite,
-            backgroundColor: ViewConstants.myBlack,
-            items: bottomIconButtons,
-            currentIndex: _currentIndex,
-            onTap: (index) {
-              _pageController.animateToPage(index, duration: Duration(milliseconds: 500), curve: Curves.decelerate);
-              setState(() {
-                _currentIndex = index;
-              });
-            },
-          );
-        },
-      ),
-      body: _homepageTabs != null
-          ? PageView(
+    return FutureBuilder(
+      future: initializeService(),
+      builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+        if (snapshot.data == true) {
+          return Scaffold(
+            resizeToAvoidBottomPadding: false,
+            backgroundColor: ViewConstants.myWhite,
+            bottomNavigationBar: StatefulBuilder(
+              builder: (context, StateSetter stateSetter) {
+                return CustomNavigationBar(
+                  scaleFactor: 0.2,
+                  iconSize: 25.0,
+                  selectedColor: ViewConstants.myBlue,
+                  strokeColor: ViewConstants.myBlue,
+                  unSelectedColor: ViewConstants.myWhite,
+                  backgroundColor: ViewConstants.myBlack,
+                  items: bottomIconButtons,
+                  currentIndex: _currentIndex,
+                  onTap: (index) {
+                    _pageController.animateToPage(index, duration: Duration(milliseconds: 500), curve: Curves.decelerate);
+                    setState(() {
+                      _currentIndex = index;
+                    });
+                  },
+                );
+              },
+            ),
+            body: PageView(
               physics: NeverScrollableScrollPhysics(),
               controller: _pageController,
               children: _homepageTabs,
-            )
-          : CircularProgressIndicator(),
+            ),
+          );
+        } else {
+          return Scaffold();
+        }
+      },
     );
   }
 }

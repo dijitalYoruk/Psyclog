@@ -7,6 +7,7 @@ import 'package:psyclog_app/src/models/Topic.dart';
 import 'package:psyclog_app/views/controllers/RouteArguments.dart';
 import 'package:psyclog_app/views/screens/Client/ClientProfilePage.dart';
 import 'package:psyclog_app/views/screens/Client/ClientVideoCallPage.dart';
+import 'package:psyclog_app/views/screens/Client/ClientWalletPage.dart';
 import 'package:psyclog_app/views/screens/Shared/HomePage.dart';
 import 'package:psyclog_app/views/screens/Shared/LoginPage.dart';
 import 'package:psyclog_app/views/screens/Shared/PostCreatePage.dart';
@@ -23,6 +24,7 @@ import 'package:psyclog_app/views/screens/Therapist/TherapistRegisterPage.dart';
 import 'package:psyclog_app/views/screens/Client/ClientRegisterPage.dart';
 import 'package:psyclog_app/views/screens/Client/ClientRequestPage.dart';
 import 'package:psyclog_app/views/screens/Therapist/TherapistVideoCallPage.dart';
+import 'package:psyclog_app/views/screens/Therapist/TherapistWalletPage.dart';
 import 'package:psyclog_app/views/screens/WalletPage.dart';
 import 'package:psyclog_app/views/screens/WelcomePage.dart';
 import 'package:psyclog_app/views/util/ViewConstants.dart';
@@ -101,7 +103,7 @@ class RouteController {
           },
         );
         break;
-      case ViewConstants.registerClientRoute:
+      case ViewConstants.clientRegisterRoute:
         return PageRouteBuilder(
           settings: settings,
           transitionDuration: Duration(milliseconds: 800),
@@ -124,7 +126,7 @@ class RouteController {
           },
         );
         break;
-      case ViewConstants.registerTherapistRoute:
+      case ViewConstants.therapistRegisterRoute:
         return PageRouteBuilder(
           settings: settings,
           transitionDuration: Duration(milliseconds: 800),
@@ -437,8 +439,49 @@ class RouteController {
           },
         );
         break;
-      case ViewConstants.walletRoute:
-        return MaterialPageRoute(settings: settings, builder: (_) => InnerDrawerWithScreen(scaffoldArea: WalletPage()));
+      case ViewConstants.clientWalletRoute:
+        return PageRouteBuilder(
+          settings: settings,
+          pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
+            return InnerDrawerWithScreen(scaffoldArea: ClientWalletPage());
+          },
+          transitionsBuilder:
+              (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
+            var curve = Curves.linearToEaseOut;
+
+            var curvedAnimation = CurvedAnimation(
+              parent: animation,
+              curve: curve,
+            );
+
+            return FadeTransition(
+              opacity: curvedAnimation,
+              child: child,
+            );
+          },
+        );
+        break;
+      case ViewConstants.therapistWalletRoute:
+        return PageRouteBuilder(
+          settings: settings,
+          pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
+            return InnerDrawerWithScreen(scaffoldArea: TherapistWalletPage());
+          },
+          transitionsBuilder:
+              (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
+            var curve = Curves.linearToEaseOut;
+
+            var curvedAnimation = CurvedAnimation(
+              parent: animation,
+              curve: curve,
+            );
+
+            return FadeTransition(
+              opacity: curvedAnimation,
+              child: child,
+            );
+          },
+        );
         break;
       case ViewConstants.clientVideoCallRoute:
         final ClientAppointment _currentAppointment = settings.arguments;

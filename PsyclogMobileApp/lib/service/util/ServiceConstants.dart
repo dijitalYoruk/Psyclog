@@ -7,7 +7,7 @@ class ServiceConstants {
   static const int STATUS_FAIL_CODE = 400;
   static const int STATUS_DELETE_SUCCESS_CODE = 204;
 
-  static String serverAddress = "http://192.168.1.36:8080";
+  static String serverAddress = "http://psyclog-app.eu-central-1.elasticbeanstalk.com";
   static String currentAPI = "api/v1";
   static String agoraAPIKey = "f1656dc769f642fabf042b63b7ccca80";
 }
