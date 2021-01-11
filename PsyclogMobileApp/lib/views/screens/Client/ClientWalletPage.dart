@@ -51,6 +51,15 @@ class _ClientWalletPageState extends State<ClientWalletPage> {
     });
   }
 
+  void clearFields() {
+    _cvvController.clear();
+    _expiryMonthController.clear();
+    _expiryYearController.clear();
+    _cardNumberController.clear();
+    _cardHolderController.clear();
+    _moneyAmountController.clear();
+  }
+
   Future<bool> initializeService() async {
     _webServerService = await WebServerService.getWebServerService();
 
@@ -451,7 +460,30 @@ class _ClientWalletPageState extends State<ClientWalletPage> {
                                         ),
                                         child: FlatButton(
                                           minWidth: MediaQuery.of(context).size.width,
-                                          onPressed: () {},
+                                          onPressed: () async {
+                                            bool isUploaded = await uploadMoney();
+
+                                            if(isUploaded) {
+                                              clearFields();
+                                              _pageController.animateToPage(1,
+                                                  duration: Duration(milliseconds: 300), curve: Curves.decelerate);
+
+                                              final snackBar = SnackBar(
+                                                  duration: Duration(milliseconds: 1500),
+                                                  backgroundColor: ViewConstants.myBlack,
+                                                  content: Padding(
+                                                    padding: const EdgeInsets.all(5.0),
+                                                    child: Text(
+                                                      "Wallet updated successfully.",
+                                                      style: TextStyle(color: ViewConstants.myWhite),
+                                                    ),
+                                                  ));
+                                              Scaffold.of(context).showSnackBar(snackBar);
+
+                                            } else {
+                                              print("wrong");
+                                            }
+                                          },
                                           child: Text(
                                             "Upload",
                                             style: GoogleFonts.muli(fontSize: 18),
@@ -697,12 +729,7 @@ class _ClientWalletPageState extends State<ClientWalletPage> {
                             icon: Icon(Icons.arrow_back),
                             onPressed: () {
                               setState(() {
-                                _cvvController.clear();
-                                _expiryMonthController.clear();
-                                _expiryYearController.clear();
-                                _cardNumberController.clear();
-                                _cardHolderController.clear();
-                                _moneyAmountController.clear();
+                                clearFields();
                               });
 
                               _pageController.animateToPage(1,
@@ -1001,7 +1028,30 @@ class _ClientWalletPageState extends State<ClientWalletPage> {
                                         ),
                                         child: FlatButton(
                                           minWidth: MediaQuery.of(context).size.width,
-                                          onPressed: () {},
+                                          onPressed: () async {
+                                            bool isWithdrawn = await withdrawMoney();
+
+                                            if(isWithdrawn) {
+                                              clearFields();
+                                              _pageController.animateToPage(1,
+                                                  duration: Duration(milliseconds: 300), curve: Curves.decelerate);
+
+                                              final snackBar = SnackBar(
+                                                  duration: Duration(milliseconds: 1500),
+                                                  backgroundColor: ViewConstants.myBlack,
+                                                  content: Padding(
+                                                    padding: const EdgeInsets.all(5.0),
+                                                    child: Text(
+                                                      "Wallet updated successfully.",
+                                                      style: TextStyle(color: ViewConstants.myWhite),
+                                                    ),
+                                                  ));
+                                              Scaffold.of(context).showSnackBar(snackBar);
+
+                                            } else {
+                                              print("wrong");
+                                            }
+                                          },
                                           child: Text(
                                             "Withdraw",
                                             style: GoogleFonts.muli(fontSize: 18),

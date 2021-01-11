@@ -102,19 +102,43 @@ class _ClientRegisterPageState extends State<ClientRegisterPage> with SingleTick
     final String lastName = _lastNameController.text;
     final String phone = _phoneController.text;
 
-    final bool isCreated =
-        await _webServerService.attemptClientSignUp(username, password, passwordCheck, email, firstName, lastName, phone);
+    if (username.isNotEmpty &&
+        password.isNotEmpty &&
+        passwordCheck.isNotEmpty &&
+        email.isNotEmpty &&
+        firstName.isNotEmpty &&
+        lastName.isNotEmpty &&
+        phone.isNotEmpty) {
+      final bool isCreated =
+          await _webServerService.attemptClientSignUp(username, password, passwordCheck, email, firstName, lastName, phone);
 
-    if (isCreated) {
-      print("User is created");
-      return isCreated;
+      if (isCreated) {
+        print("User is created");
+        return isCreated;
+      } else {
+        setState(() {
+          _pageIndex = 0;
+          _pageController.animateToPage(_pageIndex, duration: Duration(milliseconds: 300), curve: Curves.decelerate);
+        });
+      }
     } else {
       setState(() {
         _pageIndex = 0;
         _pageController.animateToPage(_pageIndex, duration: Duration(milliseconds: 300), curve: Curves.decelerate);
       });
+
+      final snackBar = SnackBar(
+          duration: Duration(milliseconds: 1500),
+          backgroundColor: ViewConstants.myBlack,
+          content: Padding(
+            padding: const EdgeInsets.all(5.0),
+            child: Text(
+              "Do not forget to fill out all the fields.",
+              style: TextStyle(color: ViewConstants.myWhite),
+            ),
+          ));
+      Scaffold.of(context).showSnackBar(snackBar);
     }
-    return isCreated;
   }
 
   @override
