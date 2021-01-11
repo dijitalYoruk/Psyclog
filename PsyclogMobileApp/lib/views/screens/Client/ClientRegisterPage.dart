@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
 import 'package:psyclog_app/service/WebServerService.dart';
 import 'package:psyclog_app/views/util/ViewConstants.dart';
 
@@ -15,6 +14,7 @@ class _ClientRegisterPageState extends State<ClientRegisterPage> with SingleTick
   final _emailController = TextEditingController();
   final _firstNameController = TextEditingController();
   final _lastNameController = TextEditingController();
+  final _phoneController = TextEditingController();
 
   String _usernameErrorText;
   String _passwordErrorText;
@@ -22,6 +22,7 @@ class _ClientRegisterPageState extends State<ClientRegisterPage> with SingleTick
   String _emailErrorText;
   String _firstNameErrorText;
   String _lastNameErrorText;
+  String _phoneErrorText;
 
   bool _usernameValidate;
   bool _passwordValidate;
@@ -29,12 +30,12 @@ class _ClientRegisterPageState extends State<ClientRegisterPage> with SingleTick
   bool _emailValidate;
   bool _firstNameValidate;
   bool _lastNameValidate;
+  bool _phoneValidate;
 
   final UnfocusDisposition disposition = UnfocusDisposition.scope;
 
-  WebServerService _serverService;
+  WebServerService _webServerService;
   PageController _pageController;
-  Future<bool> _data;
   int _pageIndex;
 
   @override
@@ -42,6 +43,14 @@ class _ClientRegisterPageState extends State<ClientRegisterPage> with SingleTick
     // TODO: implement setState
     super.setState(fn);
     // checking Animation width sizes for safety
+  }
+
+  Future<bool> initializeService() async {
+    _webServerService = await WebServerService.getWebServerService();
+    if (_webServerService != null)
+      return true;
+    else
+      return false;
   }
 
   @override
@@ -52,14 +61,13 @@ class _ClientRegisterPageState extends State<ClientRegisterPage> with SingleTick
     _pageController = PageController(initialPage: 0);
     _pageIndex = 0;
 
-    _data = _setService();
-
     _usernameErrorText = "";
     _passwordErrorText = "";
     _passwordCheckErrorText = "";
     _emailErrorText = "";
     _firstNameErrorText = "";
     _lastNameErrorText = "";
+    _phoneErrorText = "";
 
     _usernameValidate = false;
     _passwordValidate = false;
@@ -67,6 +75,7 @@ class _ClientRegisterPageState extends State<ClientRegisterPage> with SingleTick
     _emailValidate = false;
     _firstNameValidate = false;
     _lastNameValidate = false;
+    _phoneValidate = false;
   }
 
   @override
@@ -78,41 +87,34 @@ class _ClientRegisterPageState extends State<ClientRegisterPage> with SingleTick
     _passwordCheckController.dispose();
     _lastNameController.dispose();
     _firstNameController.dispose();
+    _phoneController.dispose();
+
     _pageController.dispose();
     super.dispose();
   }
 
-  Future<void> _signUp() async {
+  Future<bool> _signUp() async {
     final String username = _usernameController.text;
     final String password = _passwordController.text;
     final String passwordCheck = _passwordCheckController.text;
     final String email = _emailController.text;
     final String firstName = _firstNameController.text;
     final String lastName = _lastNameController.text;
+    final String phone = _phoneController.text;
 
-    final Response result = await _serverService.attemptUserSignUp(username, password, passwordCheck, email, firstName, lastName);
+    final bool isCreated =
+        await _webServerService.attemptClientSignUp(username, password, passwordCheck, email, firstName, lastName, phone);
 
-    if (result.statusCode == 200) {
+    if (isCreated) {
       print("User is created");
-      Navigator.pushReplacementNamed(context, ViewConstants.homeRoute);
+      return isCreated;
     } else {
-      print("Status Code: " + result.toString());
+      setState(() {
+        _pageIndex = 0;
+        _pageController.animateToPage(_pageIndex, duration: Duration(milliseconds: 300), curve: Curves.decelerate);
+      });
     }
-  }
-
-  Future<bool> _setService() async {
-    bool result;
-
-    print("Starting services for Register Page...");
-
-    try {
-      _serverService = await WebServerService.getWebServerService();
-      result = true;
-    } catch (e) {
-      print("Exception:" + e.toString());
-      result = false;
-    }
-    return result;
+    return isCreated;
   }
 
   @override
@@ -318,6 +320,7 @@ class _ClientRegisterPageState extends State<ClientRegisterPage> with SingleTick
         },
       ),
     );
+
     final lastNameField = Theme(
       data: ThemeData(
         primaryColor: ViewConstants.myWhite,
@@ -358,13 +361,53 @@ class _ClientRegisterPageState extends State<ClientRegisterPage> with SingleTick
       ),
     );
 
+    final phoneField = Theme(
+      data: ThemeData(
+        primaryColor: ViewConstants.myWhite,
+        accentColor: ViewConstants.myWhite,
+        cursorColor: ViewConstants.myWhite,
+        hintColor: ViewConstants.myWhite,
+      ),
+      child: TextField(
+        keyboardType: TextInputType.number,
+        controller: _phoneController,
+        decoration: InputDecoration(
+          prefixIcon: Icon(
+            Icons.phone,
+            color: ViewConstants.myWhite,
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: ViewConstants.myWhite),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: ViewConstants.myBlue),
+          ),
+          border: OutlineInputBorder(
+            borderSide: BorderSide(color: ViewConstants.myWhite),
+          ),
+          errorText: _phoneValidate ? _phoneErrorText : null,
+          errorStyle: TextStyle(fontSize: 15, color: ViewConstants.myPink, fontWeight: FontWeight.w400),
+          hintText: 'Type your phone number',
+          hintStyle: TextStyle(fontSize: 15, color: ViewConstants.myWhite, fontWeight: FontWeight.w400),
+        ),
+        style: TextStyle(color: ViewConstants.myWhite, fontWeight: FontWeight.w500, fontSize: 15),
+        onEditingComplete: () {
+          primaryFocus.unfocus(disposition: disposition);
+          setState(() {
+            _phoneController.text.isEmpty ? _phoneValidate = true : _phoneValidate = false;
+            _phoneValidate ? _phoneErrorText = "This field cannot be empty" : _phoneErrorText = null;
+          });
+        },
+      ),
+    );
+
     return Scaffold(
       resizeToAvoidBottomPadding: false,
       backgroundColor: ViewConstants.myBlack,
       body: FutureBuilder(
-        future: _data,
+        future: initializeService(),
         builder: (context, snapshot) {
-          if (snapshot.hasData) {
+          if (snapshot.data == true) {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.start,
@@ -422,8 +465,12 @@ class _ClientRegisterPageState extends State<ClientRegisterPage> with SingleTick
                               child: firstNameField,
                             ),
                             Padding(
-                              padding: const EdgeInsets.only(right: 25, left: 25, top: 10, bottom: 30),
+                              padding: const EdgeInsets.only(right: 25, left: 25, top: 10, bottom: 10),
                               child: lastNameField,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(right: 25, left: 25, top: 10, bottom: 30),
+                              child: phoneField,
                             )
                           ],
                         ),
@@ -498,7 +545,9 @@ class _ClientRegisterPageState extends State<ClientRegisterPage> with SingleTick
                                   highlightColor: Colors.transparent,
                                   onPressed: () {
                                     primaryFocus.unfocus(disposition: disposition);
-                                    if (_pageIndex > 0) {
+                                    if (_pageIndex == 2) {
+                                      print("here");
+                                    } else if (_pageIndex > 0) {
                                       setState(() {
                                         _pageIndex = _pageController.page.toInt() - 1;
                                         _pageController.animateToPage(_pageIndex,
@@ -510,7 +559,7 @@ class _ClientRegisterPageState extends State<ClientRegisterPage> with SingleTick
                                     }
                                   },
                                   child: Text(
-                                    "Back",
+                                    _pageIndex != 2 ? "Back" : "Done",
                                     style: TextStyle(color: ViewConstants.myWhite),
                                   ),
                                 ),
@@ -528,24 +577,33 @@ class _ClientRegisterPageState extends State<ClientRegisterPage> with SingleTick
                                 child: FlatButton(
                                   splashColor: Colors.transparent,
                                   highlightColor: Colors.transparent,
-                                  onPressed: () {
+                                  onPressed: () async {
                                     primaryFocus.unfocus(disposition: disposition);
                                     if (_pageIndex < 2) {
-                                      setState(() {
-                                        _pageIndex = _pageController.page.toInt() + 1;
-                                        _pageController.animateToPage(_pageIndex,
-                                            duration: Duration(milliseconds: 1), curve: Curves.decelerate);
-                                      });
-                                    } else if (_pageIndex == 2) {
-                                      // TODO Control Point for User Registration
-                                      if (true) {
-                                        print("Navigating to Home Page...");
-                                        Navigator.pushNamedAndRemoveUntil(
-                                          context,
-                                          ViewConstants.homeRoute,
-                                          (route) => false,
-                                        );
+                                      bool isCreated = false;
+                                      if (_pageIndex == 1) {
+                                        isCreated = await _signUp();
+                                        if (isCreated) {
+                                          setState(() {
+                                            _pageIndex = _pageController.page.toInt() + 1;
+                                            _pageController.animateToPage(_pageIndex,
+                                                duration: Duration(milliseconds: 1), curve: Curves.decelerate);
+                                          });
+                                        }
+                                      } else {
+                                        setState(() {
+                                          _pageIndex = _pageController.page.toInt() + 1;
+                                          _pageController.animateToPage(_pageIndex,
+                                              duration: Duration(milliseconds: 1), curve: Curves.decelerate);
+                                        });
                                       }
+                                    } else if (_pageIndex == 2) {
+                                      print("Navigating to Login Page...");
+                                      Navigator.pushNamedAndRemoveUntil(
+                                        context,
+                                        ViewConstants.loginRoute,
+                                        (route) => false,
+                                      );
                                     }
                                   },
                                   child: Text(

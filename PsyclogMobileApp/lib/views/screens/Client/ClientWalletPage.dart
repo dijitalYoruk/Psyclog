@@ -63,11 +63,39 @@ class _ClientWalletPageState extends State<ClientWalletPage> {
   }
 
   Future<bool> uploadMoney() async {
+    final String cardHolderName = _cardHolderController.text;
+    final String cardCVC = _cvvController.text;
+    final String cardNumber = _cardNumberController.text.replaceAll(" ", "");
+    final String expMonth = _expiryMonthController.text;
+    final String expYear = "20" + _expiryYearController.text;
+    final int moneyAmount = int.parse(_moneyAmountController.text);
 
+    bool isUploaded =
+        await _webServerService.uploadMoney(cardHolderName, cardCVC, cardNumber, expMonth, expYear, moneyAmount);
+
+    if (isUploaded) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   Future<bool> withdrawMoney() async {
+    final String cardHolderName = _cardHolderController.text;
+    final String cardCVC = _cvvController.text;
+    final String cardNumber = _cardNumberController.text.replaceAll(" ", "");
+    final String expMonth = _expiryMonthController.text;
+    final String expYear = "20" + _expiryYearController.text;
+    final int moneyAmount = int.parse(_moneyAmountController.text);
 
+    bool isWithdrawn =
+        await _webServerService.withdrawMoney(cardHolderName, cardCVC, cardNumber, expMonth, expYear, moneyAmount);
+
+    if (isWithdrawn) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   @override

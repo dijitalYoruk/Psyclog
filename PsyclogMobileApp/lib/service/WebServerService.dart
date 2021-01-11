@@ -3,12 +3,13 @@ library services;
 import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
-import 'package:http/http.dart';
 import 'package:psyclog_app/service/util/ServiceConstants.dart';
 import 'package:psyclog_app/service/util/ServiceErrorHandling.dart';
 import 'package:psyclog_app/src/models/controller/UserModelController.dart';
 import 'package:psyclog_app/src/models/util/ModelConstants.dart';
 import 'package:psyclog_app/src/models/User.dart';
+import 'package:path/path.dart' as PATH;
+import 'package:http_parser/http_parser.dart';
 
 class WebServerService {
   static String _serverAddress;
@@ -63,8 +64,8 @@ class WebServerService {
     }
   }
 
-  Future<Response> attemptUserSignUp(
-      String username, String password, String passwordCheck, String email, String firstName, String lastName) async {
+  Future<bool> attemptClientSignUp(String username, String password, String passwordCheck, String email, String firstName,
+      String lastName, String phone) async {
     final message = jsonEncode({
       "username": username,
       "email": email,
@@ -72,16 +73,61 @@ class WebServerService {
       "surname": lastName,
       "password": password,
       "passwordConfirm": passwordCheck,
+      "phone": phone,
     });
 
     try {
       var response = await http.post('$_serverAddress/$_currentAPI/auth/signUp/patient',
           headers: ModelConstants.jsonTypeHeader, body: message);
 
-      return response;
+      print(response.body);
+
+      if (response.statusCode == ServiceConstants.STATUS_SUCCESS_CODE) {
+        return true;
+      } else
+        return false;
     } catch (e) {
-      print(ServiceErrorHandling.couldNotSignUpError);
-      return null;
+      throw ServiceErrorHandling.couldNotSignUpError;
+    }
+  }
+
+  Future<bool> attemptTherapistSignUp(String username, String password, String passwordCheck, String email, String firstName,
+      String lastName, String phone, String biography, String cvPath, String transcriptPath) async {
+    var request = http.MultipartRequest('POST', Uri.parse('$_serverAddress/$_currentAPI/auth/signUp/psychologist'));
+
+    request.fields.addAll({
+      'username': username,
+      'name': firstName,
+      'surname': lastName,
+      'appointmentPrice': '200',
+      'email': email,
+      'password': password,
+      'passwordConfirm': passwordCheck,
+      'biography': biography,
+      'phone': phone
+    });
+
+    print(cvPath);
+
+    request.files.add(await http.MultipartFile.fromPath(
+      'cv',
+      cvPath,
+      contentType: MediaType("application", "pdf"),
+    ));
+    request.files.add(await http.MultipartFile.fromPath(
+      'transcript',
+      transcriptPath,
+      contentType: MediaType("application", "pdf"),
+    ));
+
+    http.StreamedResponse response = await request.send();
+
+    print(await response.stream.bytesToString());
+
+    if (response.statusCode == ServiceConstants.STATUS_SUCCESS_CODE) {
+      return true;
+    } else {
+      return false;
     }
   }
 

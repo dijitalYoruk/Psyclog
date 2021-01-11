@@ -19,6 +19,7 @@ class _TherapistRegisterPageState extends State<TherapistRegisterPage> {
   final _firstNameController = TextEditingController();
   final _lastNameController = TextEditingController();
   final _biographyController = TextEditingController();
+  final _phoneController = TextEditingController();
 
   String _usernameErrorText;
   String _passwordErrorText;
@@ -27,6 +28,7 @@ class _TherapistRegisterPageState extends State<TherapistRegisterPage> {
   String _firstNameErrorText;
   String _lastNameErrorText;
   String _biographyErrorText;
+  String _phoneErrorText;
 
   bool _usernameValidate;
   bool _passwordValidate;
@@ -35,12 +37,15 @@ class _TherapistRegisterPageState extends State<TherapistRegisterPage> {
   bool _firstNameValidate;
   bool _lastNameValidate;
   bool _biographyValidate;
+  bool _phoneValidate;
+
+  File therapistTranscriptFile;
+  File therapistCVFile;
 
   final UnfocusDisposition disposition = UnfocusDisposition.scope;
 
-  WebServerService _serverService;
+  WebServerService _webServerService;
   PageController _pageController;
-  Future<bool> _data;
   int _pageIndex;
 
   @override
@@ -48,6 +53,14 @@ class _TherapistRegisterPageState extends State<TherapistRegisterPage> {
     // TODO: implement setState
     super.setState(fn);
     // checking Animation width sizes for safety
+  }
+
+  Future<bool> initializeService() async {
+    _webServerService = await WebServerService.getWebServerService();
+    if (_webServerService != null)
+      return true;
+    else
+      return false;
   }
 
   @override
@@ -58,8 +71,6 @@ class _TherapistRegisterPageState extends State<TherapistRegisterPage> {
     _pageController = PageController(initialPage: 0);
     _pageIndex = 0;
 
-    _data = _setService();
-
     _usernameErrorText = "";
     _passwordErrorText = "";
     _passwordCheckErrorText = "";
@@ -67,6 +78,7 @@ class _TherapistRegisterPageState extends State<TherapistRegisterPage> {
     _firstNameErrorText = "";
     _lastNameErrorText = "";
     _biographyErrorText = "";
+    _phoneErrorText = "";
 
     _usernameValidate = false;
     _passwordValidate = false;
@@ -75,6 +87,7 @@ class _TherapistRegisterPageState extends State<TherapistRegisterPage> {
     _firstNameValidate = false;
     _lastNameValidate = false;
     _biographyValidate = false;
+    _phoneValidate = false;
   }
 
   @override
@@ -88,41 +101,71 @@ class _TherapistRegisterPageState extends State<TherapistRegisterPage> {
     _firstNameController.dispose();
     _pageController.dispose();
     _biographyController.dispose();
+    _phoneController.dispose();
+
     super.dispose();
   }
 
-  Future<void> _signUp() async {
+  Future<bool> _signUp(BuildContext context) async {
     final String username = _usernameController.text;
     final String password = _passwordController.text;
     final String passwordCheck = _passwordCheckController.text;
     final String email = _emailController.text;
     final String firstName = _firstNameController.text;
     final String lastName = _lastNameController.text;
+    final String phone = _phoneController.text;
+    final String bio = _biographyController.text;
 
-    final Response result =
-        await _serverService.attemptUserSignUp(username, password, passwordCheck, email, firstName, lastName);
+    if (username.isNotEmpty &&
+        password.isNotEmpty &&
+        passwordCheck.isNotEmpty &&
+        email.isNotEmpty &&
+        firstName.isNotEmpty &&
+        lastName.isNotEmpty &&
+        phone.isNotEmpty &&
+        bio.isNotEmpty &&
+        therapistCVFile.path.isNotEmpty &&
+        therapistTranscriptFile.path.isNotEmpty) {
+      final bool isCreated = await _webServerService.attemptTherapistSignUp(
+        username,
+        password,
+        passwordCheck,
+        email,
+        firstName,
+        lastName,
+        phone,
+        bio,
+        therapistCVFile.path,
+        therapistTranscriptFile.path,
+      );
 
-    if (result.statusCode == 200) {
-      print("User is created");
-      Navigator.pushReplacementNamed(context, ViewConstants.homeRoute);
+      if (isCreated) {
+        print("User is created");
+        return isCreated;
+      } else {
+        setState(() {
+          _pageIndex = 0;
+          _pageController.animateToPage(_pageIndex, duration: Duration(milliseconds: 300), curve: Curves.decelerate);
+        });
+      }
     } else {
-      print("Status Code: " + result.toString());
+      setState(() {
+        _pageIndex = 0;
+        _pageController.animateToPage(_pageIndex, duration: Duration(milliseconds: 300), curve: Curves.decelerate);
+      });
+
+      final snackBar = SnackBar(
+          duration: Duration(milliseconds: 1500),
+          backgroundColor: ViewConstants.myBlack,
+          content: Padding(
+            padding: const EdgeInsets.all(5.0),
+            child: Text(
+              "Do not forget to fill out all the fields.",
+              style: TextStyle(color: ViewConstants.myWhite),
+            ),
+          ));
+      Scaffold.of(context).showSnackBar(snackBar);
     }
-  }
-
-  Future<bool> _setService() async {
-    bool result;
-
-    print("Starting services for Register Page...");
-
-    try {
-      _serverService = await WebServerService.getWebServerService();
-      result = true;
-    } catch (e) {
-      print("Exception:" + e.toString());
-      result = false;
-    }
-    return result;
   }
 
   @override
@@ -410,11 +453,51 @@ class _TherapistRegisterPageState extends State<TherapistRegisterPage> {
       ),
     );
 
+    final phoneField = Theme(
+      data: ThemeData(
+        primaryColor: ViewConstants.myWhite,
+        accentColor: ViewConstants.myWhite,
+        cursorColor: ViewConstants.myWhite,
+        hintColor: ViewConstants.myWhite,
+      ),
+      child: TextField(
+        keyboardType: TextInputType.number,
+        controller: _phoneController,
+        decoration: InputDecoration(
+          prefixIcon: Icon(
+            Icons.phone,
+            color: ViewConstants.myWhite,
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: ViewConstants.myWhite),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: ViewConstants.myBlue),
+          ),
+          border: OutlineInputBorder(
+            borderSide: BorderSide(color: ViewConstants.myWhite),
+          ),
+          errorText: _phoneValidate ? _phoneErrorText : null,
+          errorStyle: TextStyle(fontSize: 15, color: ViewConstants.myPink, fontWeight: FontWeight.w400),
+          hintText: 'Type your phone number',
+          hintStyle: TextStyle(fontSize: 15, color: ViewConstants.myWhite, fontWeight: FontWeight.w400),
+        ),
+        style: TextStyle(color: ViewConstants.myWhite, fontWeight: FontWeight.w500, fontSize: 15),
+        onEditingComplete: () {
+          primaryFocus.unfocus(disposition: disposition);
+          setState(() {
+            _phoneController.text.isEmpty ? _phoneValidate = true : _phoneValidate = false;
+            _phoneValidate ? _phoneErrorText = "This field cannot be empty" : _phoneErrorText = null;
+          });
+        },
+      ),
+    );
+
     return Scaffold(
       resizeToAvoidBottomPadding: false,
       backgroundColor: ViewConstants.myBlack,
       body: FutureBuilder(
-        future: _data,
+        future: initializeService(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return Column(
@@ -474,8 +557,12 @@ class _TherapistRegisterPageState extends State<TherapistRegisterPage> {
                               child: firstNameField,
                             ),
                             Padding(
-                              padding: const EdgeInsets.only(right: 25, left: 25, top: 10, bottom: 30),
+                              padding: const EdgeInsets.only(right: 25, left: 25, top: 10, bottom: 10),
                               child: lastNameField,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(right: 25, left: 25, top: 10, bottom: 30),
+                              child: phoneField,
                             )
                           ],
                         ),
@@ -499,7 +586,7 @@ class _TherapistRegisterPageState extends State<TherapistRegisterPage> {
                                     );
 
                                     if (therapistCV != null) {
-                                      File therapistCVFile = File(therapistCV.files.single.path);
+                                      therapistCVFile = File(therapistCV.files.single.path);
                                       print(therapistCVFile.path);
                                     }
                                   },
@@ -522,7 +609,7 @@ class _TherapistRegisterPageState extends State<TherapistRegisterPage> {
                                     );
 
                                     if (therapistTranscript != null) {
-                                      File therapistTranscriptFile = File(therapistTranscript.files.single.path);
+                                      therapistTranscriptFile = File(therapistTranscript.files.single.path);
                                       print(therapistTranscriptFile.path);
                                     }
                                   },
@@ -611,7 +698,9 @@ class _TherapistRegisterPageState extends State<TherapistRegisterPage> {
                                   highlightColor: Colors.transparent,
                                   onPressed: () {
                                     primaryFocus.unfocus(disposition: disposition);
-                                    if (_pageIndex > 0) {
+                                    if (_pageIndex == 3) {
+                                      print("here");
+                                    } else if (_pageIndex > 0) {
                                       setState(() {
                                         _pageIndex = _pageController.page.toInt() - 1;
                                         _pageController.animateToPage(_pageIndex,
@@ -623,7 +712,7 @@ class _TherapistRegisterPageState extends State<TherapistRegisterPage> {
                                     }
                                   },
                                   child: Text(
-                                    "Back",
+                                    _pageIndex != 3 ? "Back" : "Done",
                                     style: TextStyle(color: ViewConstants.myWhite),
                                   ),
                                 ),
@@ -641,21 +730,32 @@ class _TherapistRegisterPageState extends State<TherapistRegisterPage> {
                                 child: FlatButton(
                                   splashColor: Colors.transparent,
                                   highlightColor: Colors.transparent,
-                                  onPressed: () {
+                                  onPressed: () async {
                                     primaryFocus.unfocus(disposition: disposition);
                                     if (_pageIndex < 3) {
-                                      setState(() {
-                                        _pageIndex = _pageController.page.toInt() + 1;
-                                        _pageController.animateToPage(_pageIndex,
-                                            duration: Duration(milliseconds: 1), curve: Curves.decelerate);
-                                      });
+                                      bool isCreated = false;
+                                      if (_pageIndex == 2) {
+                                        isCreated = await _signUp(context);
+                                        if (isCreated) {
+                                          setState(() {
+                                            _pageIndex = _pageController.page.toInt() + 1;
+                                            _pageController.animateToPage(_pageIndex,
+                                                duration: Duration(milliseconds: 1), curve: Curves.decelerate);
+                                          });
+                                        }
+                                      } else {
+                                        setState(() {
+                                          _pageIndex = _pageController.page.toInt() + 1;
+                                          _pageController.animateToPage(_pageIndex,
+                                              duration: Duration(milliseconds: 1), curve: Curves.decelerate);
+                                        });
+                                      }
                                     } else if (_pageIndex == 3) {
-                                      // TODO Control Point for User Registration
                                       if (true) {
-                                        print("Navigating to Home Page...");
+                                        print("Navigating to Login Page...");
                                         Navigator.pushNamedAndRemoveUntil(
                                           context,
-                                          ViewConstants.homeRoute,
+                                          ViewConstants.loginRoute,
                                           (route) => false,
                                         );
                                       }
