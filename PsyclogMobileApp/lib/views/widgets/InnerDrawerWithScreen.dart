@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inner_drawer/inner_drawer.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -6,6 +7,7 @@ import 'package:psyclog_app/service/ClientServerService.dart';
 import 'package:psyclog_app/service/SocketService.dart';
 import 'package:psyclog_app/service/WebServerService.dart';
 import 'package:psyclog_app/src/models/Patient.dart';
+import 'package:psyclog_app/src/models/Therapist.dart';
 import 'package:psyclog_app/src/models/User.dart';
 import 'package:psyclog_app/views/util/ViewConstants.dart';
 
@@ -70,6 +72,19 @@ class _InnerDrawerWithScreenState extends State<InnerDrawerWithScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Spacer(),
+                      Padding(
+                        padding: EdgeInsets.symmetric(vertical: 30),
+                        child: Center(
+                          child: Container(
+                            padding: EdgeInsets.only(top: 10, bottom: 10),
+                            width: MediaQuery.of(context).size.width / 3,
+                            child: Image.asset(
+                              "assets/PSYCLOG_white_text.png",
+                              fit: BoxFit.fitWidth,
+                            ),
+                          ),
+                        ),
+                      ),
                       FutureBuilder(
                         future: initializeService(),
                         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
@@ -100,7 +115,6 @@ class _InnerDrawerWithScreenState extends State<InnerDrawerWithScreen> {
                                     child: AutoSizeText(
                                       _currentUser.getFullName(),
                                       style: GoogleFonts.muli(color: ViewConstants.myBlack, fontWeight: FontWeight.w600),
-                                      minFontSize: 16,
                                     ),
                                   ),
                                 ],
@@ -125,6 +139,8 @@ class _InnerDrawerWithScreenState extends State<InnerDrawerWithScreen> {
                         onTap: () {
                           if (_webServerService.currentUser is Patient) {
                             Navigator.pushReplacementNamed(context, ViewConstants.clientProfileRoute);
+                          } else if (_webServerService.currentUser is Therapist) {
+                            Navigator.pushReplacementNamed(context, ViewConstants.therapistProfileRoute);
                           }
                         },
                       ),
@@ -132,8 +148,11 @@ class _InnerDrawerWithScreenState extends State<InnerDrawerWithScreen> {
                         title: Text("Wallet"),
                         leading: Icon(Icons.monetization_on),
                         onTap: () {
-                          Navigator.pushNamedAndRemoveUntil(
-                              context, ViewConstants.walletRoute, ((Route<dynamic> route) => false));
+                          if (_webServerService.currentUser is Patient) {
+                            Navigator.pushReplacementNamed(context, ViewConstants.clientWalletRoute);
+                          } else if (_webServerService.currentUser is Therapist) {
+                            Navigator.pushReplacementNamed(context, ViewConstants.therapistWalletRoute);
+                          }
                         },
                       ),
                       Spacer(),

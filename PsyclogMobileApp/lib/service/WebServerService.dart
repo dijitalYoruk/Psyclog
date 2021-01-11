@@ -192,6 +192,74 @@ class WebServerService {
     }
   }
 
+  Future<bool> uploadMoney(
+      String cardHolderName, String cardCVC, String cardNumber, String expMonth, String expYear, int moneyAmount) async {
+    final String currentUserToken = await getToken();
+
+    if (currentUserToken != null) {
+      final message = jsonEncode({
+        "creditCardName": cardHolderName,
+        "creditCardCVC": cardCVC,
+        "creditCardNumber": cardNumber,
+        "creditCardExpMonth": expMonth,
+        "creditCardExpYear": expYear,
+        "uploadedAmount": moneyAmount
+      });
+
+      try {
+        var response = await http.post('$_serverAddress/$_currentAPI/wallet/upload',
+            headers: {'Authorization': "Bearer " + currentUserToken, 'Content-Type': 'application/json'}, body: message);
+
+        print(response.body);
+
+        if (response.statusCode == ServiceConstants.STATUS_SUCCESS_CODE) {
+          return true;
+        } else {
+          throw ServiceErrorHandling.couldNotCreateRequestError;
+        }
+      } catch (e) {
+        print(e);
+        throw ServiceErrorHandling.serverNotRespondingError;
+      }
+    } else {
+      throw ServiceErrorHandling.noTokenError;
+    }
+  }
+
+  Future<bool> withdrawMoney(
+      String cardHolderName, String cardCVC, String cardNumber, String expMonth, String expYear, int moneyAmount) async {
+    final String currentUserToken = await getToken();
+
+    if (currentUserToken != null) {
+      final message = jsonEncode({
+        "creditCardName": cardHolderName,
+        "creditCardCVC": cardCVC,
+        "creditCardNumber": cardNumber,
+        "creditCardExpMonth": expMonth,
+        "creditCardExpYear": expYear,
+        "withdrawAmount": moneyAmount
+      });
+
+      try {
+        var response = await http.post('$_serverAddress/$_currentAPI/wallet/withdraw',
+            headers: {'Authorization': "Bearer " + currentUserToken, 'Content-Type': 'application/json'}, body: message);
+
+        print(response.body);
+
+        if (response.statusCode == ServiceConstants.STATUS_SUCCESS_CODE) {
+          return true;
+        } else {
+          throw ServiceErrorHandling.couldNotCreateRequestError;
+        }
+      } catch (e) {
+        print(e);
+        throw ServiceErrorHandling.serverNotRespondingError;
+      }
+    } else {
+      throw ServiceErrorHandling.noTokenError;
+    }
+  }
+
   Future<String> getToken() async {
     String token = await _secureStorage.read(key: "token");
 

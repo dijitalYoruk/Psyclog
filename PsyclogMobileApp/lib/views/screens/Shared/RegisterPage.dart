@@ -37,7 +37,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 color: ViewConstants.myWhite,
                 child: MaterialButton(
                   onPressed: () {
-                    Navigator.pushNamed(context, ViewConstants.registerClientRoute);
+                    Navigator.pushNamed(context, ViewConstants.clientRegisterRoute);
                   },
                   child: Row(children: [
                     Expanded(
@@ -65,7 +65,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 color: ViewConstants.myWhite,
                 child: MaterialButton(
                   onPressed: () {
-                    Navigator.pushNamed(context, ViewConstants.registerTherapistRoute);
+                    Navigator.pushNamed(context, ViewConstants.therapistRegisterRoute);
                   },
                   child: Row(children: [
                     Expanded(
