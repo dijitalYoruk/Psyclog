@@ -11,7 +11,7 @@ const reset= async (password,passwordConfirm,token,url)=>{
                 token
             }
         });
-        console.log(res);
+        alert("Your password has been changed");
     }catch (err) {
         console.log( err.response.data);
 
