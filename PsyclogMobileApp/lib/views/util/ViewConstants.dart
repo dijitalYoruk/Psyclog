@@ -5,31 +5,37 @@ class ViewConstants {
   // App Name
   static String appName = "Psyclog";
 
-  // App Routes
+  // Shared Routes
   static const String homeRoute = '/home';
   static const String welcomeRoute = '/welcome';
   static const String splashRoute = '/splash';
   static const String loginRoute = '/login';
   static const String registerRoute = '/register';
-  static const String registerClientRoute = '/registerClient';
-  static const String registerTherapistRoute = '/registerTherapist';
-  static const String therapistVideoCallRoute = '/therapistVideoCall';
-  static const String clientVideoCallRoute = '/clientVideoCall';
   static const String sessionRoute = '/session';
   static const String walletRoute = '/wallet';
   static const String allTherapistsRoute = '/allTherapists';
-  static const String therapistRequestRoute = '/therapistRequest';
-  static const String clientProfileRoute = '/userProfile';
-  static const String therapistProfileRoute = '/therapistProfile';
-  static const String clientSessionRoute = '/clientSessions';
-  static const String clientPendingRequestRoute = '/clientPendingRequests';
-  static const String therapistPendingRequestRoute = '/therapistPendingRequests';
-  static const String clientCreateAppointmentRoute = '/clientCreateAppointment';
-  static const String therapistIntervalRoute = '/therapistIntervals';
   static const String topicCreateRoute = '/topicCreate';
   static const String postCreateRoute = '/postCreate';
   static const String postListRoute = '/postList';
+
+  // Client Routes
+  static const String clientProfileRoute = '/userProfile';
+  static const String clientSessionRoute = '/clientSessions';
+  static const String clientPendingRequestRoute = '/clientPendingRequests';
+  static const String clientCreateAppointmentRoute = '/clientCreateAppointment';
+  static const String clientVideoCallRoute = '/clientVideoCall';
+  static const String clientRegisterRoute = '/registerClient';
+  static const String clientWalletRoute = '/clientWallet';
+
+  // Therapist Routes
+  static const String therapistRequestRoute = '/therapistRequest';
+  static const String therapistProfileRoute = '/therapistProfile';
+  static const String therapistPendingRequestRoute = '/therapistPendingRequests';
+  static const String therapistIntervalRoute = '/therapistIntervals';
   static const String therapistNoteRoute = '/therapistNotes';
+  static const String therapistVideoCallRoute = '/therapistVideoCall';
+  static const String therapistRegisterRoute = '/registerTherapist';
+  static const String therapistWalletRoute = '/therapistWallet';
 
   //Constraints for Widgets
   static const int therapistsPerPage = 10;

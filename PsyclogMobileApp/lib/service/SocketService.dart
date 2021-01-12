@@ -7,30 +7,36 @@ class SocketService extends WebServerService {
   static String _serverAddress;
   static SocketService _socketService;
 
-  static Future<SocketService> getSocketService() async {
+  static SocketService getSocketService() {
     if (_serverAddress == null) {
       _serverAddress = ServiceConstants.serverAddress;
     }
     if (_socket == null) {
-      print("Empty Socket Service for Client Storage Service. Creating a new one.");
-      _socket = IO.io(_serverAddress, IO.OptionBuilder().setTransports(['websocket']).build());
+      print("Empty Socket. Creating a new one.");
+      try {
+        _socket = IO.io(_serverAddress, <String, dynamic>{
+          'transports': ['websocket'],
+          'autoConnect': false,
+        });
+        _socket.onConnect((data) => null);
+        _socket.onDisconnect((data) => null);
+        _socket.onConnectError((data) => print(data.toString()));
 
-      _socket.on("connect", (_) => print('Connected'));
-      _socket.on("disconnect", (_) => print('Disconnected'));
+        _socket.connect();
+      } catch (e) {
+        print(e);
+      }
     }
     if (_socketService == null) {
-      print("Empty Service for Client Server Service. Creating a new one.");
+      print("Empty Socket Service. Creating a new one.");
       _socketService = new SocketService();
     }
 
-    if(!_socket.connected) {
-      _socket.connect();
-    }
     return _socketService;
   }
 
   static disposeService() {
-    if(_socket != null) {
+    if (_socket != null) {
       _socket.clearListeners();
       _socket.disconnect();
       print("Socket Service is disposed");

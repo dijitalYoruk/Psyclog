@@ -1,7 +1,7 @@
 import axios from "axios"
 
 // constants
-const BASE_URL = 'http://localhost:8080'
+const BASE_URL = 'http://psyclog-app.eu-central-1.elasticbeanstalk.com'
 const CONTENT_TYPE = 'application/json'
 const CONTEXT_PATH = "api/v1"
 const ACCEPTS = 'application/json'
